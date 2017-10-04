@@ -15,21 +15,21 @@ myI2C = busio.I2C(SCL, SDA)
 
 ss = Adafruit_seesaw.Seesaw(myI2C)
 
-ss.pinModeBulk(button_mask, ss.INPUT_PULLUP);
+ss.pin_mode_bulk(button_mask, ss.INPUT_PULLUP);
 
 last_x = 0
 lasy_y = 0
 
 while True:
-	x = ss.analogRead(2)
-	y = ss.analogRead(3)
+	x = ss.analog_read(2)
+	y = ss.analog_read(3)
 	  
 	if  (abs(x - last_x) > 3) or (abs(y - last_y) > 3):
 		print(x, y)
 		last_x = x
 		last_y = y
 
-	buttons = ss.digitalReadBulk(button_mask)
+	buttons = ss.digital_read_bulk(button_mask)
 	if not (buttons & (1 << BUTTON_RIGHT)):
 		print("Button A pressed")
 
