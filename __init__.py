@@ -1,1 +1,1 @@
-from Adafruit_seesaw.seesaw import *
+from adafruit_seesaw.adafruit_seesaw import *
