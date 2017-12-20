@@ -250,7 +250,7 @@ class Seesaw:
         self.write(reg_base, reg)
         time.sleep(delay)
         with self.i2c_device as i2c:
-            i2c.read_into(buf)
+            i2c.readinto(buf)
 
     def write(self, reg_base, reg, buf=None):
         full_buffer = bytearray([reg_base, reg])
