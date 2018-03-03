@@ -26,6 +26,20 @@
 An I2C to whatever helper chip.
 
 * Author(s): Dean Miller
+
+Implementation Notes
+--------------------
+
+**Hardware:**
+
+* Adafruit `ATSAMD09 Breakout with seesaw
+  <https://www.adafruit.com/product/3657>`_ (Product ID: 3657)
+
+**Software and Dependencies:**
+
+* Adafruit CircuitPython firmware for the ESP8622 and M0-based boards:
+  https://github.com/adafruit/circuitpython/releases
+* Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
 
 # This code needs to be broken up into analogio, busio, digitalio, and pulseio
