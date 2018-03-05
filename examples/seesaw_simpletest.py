@@ -1,3 +1,7 @@
+# Simple seesaw test using an LED attached to Pin 15.
+#
+# See the seesaw Learn Guide for wiring details:
+# https://learn.adafruit.com/adafruit-seesaw-atsamd09-breakout?view=all#circuitpython-wiring-and-test
 import time
 
 from board import SCL, SDA
