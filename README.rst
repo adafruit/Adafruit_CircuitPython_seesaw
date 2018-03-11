@@ -10,6 +10,10 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
+.. image:: https://travis-ci.org/adafruit/Adafruit_CircuitPython_seesaw.svg?branch=master
+    :target: https://travis-ci.org/adafruit/Adafruit_CircuitPython_seesaw
+    :alt: Build Status
+
 CircuitPython module for use with the Adafruit ATSAMD09 seesaw.
 
 Dependencies
