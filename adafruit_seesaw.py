@@ -154,6 +154,39 @@ SEESAW_CRCKIT = const(0x01)
 #TODO: update when we get real PID
 _CRCKIT_PID = const(9999)
 
+class PWMChannel:
+    """A single seesaw channel that matches the :py:class:`~pulseio.PWMOut` API."""
+    def __init__(self, seesaw, pin):
+        self._seesaw = seesaw
+        self._pin = pin
+        self._dc = 0
+        self._frequency = 0
+
+    @property
+    def frequency(self):
+        """The overall PWM frequency in herz."""
+        return self._frequency
+
+    @frequency.setter
+    def frequency(self, frequency):
+        self._seesaw.set_pwm_freq(self._pin, frequency)
+        self._frequency = frequency
+
+    @property
+    def duty_cycle(self):
+        """16 bit value that dictates how much of one cycle is high (1) versus low (0). 0xffff will
+           always be high, 0 will always be low and 0x7fff will be half high and then half low."""
+        return self._dc
+
+    @duty_cycle.setter
+    def duty_cycle(self, value):
+        if not 0 <= value <= 0xffff:
+            raise ValueError("Out of range")
+        self._seesaw.analog_write(self._pin, value)
+        self._dc = value
+
+
+
 class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
 
@@ -294,6 +327,9 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
         else:
             self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
+
+    def get_pwm(self, pin):
+        return PWMChannel(self, pin)
 
     def analog_write(self, pin, value):
         if self.variant == SEESAW_CRCKIT:
