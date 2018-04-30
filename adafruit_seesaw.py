@@ -62,6 +62,7 @@ _INTERRUPT_BASE = const(0x0B)
 _DAP_BASE = const(0x0C)
 _EEPROM_BASE = const(0x0D)
 _NEOPIXEL_BASE = const(0x0E)
+_TOUCH_BASE = const(0x0F)
 
 _GPIO_DIRSET_BULK = const(0x02)
 _GPIO_DIRCLR_BULK = const(0x03)
@@ -82,6 +83,7 @@ _STATUS_SWRST = const(0x7F)
 
 _TIMER_STATUS = const(0x00)
 _TIMER_PWM = const(0x01)
+_TIMER_FREQ = const(0x02)
 
 _ADC_STATUS = const(0x00)
 _ADC_INTEN = const(0x02)
@@ -103,18 +105,54 @@ _NEOPIXEL_BUF_LENGTH = const(0x03)
 _NEOPIXEL_BUF = const(0x04)
 _NEOPIXEL_SHOW = const(0x05)
 
+_TOUCH_CHANNEL_OFFSET = const(0x10)
+
 _ADC_INPUT_0_PIN = const(0x02)
 _ADC_INPUT_1_PIN = const(0x03)
 _ADC_INPUT_2_PIN = const(0x04)
 _ADC_INPUT_3_PIN = const(0x05)
+
+_ADC_INPUT_0_PIN_CRCKIT = const(2)
+_ADC_INPUT_1_PIN_CRCKIT = const(3)
+_ADC_INPUT_2_PIN_CRCKIT = const(40)
+_ADC_INPUT_3_PIN_CRCKIT = const(41)
+_ADC_INPUT_4_PIN_CRCKIT = const(11)
+_ADC_INPUT_5_PIN_CRCKIT = const(10)
+_ADC_INPUT_6_PIN_CRCKIT = const(9)
+_ADC_INPUT_7_PIN_CRCKIT = const(8)
 
 _PWM_0_PIN = const(0x04)
 _PWM_1_PIN = const(0x05)
 _PWM_2_PIN = const(0x06)
 _PWM_3_PIN = const(0x07)
 
+_CRCKIT_S4 = const(14)
+_CRCKIT_S3 = const(15)
+_CRCKIT_S2 = const(16)
+_CRCKIT_S1 = const(17)
+
+_CRCKIT_M1_A1 = const(18)
+_CRCKIT_M1_A2 = const(19)
+_CRCKIT_M1_B1 = const(22)
+_CRCKIT_M1_B2 = const(23)
+_CRCKIT_DRIVE1 = const(42)
+_CRCKIT_DRIVE2 = const(43)
+_CRCKIT_DRIVE3 = const(12)
+_CRCKIT_DRIVE4 = const(13)
+
+_CRCKIT_CT1 = const(0)
+_CRCKIT_CT2 = const(1)
+_CRCKIT_CT3 = const(2)
+_CRCKIT_CT4 = const(3)
+
 _HW_ID_CODE = const(0x55)
 _EEPROM_I2C_ADDR = const(0x3F)
+
+SEESAW_SAMD09 = const(0x00)
+SEESAW_CRCKIT = const(0x01)
+
+#TODO: update when we get real PID
+_CRCKIT_PID = const(9999)
 
 class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
@@ -141,6 +179,12 @@ class Seesaw:
                                "correct! Expected {:x}. Please check your wiring."
                                .format(chip_id, _HW_ID_CODE))
 
+        pid = self.get_version() >> 16
+        if(pid == _CRCKIT_PID):
+            self.variant = SEESAW_CRCKIT
+        else:
+            self.variant = SEESAW_SAMD09
+
     def get_options(self):
         buf = bytearray(4)
         self.read(_STATUS_BASE, _STATUS_OPTIONS, buf, 4)
@@ -154,10 +198,16 @@ class Seesaw:
         return ret
 
     def pin_mode(self, pin, mode):
-        self.pin_mode_bulk(1 << pin, mode)
+        if pin >= 32:
+            self.pin_mode_bulk_b(1 << (pin - 32), mode)
+        else:
+            self.pin_mode_bulk(1 << pin, mode)
 
     def digital_write(self, pin, value):
-        self.digital_write_bulk(1 << pin, value)
+        if pin >= 32:
+            self.digital_write_bulk_b(1 << (pin - 32), value)
+        else:
+            self.digital_write_bulk(1 << pin, value)
 
     def digital_read(self, pin):
         return self.digital_read_bulk((1 << pin)) != 0
@@ -178,7 +228,12 @@ class Seesaw:
 
     def analog_read(self, pin):
         buf = bytearray(2)
-        pin_mapping = [_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
+        if self.variant == SEESAW_CRCKIT:
+            pin_mapping = [_ADC_INPUT_0_PIN_CRCKIT, _ADC_INPUT_1_PIN_CRCKIT, _ADC_INPUT_2_PIN_CRCKIT,
+                _ADC_INPUT_3_PIN_CRCKIT, _ADC_INPUT_4_PIN_CRCKIT, _ADC_INPUT_5_PIN_CRCKIT,
+                _ADC_INPUT_6_PIN_CRCKIT, _ADC_INPUT_7_PIN_CRCKIT]
+        else:
+            pin_mapping = [_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
                        _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN]
 
         if pin not in pin_mapping:
@@ -189,8 +244,32 @@ class Seesaw:
         time.sleep(.001)
         return ret
 
+    def touch_read(self, pin):
+        buf = bytearray(2)
+
+        pin_mapping = [_CRCKIT_CT1, _CRCKIT_CT2, _CRCKIT_CT3, _CRCKIT_CT4]
+
+        if pin not in pin_mapping:
+            raise ValueError("Invalid touch pin")
+
+        self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET + pin_mapping.index(pin), buf)
+        ret = (buf[0] << 8) | buf[1]
+        return ret
+
     def pin_mode_bulk(self, pins, mode):
         cmd = bytearray([(pins >> 24), (pins >> 16), (pins >> 8), pins])
+        if mode == self.OUTPUT:
+            self.write(_GPIO_BASE, _GPIO_DIRSET_BULK, cmd)
+        elif mode == self.INPUT:
+            self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
+
+        elif mode == self.INPUT_PULLUP:
+            self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
+            self.write(_GPIO_BASE, _GPIO_PULLENSET, cmd)
+            self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
+
+    def pin_mode_bulk_b(self, pins, mode):
+        cmd = bytearray([0, 0, 0, 0, (pins >> 24), (pins >> 16), (pins >> 8), pins])
         if mode == self.OUTPUT:
             self.write(_GPIO_BASE, _GPIO_DIRSET_BULK, cmd)
         elif mode == self.INPUT:
@@ -208,11 +287,41 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
 
+
+    def digital_write_bulk_b(self, pins, value):
+        cmd = bytearray([0, 0, 0, 0, (pins >> 24), (pins >> 16), (pins >> 8), pins])
+        if value:
+            self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
+        else:
+            self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
+
     def analog_write(self, pin, value):
-        pin_mapping = [_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN]
+        if self.variant == SEESAW_CRCKIT:
+            pin_mapping = [_CRCKIT_S4, _CRCKIT_S3, _CRCKIT_S2, _CRCKIT_S1,
+                _CRCKIT_M1_A1, _CRCKIT_M1_A2, _CRCKIT_M1_B1,
+                _CRCKIT_M1_B2, _CRCKIT_DRIVE1, _CRCKIT_DRIVE2,
+                _CRCKIT_DRIVE3, _CRCKIT_DRIVE4]
+            if pin in pin_mapping:
+                cmd = bytearray([pin_mapping.index(pin), (value >> 8), value])
+                self.write(_TIMER_BASE, _TIMER_PWM, cmd)
+        else:
+            pin_mapping = [_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN]
+            if pin in pin_mapping:
+                cmd = bytearray([pin_mapping.index(pin), value])
+                self.write(_TIMER_BASE, _TIMER_PWM, cmd)
+
+    def set_pwm_freq(self, pin, freq):
+        if self.variant == SEESAW_CRCKIT:
+            pin_mapping = [_CRCKIT_S4, _CRCKIT_S3, _CRCKIT_S2, _CRCKIT_S1,
+                _CRCKIT_M1_A1, _CRCKIT_M1_A2, _CRCKIT_M1_B1,
+                _CRCKIT_M1_B2, _CRCKIT_DRIVE1, _CRCKIT_DRIVE2,
+                _CRCKIT_DRIVE3, _CRCKIT_DRIVE4]
+        else:
+            pin_mapping = [_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN]
+
         if pin in pin_mapping:
-            cmd = bytearray([pin_mapping.index(pin), value])
-            self.write(_TIMER_BASE, _TIMER_PWM, cmd)
+            cmd = bytearray([pin_mapping.index(pin), (freq >> 8), freq])
+            self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
 
     # def enable_sercom_data_rdy_interrupt(self, sercom):
     #
