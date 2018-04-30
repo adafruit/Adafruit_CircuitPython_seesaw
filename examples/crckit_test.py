@@ -18,6 +18,9 @@ pwm3 = ss.get_pwm(15)
 pwm4 = ss.get_pwm(14)
 
 pwm1.frequency = 50
+pwm2.frequency = 50
+pwm3.frequency = 50
+pwm4.frequency = 50
 
 S1 = servo.Servo(pwm1)
 S2 = servo.Servo(pwm2)
