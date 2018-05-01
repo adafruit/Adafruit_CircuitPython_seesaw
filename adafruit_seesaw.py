@@ -50,6 +50,7 @@ import time
 
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
+import digitalio
 
 _STATUS_BASE = const(0x00)
 _GPIO_BASE = const(0x01)
@@ -154,6 +155,102 @@ SEESAW_CRCKIT = const(0x01)
 #TODO: update when we get real PID
 _CRCKIT_PID = const(9999)
 
+class DigitalIO:
+    def __init__(self, seesaw, pin):
+        self._seesaw = seesaw
+        self._pin = pin
+        self._drive_mode = digitalio.DriveMode.PUSH_PULL
+        self._direction = False
+        self._pull = None
+        self._value = False
+
+    def deinit(self):
+        pass
+
+    def switch_to_output(self, value=False, drive_mode=digitalio.DriveMode.PUSH_PULL):
+        self._seesaw.pin_mode(self._pin, self._seesaw.OUTPUT)
+        self._seesaw.digital_write(self._pin, value)
+        self._drive_mode = drive_mode
+        self._pull = None
+
+    def switch_to_input(self, pull=None):
+        if pull == digitalio.Pull.DOWN:
+            raise ValueError("Pull Down currently not supported")
+        elif pull == digitalio.Pull.UP:
+            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
+        else:
+            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
+        self._pull = pull
+
+    @property
+    def direction(self):
+        return self._direction
+
+    @direction.setter
+    def direction(self, value):
+        if value == digitalio.Direction.OUTPUT:
+            self.switch_to_output()
+        elif value == digitalio.Direction.INPUT:
+            self.switch_to_input()
+        else:
+            raise ValueError("Out of range")
+        self._direction = value
+
+    @property
+    def value(self):
+        if self._direction == digitalio.Direction.OUTPUT:
+            return self._value
+        else:
+            return self._seesaw.digital_read(self._pin)
+
+    @value.setter
+    def value(self, val):
+        if not 0 <= val <= 1:
+            raise ValueError("Out of range")
+        self._seesaw.digital_write(self._pin, val)
+        self._value = val
+
+    @property
+    def drive_mode(self):
+        return self._drive_mode
+
+    @drive_mode.setter
+    def drive_mode(self, mode):
+        pass
+
+    @property
+    def pull(self):
+        return self._pull
+
+    @pull.setter
+    def pull(self, mode):
+        if self._direction == digitalio.Direction.OUTPUT:
+            raise AttributeError("cannot set pull on an output pin")
+        elif mode == digitalio.Pull.DOWN:
+            raise ValueError("Pull Down currently not supported")
+        elif mode == digitalio.Pull.UP:
+            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
+        elif mode == None:
+            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
+        else:
+            raise ValueError("Out of range")
+
+class AnalogInput:
+    def __init__(self, seesaw, pin):
+        self._seesaw = seesaw
+        self._pin = pin
+
+    def deinit(self):
+        pass
+
+    @property
+    def value(self):
+        return self._seesaw.analog_read(self._pin)
+
+    @property
+    def reference_voltage(self):
+        return 3.3
+
 class PWMChannel:
     """A single seesaw channel that matches the :py:class:`~pulseio.PWMOut` API."""
     def __init__(self, seesaw, pin):
@@ -196,7 +293,11 @@ class Seesaw:
     OUTPUT = const(0x01)
     INPUT_PULLUP = const(0x02)
 
-    def __init__(self, i2c_bus, addr=0x49):
+    def __init__(self, i2c_bus, addr=0x49, drdy=None):
+        self._drdy = drdy
+        if drdy != None:
+            drdy.switch_to_input()
+
         self.i2c_device = I2CDevice(i2c_bus, addr)
         self.sw_reset()
 
@@ -208,8 +309,8 @@ class Seesaw:
         chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
 
         if chip_id != _HW_ID_CODE:
-            raise RuntimeError("Seesaw hardware ID returned ({:x}) is not "
-                               "correct! Expected {:x}. Please check your wiring."
+            raise RuntimeError("Seesaw hardware ID returned (0x{:x}) is not "
+                               "correct! Expected 0x{:x}. Please check your wiring."
                                .format(chip_id, _HW_ID_CODE))
 
         pid = self.get_version() >> 16
@@ -230,6 +331,9 @@ class Seesaw:
         ret = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]
         return ret
 
+    def get_digitalio(self, pin):
+        return DigitalIO(self, pin)
+
     def pin_mode(self, pin, mode):
         if pin >= 32:
             self.pin_mode_bulk_b(1 << (pin - 32), mode)
@@ -243,7 +347,10 @@ class Seesaw:
             self.digital_write_bulk(1 << pin, value)
 
     def digital_read(self, pin):
-        return self.digital_read_bulk((1 << pin)) != 0
+        if pin >= 32:
+            return self.digital_read_bulk_b((1 << (pin - 32))) != 0
+        else:
+            return self.digital_read_bulk((1 << pin)) != 0
 
     def digital_read_bulk(self, pins):
         buf = bytearray(4)
@@ -252,12 +359,23 @@ class Seesaw:
         ret = ((buf[0] & 0xF) << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]
         return ret & pins
 
+    def digital_read_bulk_b(self, pins):
+        buf = bytearray(8)
+        self.read(_GPIO_BASE, _GPIO_BULK, buf)
+        #TODO: weird overflow error, fix
+        ret = ((buf[4] & 0xF) << 24) | (buf[5] << 16) | (buf[6] << 8) | buf[7]
+        return ret & pins
+
+
     def set_GPIO_interrupts(self, pins, enabled):
         cmd = bytearray([(pins >> 24), (pins >> 16), (pins >> 8), pins])
         if enabled:
             self.write(_GPIO_BASE, _GPIO_INTENSET, cmd)
         else:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
+
+    def get_analog_in(self, pin):
+        return AnalogInput(self, pin)
 
     def analog_read(self, pin):
         buf = bytearray(2)
@@ -408,7 +526,11 @@ class Seesaw:
 
     def read(self, reg_base, reg, buf, delay=.001):
         self.write(reg_base, reg)
-        time.sleep(delay)
+        if self._drdy != None:
+            while self._drdy.value == False:
+                pass
+        else:
+            time.sleep(delay)
         with self.i2c_device as i2c:
             i2c.readinto(buf)
 
@@ -417,5 +539,8 @@ class Seesaw:
         if buf is not None:
             full_buffer += buf
 
+        if self._drdy != None:
+            while self._drdy.value == False:
+                pass
         with self.i2c_device as i2c:
             i2c.write(full_buffer)
