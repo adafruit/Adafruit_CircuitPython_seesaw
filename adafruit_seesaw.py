@@ -262,8 +262,8 @@ class Seesaw:
     def analog_read(self, pin):
         buf = bytearray(2)
         if self.variant == SEESAW_CRCKIT:
-            pin_mapping = [_ADC_INPUT_0_PIN_CRCKIT, _ADC_INPUT_1_PIN_CRCKIT, 
-                           _ADC_INPUT_2_PIN_CRCKIT, _ADC_INPUT_3_PIN_CRCKIT, 
+            pin_mapping = [_ADC_INPUT_0_PIN_CRCKIT, _ADC_INPUT_1_PIN_CRCKIT,
+                           _ADC_INPUT_2_PIN_CRCKIT, _ADC_INPUT_3_PIN_CRCKIT,
                            _ADC_INPUT_4_PIN_CRCKIT, _ADC_INPUT_5_PIN_CRCKIT,
                            _ADC_INPUT_6_PIN_CRCKIT, _ADC_INPUT_7_PIN_CRCKIT]
         else:
