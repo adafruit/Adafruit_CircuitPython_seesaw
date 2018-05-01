@@ -1,5 +1,3 @@
-import time
-
 from board import SCL, SDA
 import busio
 import adafruit_seesaw
@@ -67,7 +65,7 @@ while True:
         str_out = ""
         for i in range(8):
             val = ss.analog_read(CRCKit_adc[i]) * 3.3/1024
-            str_out = str_out + str(round(val,2)) + "\t"
+            str_out = str_out + str(round(val, 2)) + "\t"
 
         print(str_out + "\n")
 
