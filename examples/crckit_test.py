@@ -3,8 +3,8 @@ import busio
 import adafruit_seesaw
 from adafruit_motor import servo
 
-from analogio import AnalogOut
-import board
+#from analogio import AnalogOut
+#import board
 
 i2c_bus = busio.I2C(SCL, SDA)
 
