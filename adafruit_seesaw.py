@@ -263,11 +263,11 @@ class Seesaw:
         buf = bytearray(2)
         if self.variant == SEESAW_CRCKIT:
             pin_mapping = [_ADC_INPUT_0_PIN_CRCKIT, _ADC_INPUT_1_PIN_CRCKIT, _ADC_INPUT_2_PIN_CRCKIT,
-                _ADC_INPUT_3_PIN_CRCKIT, _ADC_INPUT_4_PIN_CRCKIT, _ADC_INPUT_5_PIN_CRCKIT,
-                _ADC_INPUT_6_PIN_CRCKIT, _ADC_INPUT_7_PIN_CRCKIT]
+                           _ADC_INPUT_3_PIN_CRCKIT, _ADC_INPUT_4_PIN_CRCKIT, _ADC_INPUT_5_PIN_CRCKIT,
+                           _ADC_INPUT_6_PIN_CRCKIT, _ADC_INPUT_7_PIN_CRCKIT]
         else:
             pin_mapping = [_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
-                       _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN]
+                           _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN]
 
         if pin not in pin_mapping:
             raise ValueError("Invalid ADC pin")
@@ -334,9 +334,9 @@ class Seesaw:
     def analog_write(self, pin, value):
         if self.variant == SEESAW_CRCKIT:
             pin_mapping = [_CRCKIT_S4, _CRCKIT_S3, _CRCKIT_S2, _CRCKIT_S1,
-                _CRCKIT_M1_A1, _CRCKIT_M1_A2, _CRCKIT_M1_B1,
-                _CRCKIT_M1_B2, _CRCKIT_DRIVE1, _CRCKIT_DRIVE2,
-                _CRCKIT_DRIVE3, _CRCKIT_DRIVE4]
+                           _CRCKIT_M1_A1, _CRCKIT_M1_A2, _CRCKIT_M1_B1,
+                           _CRCKIT_M1_B2, _CRCKIT_DRIVE1, _CRCKIT_DRIVE2,
+                           _CRCKIT_DRIVE3, _CRCKIT_DRIVE4]
             if pin in pin_mapping:
                 cmd = bytearray([pin_mapping.index(pin), (value >> 8), value])
                 self.write(_TIMER_BASE, _TIMER_PWM, cmd)
@@ -349,9 +349,9 @@ class Seesaw:
     def set_pwm_freq(self, pin, freq):
         if self.variant == SEESAW_CRCKIT:
             pin_mapping = [_CRCKIT_S4, _CRCKIT_S3, _CRCKIT_S2, _CRCKIT_S1,
-                _CRCKIT_M1_A1, _CRCKIT_M1_A2, _CRCKIT_M1_B1,
-                _CRCKIT_M1_B2, _CRCKIT_DRIVE1, _CRCKIT_DRIVE2,
-                _CRCKIT_DRIVE3, _CRCKIT_DRIVE4]
+                           _CRCKIT_M1_A1, _CRCKIT_M1_A2, _CRCKIT_M1_B1,
+                           _CRCKIT_M1_B2, _CRCKIT_DRIVE1, _CRCKIT_DRIVE2,
+                           _CRCKIT_DRIVE3, _CRCKIT_DRIVE4]
         else:
             pin_mapping = [_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN]
 
