@@ -200,8 +200,7 @@ class DigitalIO:
     def value(self):
         if self._direction == digitalio.Direction.OUTPUT:
             return self._value
-        else:
-            return self._seesaw.digital_read(self._pin)
+        return self._seesaw.digital_read(self._pin)
 
     @value.setter
     def value(self, val):
@@ -230,7 +229,7 @@ class DigitalIO:
             raise ValueError("Pull Down currently not supported")
         elif mode == digitalio.Pull.UP:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
-        elif mode == None:
+        elif mode is None:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
         else:
             raise ValueError("Out of range")
@@ -349,8 +348,7 @@ class Seesaw:
     def digital_read(self, pin):
         if pin >= 32:
             return self.digital_read_bulk_b((1 << (pin - 32))) != 0
-        else:
-            return self.digital_read_bulk((1 << pin)) != 0
+        return self.digital_read_bulk((1 << pin)) != 0
 
     def digital_read_bulk(self, pins):
         buf = bytearray(4)
@@ -527,7 +525,7 @@ class Seesaw:
     def read(self, reg_base, reg, buf, delay=.001):
         self.write(reg_base, reg)
         if self._drdy != None:
-            while self._drdy.value == False:
+            while self._drdy.value is False:
                 pass
         else:
             time.sleep(delay)
@@ -540,7 +538,7 @@ class Seesaw:
             full_buffer += buf
 
         if self._drdy != None:
-            while self._drdy.value == False:
+            while self._drdy.value is False:
                 pass
         with self.i2c_device as i2c:
             i2c.write(full_buffer)
