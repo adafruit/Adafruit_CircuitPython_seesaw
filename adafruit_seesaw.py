@@ -51,6 +51,7 @@ import time
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
 import digitalio
+import struct
 
 _STATUS_BASE = const(0x00)
 _GPIO_BASE = const(0x01)
@@ -200,7 +201,8 @@ class DigitalIO:
     def value(self):
         if self._direction == digitalio.Direction.OUTPUT:
             return self._value
-        return self._seesaw.digital_read(self._pin)
+        else:
+            return self._seesaw.digital_read(self._pin)
 
     @value.setter
     def value(self, val):
@@ -229,7 +231,7 @@ class DigitalIO:
             raise ValueError("Pull Down currently not supported")
         elif mode == digitalio.Pull.UP:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
-        elif mode is None:
+        elif mode == None:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
         else:
             raise ValueError("Out of range")
@@ -421,8 +423,10 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
 
-    def get_neopixel(self, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):
-        return SeesawNeopixel(self, pin, n)
+    def get_neopixel(self, pin, n, bpp=3, brightness=1.0, auto_write=True, 
+                     pixel_order=None):
+        return SeesawNeopixel(self, pin, n, bpp=bpp, brightness=brightness, 
+                              auto_write=auto_write, pixel_order=pixel_order)
 
     def get_analog_in(self, pin):
         return AnalogInput(self, pin)
@@ -579,7 +583,7 @@ class Seesaw:
     def read(self, reg_base, reg, buf, delay=.001):
         self.write(reg_base, reg)
         if self._drdy != None:
-            while self._drdy.value is False:
+            while self._drdy.value == False:
                 pass
         else:
             time.sleep(delay)
@@ -592,7 +596,7 @@ class Seesaw:
             full_buffer += buf
 
         if self._drdy != None:
-            while self._drdy.value is False:
+            while self._drdy.value == False:
                 pass
         with self.i2c_device as i2c:
             i2c.write(full_buffer)
