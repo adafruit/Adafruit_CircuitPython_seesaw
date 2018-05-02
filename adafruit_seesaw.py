@@ -281,7 +281,57 @@ class PWMChannel:
         self._seesaw.analog_write(self._pin, value)
         self._dc = value
 
+class SeesawNeopixel:
+    def __init__(self, seesaw, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):
+        self._seesaw = seesaw
+        self._pin = pin
+        self._bpp = bpp
+        self._auto_write = auto_write
+        self._pixel_order = pixel_order
+        self._n = n
 
+        cmd = bytearray([pin])
+        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_PIN, cmd)
+        cmd = struct.pack(">H", n*self._bpp)
+        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF_LENGTH, cmd)
+
+    @property
+    def brightness(self):
+        pass
+
+    @brightness.setter
+    def brightness(self, value):
+        pass
+
+    def deinit(self):
+        pass
+
+    def __len__(self):
+        return self._n
+
+    def __setitem__(self, key, value):
+        cmd = bytearray(6)
+        cmd[:2] = struct.pack(">H", key * self._bpp)
+        cmd[2:] = struct.pack(">I", value)
+        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, cmd)
+        if self._auto_write:
+            self.show()
+
+    def __getitem__(self, key):
+        pass
+
+    def fill(self, color):
+        cmd = bytearray(self._n*self._bpp+2)
+        for i in range(self._n):
+            cmd[self._bpp*i+2:] = struct.pack(">I", color)
+
+        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, cmd)
+
+        if self._auto_write:
+            self.show()
+
+    def show(self):
+        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)
 
 class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
@@ -321,13 +371,13 @@ class Seesaw:
     def get_options(self):
         buf = bytearray(4)
         self.read(_STATUS_BASE, _STATUS_OPTIONS, buf, 4)
-        ret = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]
+        ret = struct.unpack(">I", buf)[0]
         return ret
 
     def get_version(self):
         buf = bytearray(4)
         self.read(_STATUS_BASE, _STATUS_VERSION, buf, 4)
-        ret = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]
+        ret = struct.unpack(">I", buf)[0]
         return ret
 
     def get_digitalio(self, pin):
@@ -348,29 +398,31 @@ class Seesaw:
     def digital_read(self, pin):
         if pin >= 32:
             return self.digital_read_bulk_b((1 << (pin - 32))) != 0
-        return self.digital_read_bulk((1 << pin)) != 0
+        else:
+            return self.digital_read_bulk((1 << pin)) != 0
 
     def digital_read_bulk(self, pins):
         buf = bytearray(4)
         self.read(_GPIO_BASE, _GPIO_BULK, buf)
-        #TODO: weird overflow error, fix
-        ret = ((buf[0] & 0xF) << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]
+        ret = struct.unpack(">I", buf)[0]
         return ret & pins
 
     def digital_read_bulk_b(self, pins):
         buf = bytearray(8)
         self.read(_GPIO_BASE, _GPIO_BULK, buf)
-        #TODO: weird overflow error, fix
-        ret = ((buf[4] & 0xF) << 24) | (buf[5] << 16) | (buf[6] << 8) | buf[7]
+        ret = struct.unpack(">II", buf)[1]
         return ret & pins
 
 
     def set_GPIO_interrupts(self, pins, enabled):
-        cmd = bytearray([(pins >> 24), (pins >> 16), (pins >> 8), pins])
+        cmd = struct.pack(">I", pins)
         if enabled:
             self.write(_GPIO_BASE, _GPIO_INTENSET, cmd)
         else:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
+
+    def get_neopixel(self, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):
+        return SeesawNeopixel(self, pin, n)
 
     def get_analog_in(self, pin):
         return AnalogInput(self, pin)
@@ -390,7 +442,7 @@ class Seesaw:
             raise ValueError("Invalid ADC pin")
 
         self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + pin_mapping.index(pin), buf)
-        ret = (buf[0] << 8) | buf[1]
+        ret = struct.unpack(">H", buf)[0]
         time.sleep(.001)
         return ret
 
@@ -403,11 +455,11 @@ class Seesaw:
             raise ValueError("Invalid touch pin")
 
         self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET + pin_mapping.index(pin), buf)
-        ret = (buf[0] << 8) | buf[1]
+        ret = struct.unpack(">H", buf)[0]
         return ret
 
     def pin_mode_bulk(self, pins, mode):
-        cmd = bytearray([(pins >> 24), (pins >> 16), (pins >> 8), pins])
+        cmd = struct.pack(">I", pins)
         if mode == self.OUTPUT:
             self.write(_GPIO_BASE, _GPIO_DIRSET_BULK, cmd)
         elif mode == self.INPUT:
@@ -419,7 +471,8 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
 
     def pin_mode_bulk_b(self, pins, mode):
-        cmd = bytearray([0, 0, 0, 0, (pins >> 24), (pins >> 16), (pins >> 8), pins])
+        cmd = bytearray(8)
+        cmd[4:] = struct.pack(">I", pins)
         if mode == self.OUTPUT:
             self.write(_GPIO_BASE, _GPIO_DIRSET_BULK, cmd)
         elif mode == self.INPUT:
@@ -431,7 +484,7 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
 
     def digital_write_bulk(self, pins, value):
-        cmd = bytearray([(pins >> 24), (pins >> 16), (pins >> 8), pins])
+        cmd = struct.pack(">I", pins)
         if value:
             self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
         else:
@@ -439,7 +492,8 @@ class Seesaw:
 
 
     def digital_write_bulk_b(self, pins, value):
-        cmd = bytearray([0, 0, 0, 0, (pins >> 24), (pins >> 16), (pins >> 8), pins])
+        cmd = bytearray(8)
+        cmd[4:] = struct.pack(">I", pins)
         if value:
             self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
         else:
@@ -511,7 +565,7 @@ class Seesaw:
         return self.read8(_EEPROM_BASE, addr)
 
     def uart_set_baud(self, baud):
-        cmd = bytearray([(baud >> 24), (baud >> 16), (baud >> 8), baud])
+        cmd = struct.pack(">I", baud)
         self.write(_SERCOM0_BASE, _SERCOM_BAUD, cmd)
 
     def write8(self, reg_base, reg, value):
