@@ -48,10 +48,10 @@ Implementation Notes
 
 import time
 
+import struct
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
 import digitalio
-import struct
 
 _STATUS_BASE = const(0x00)
 _GPIO_BASE = const(0x01)
@@ -201,8 +201,7 @@ class DigitalIO:
     def value(self):
         if self._direction == digitalio.Direction.OUTPUT:
             return self._value
-        else:
-            return self._seesaw.digital_read(self._pin)
+        return self._seesaw.digital_read(self._pin)
 
     @value.setter
     def value(self, val):
@@ -231,7 +230,7 @@ class DigitalIO:
             raise ValueError("Pull Down currently not supported")
         elif mode == digitalio.Pull.UP:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
-        elif mode == None:
+        elif mode is None:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
         else:
             raise ValueError("Out of range")
@@ -291,6 +290,7 @@ class SeesawNeopixel:
         self._auto_write = auto_write
         self._pixel_order = pixel_order
         self._n = n
+        self._brightness = brightness
 
         cmd = bytearray([pin])
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_PIN, cmd)
@@ -400,8 +400,7 @@ class Seesaw:
     def digital_read(self, pin):
         if pin >= 32:
             return self.digital_read_bulk_b((1 << (pin - 32))) != 0
-        else:
-            return self.digital_read_bulk((1 << pin)) != 0
+        return self.digital_read_bulk((1 << pin)) != 0
 
     def digital_read_bulk(self, pins):
         buf = bytearray(4)
@@ -423,9 +422,9 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
 
-    def get_neopixel(self, pin, n, bpp=3, brightness=1.0, auto_write=True, 
+    def get_neopixel(self, pin, n, bpp=3, brightness=1.0, auto_write=True,
                      pixel_order=None):
-        return SeesawNeopixel(self, pin, n, bpp=bpp, brightness=brightness, 
+        return SeesawNeopixel(self, pin, n, bpp=bpp, brightness=brightness,
                               auto_write=auto_write, pixel_order=pixel_order)
 
     def get_analog_in(self, pin):
@@ -582,7 +581,7 @@ class Seesaw:
 
     def read(self, reg_base, reg, buf, delay=.001):
         self.write(reg_base, reg)
-        if self._drdy != None:
+        if self._drdy is not None:
             while self._drdy.value == False:
                 pass
         else:
@@ -595,7 +594,7 @@ class Seesaw:
         if buf is not None:
             full_buffer += buf
 
-        if self._drdy != None:
+        if self._drdy is not None:
             while self._drdy.value == False:
                 pass
         with self.i2c_device as i2c:
