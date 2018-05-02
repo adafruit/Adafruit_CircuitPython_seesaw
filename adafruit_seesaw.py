@@ -583,7 +583,7 @@ class Seesaw:
     def read(self, reg_base, reg, buf, delay=.001):
         self.write(reg_base, reg)
         if self._drdy is not None:
-            while self._drdy.value == False:
+            while self._drdy.value is False:
                 pass
         else:
             time.sleep(delay)
@@ -596,7 +596,7 @@ class Seesaw:
             full_buffer += buf
 
         if self._drdy is not None:
-            while self._drdy.value == False:
+            while self._drdy.value is False:
                 pass
         with self.i2c_device as i2c:
             i2c.write(full_buffer)
