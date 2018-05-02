@@ -422,6 +422,7 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
 
+    #pylint: disable-msg=too-many-arguments
     def get_neopixel(self, pin, n, bpp=3, brightness=1.0, auto_write=True,
                      pixel_order=None):
         return SeesawNeopixel(self, pin, n, bpp=bpp, brightness=brightness,
