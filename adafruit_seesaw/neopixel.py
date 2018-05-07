@@ -88,3 +88,4 @@ class Neopixel:
 
     def show(self):
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)
+        
