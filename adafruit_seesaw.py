@@ -375,13 +375,13 @@ class Seesaw:
 
     def get_options(self):
         buf = bytearray(4)
-        self.read(_STATUS_BASE, _STATUS_OPTIONS, buf, 4)
+        self.read(_STATUS_BASE, _STATUS_OPTIONS, buf)
         ret = struct.unpack(">I", buf)[0]
         return ret
 
     def get_version(self):
         buf = bytearray(4)
-        self.read(_STATUS_BASE, _STATUS_VERSION, buf, 4)
+        self.read(_STATUS_BASE, _STATUS_VERSION, buf)
         ret = struct.unpack(">I", buf)[0]
         return ret
 
