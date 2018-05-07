@@ -54,7 +54,6 @@ except ImportError:
     import ustruct as struct
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
-import digitalio
 
 _STATUS_BASE = const(0x00)
 _GPIO_BASE = const(0x01)
@@ -112,231 +111,11 @@ _NEOPIXEL_SHOW = const(0x05)
 
 _TOUCH_CHANNEL_OFFSET = const(0x10)
 
-_ADC_INPUT_0_PIN = const(0x02)
-_ADC_INPUT_1_PIN = const(0x03)
-_ADC_INPUT_2_PIN = const(0x04)
-_ADC_INPUT_3_PIN = const(0x05)
-
-_ADC_INPUT_0_PIN_CRICKIT = const(2)
-_ADC_INPUT_1_PIN_CRICKIT = const(3)
-_ADC_INPUT_2_PIN_CRICKIT = const(40)
-_ADC_INPUT_3_PIN_CRICKIT = const(41)
-_ADC_INPUT_4_PIN_CRICKIT = const(11)
-_ADC_INPUT_5_PIN_CRICKIT = const(10)
-_ADC_INPUT_6_PIN_CRICKIT = const(9)
-_ADC_INPUT_7_PIN_CRICKIT = const(8)
-
-_PWM_0_PIN = const(0x04)
-_PWM_1_PIN = const(0x05)
-_PWM_2_PIN = const(0x06)
-_PWM_3_PIN = const(0x07)
-
-_CRICKIT_S4 = const(14)
-_CRICKIT_S3 = const(15)
-_CRICKIT_S2 = const(16)
-_CRICKIT_S1 = const(17)
-
-_CRICKIT_M1_A1 = const(18)
-_CRICKIT_M1_A2 = const(19)
-_CRICKIT_M1_B1 = const(22)
-_CRICKIT_M1_B2 = const(23)
-_CRICKIT_DRIVE1 = const(42)
-_CRICKIT_DRIVE2 = const(43)
-_CRICKIT_DRIVE3 = const(12)
-_CRICKIT_DRIVE4 = const(13)
-
-_CRICKIT_CT1 = const(0)
-_CRICKIT_CT2 = const(1)
-_CRICKIT_CT3 = const(2)
-_CRICKIT_CT4 = const(3)
-
 _HW_ID_CODE = const(0x55)
 _EEPROM_I2C_ADDR = const(0x3F)
 
-SEESAW_SAMD09 = const(0x00)
-SEESAW_CRICKIT = const(0x01)
-
 #TODO: update when we get real PID
 _CRICKIT_PID = const(9999)
-
-class DigitalIO:
-    def __init__(self, seesaw, pin):
-        self._seesaw = seesaw
-        self._pin = pin
-        self._drive_mode = digitalio.DriveMode.PUSH_PULL
-        self._direction = False
-        self._pull = None
-        self._value = False
-
-    def deinit(self):
-        pass
-
-    def switch_to_output(self, value=False, drive_mode=digitalio.DriveMode.PUSH_PULL):
-        self._seesaw.pin_mode(self._pin, self._seesaw.OUTPUT)
-        self._seesaw.digital_write(self._pin, value)
-        self._drive_mode = drive_mode
-        self._pull = None
-
-    def switch_to_input(self, pull=None):
-        if pull == digitalio.Pull.DOWN:
-            raise ValueError("Pull Down currently not supported")
-        elif pull == digitalio.Pull.UP:
-            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
-        else:
-            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
-        self._pull = pull
-
-    @property
-    def direction(self):
-        return self._direction
-
-    @direction.setter
-    def direction(self, value):
-        if value == digitalio.Direction.OUTPUT:
-            self.switch_to_output()
-        elif value == digitalio.Direction.INPUT:
-            self.switch_to_input()
-        else:
-            raise ValueError("Out of range")
-        self._direction = value
-
-    @property
-    def value(self):
-        if self._direction == digitalio.Direction.OUTPUT:
-            return self._value
-        return self._seesaw.digital_read(self._pin)
-
-    @value.setter
-    def value(self, val):
-        if not 0 <= val <= 1:
-            raise ValueError("Out of range")
-        self._seesaw.digital_write(self._pin, val)
-        self._value = val
-
-    @property
-    def drive_mode(self):
-        return self._drive_mode
-
-    @drive_mode.setter
-    def drive_mode(self, mode):
-        pass
-
-    @property
-    def pull(self):
-        return self._pull
-
-    @pull.setter
-    def pull(self, mode):
-        if self._direction == digitalio.Direction.OUTPUT:
-            raise AttributeError("cannot set pull on an output pin")
-        elif mode == digitalio.Pull.DOWN:
-            raise ValueError("Pull Down currently not supported")
-        elif mode == digitalio.Pull.UP:
-            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
-        elif mode is None:
-            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
-        else:
-            raise ValueError("Out of range")
-
-class AnalogInput:
-    def __init__(self, seesaw, pin):
-        self._seesaw = seesaw
-        self._pin = pin
-
-    def deinit(self):
-        pass
-
-    @property
-    def value(self):
-        return self._seesaw.analog_read(self._pin)
-
-    @property
-    def reference_voltage(self):
-        return 3.3
-
-class PWMChannel:
-    """A single seesaw channel that matches the :py:class:`~pulseio.PWMOut` API."""
-    def __init__(self, seesaw, pin):
-        self._seesaw = seesaw
-        self._pin = pin
-        self._dc = 0
-        self._frequency = 0
-
-    @property
-    def frequency(self):
-        """The overall PWM frequency in herz."""
-        return self._frequency
-
-    @frequency.setter
-    def frequency(self, frequency):
-        self._seesaw.set_pwm_freq(self._pin, frequency)
-        self._frequency = frequency
-
-    @property
-    def duty_cycle(self):
-        """16 bit value that dictates how much of one cycle is high (1) versus low (0). 0xffff will
-           always be high, 0 will always be low and 0x7fff will be half high and then half low."""
-        return self._dc
-
-    @duty_cycle.setter
-    def duty_cycle(self, value):
-        if not 0 <= value <= 0xffff:
-            raise ValueError("Out of range")
-        self._seesaw.analog_write(self._pin, value)
-        self._dc = value
-
-class SeesawNeopixel:
-    def __init__(self, seesaw, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):
-        self._seesaw = seesaw
-        self._pin = pin
-        self._bpp = bpp
-        self._auto_write = auto_write
-        self._pixel_order = pixel_order
-        self._n = n
-        self._brightness = brightness
-
-        cmd = bytearray([pin])
-        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_PIN, cmd)
-        cmd = struct.pack(">H", n*self._bpp)
-        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF_LENGTH, cmd)
-
-    @property
-    def brightness(self):
-        pass
-
-    @brightness.setter
-    def brightness(self, value):
-        pass
-
-    def deinit(self):
-        pass
-
-    def __len__(self):
-        return self._n
-
-    def __setitem__(self, key, value):
-        cmd = bytearray(6)
-        cmd[:2] = struct.pack(">H", key * self._bpp)
-        cmd[2:] = struct.pack(">I", value)
-        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, cmd)
-        if self._auto_write:
-            self.show()
-
-    def __getitem__(self, key):
-        pass
-
-    def fill(self, color):
-        cmd = bytearray(self._n*self._bpp+2)
-        for i in range(self._n):
-            cmd[self._bpp*i+2:] = struct.pack(">I", color)
-
-        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, cmd)
-
-        if self._auto_write:
-            self.show()
-
-    def show(self):
-        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)
 
 class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
@@ -369,9 +148,11 @@ class Seesaw:
 
         pid = self.get_version() >> 16
         if pid == _CRICKIT_PID:
-            self.variant = SEESAW_CRICKIT
+            from adafruit_seesaw.crickit import Crickit_Pinmap
+            self.pin_mapping = Crickit_Pinmap
         else:
-            self.variant = SEESAW_SAMD09
+            from adafruit_seesaw.samd09 import SAMD09_Pinmap
+            self.pin_mapping = SAMD09_Pinmap
 
     def get_options(self):
         buf = bytearray(4)
@@ -384,9 +165,6 @@ class Seesaw:
         self.read(_STATUS_BASE, _STATUS_VERSION, buf)
         ret = struct.unpack(">I", buf)[0]
         return ret
-
-    def get_digitalio(self, pin):
-        return DigitalIO(self, pin)
 
     def pin_mode(self, pin, mode):
         if pin >= 32:
@@ -425,30 +203,12 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
 
-    #pylint: disable-msg=too-many-arguments
-    def get_neopixel(self, pin, n, bpp=3, brightness=1.0, auto_write=True,
-                     pixel_order=None):
-        return SeesawNeopixel(self, pin, n, bpp=bpp, brightness=brightness,
-                              auto_write=auto_write, pixel_order=pixel_order)
-
-    def get_analog_in(self, pin):
-        return AnalogInput(self, pin)
-
     def analog_read(self, pin):
         buf = bytearray(2)
-        if self.variant == SEESAW_CRICKIT:
-            pin_mapping = [_ADC_INPUT_0_PIN_CRICKIT, _ADC_INPUT_1_PIN_CRICKIT,
-                           _ADC_INPUT_2_PIN_CRICKIT, _ADC_INPUT_3_PIN_CRICKIT,
-                           _ADC_INPUT_4_PIN_CRICKIT, _ADC_INPUT_5_PIN_CRICKIT,
-                           _ADC_INPUT_6_PIN_CRICKIT, _ADC_INPUT_7_PIN_CRICKIT]
-        else:
-            pin_mapping = [_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
-                           _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN]
-
-        if pin not in pin_mapping:
+        if pin not in self.pin_mapping.analog_pins:
             raise ValueError("Invalid ADC pin")
 
-        self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + pin_mapping.index(pin), buf)
+        self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + self.pin_mapping.analog_pins.index(pin), buf)
         ret = struct.unpack(">H", buf)[0]
         time.sleep(.001)
         return ret
@@ -456,12 +216,10 @@ class Seesaw:
     def touch_read(self, pin):
         buf = bytearray(2)
 
-        pin_mapping = [_CRICKIT_CT1, _CRICKIT_CT2, _CRICKIT_CT3, _CRICKIT_CT4]
-
-        if pin not in pin_mapping:
+        if pin not in self.pin_mapping.touch_pins:
             raise ValueError("Invalid touch pin")
 
-        self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET + pin_mapping.index(pin), buf)
+        self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET + self.pin_mapping.touch_pins.index(pin), buf)
         ret = struct.unpack(">H", buf)[0]
         return ret
 
@@ -506,35 +264,19 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
 
-    def get_pwm(self, pin):
-        return PWMChannel(self, pin)
-
     def analog_write(self, pin, value):
-        if self.variant == SEESAW_CRICKIT:
-            pin_mapping = [_CRICKIT_S4, _CRICKIT_S3, _CRICKIT_S2, _CRICKIT_S1,
-                           _CRICKIT_M1_A1, _CRICKIT_M1_A2, _CRICKIT_M1_B1,
-                           _CRICKIT_M1_B2, _CRICKIT_DRIVE1, _CRICKIT_DRIVE2,
-                           _CRICKIT_DRIVE3, _CRICKIT_DRIVE4]
-            if pin in pin_mapping:
-                cmd = bytearray([pin_mapping.index(pin), (value >> 8), value])
+        if self.pin_mapping.pwm_width == 16:
+            if pin in self.pin_mapping.pwm_pins:
+                cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (value >> 8), value])
                 self.write(_TIMER_BASE, _TIMER_PWM, cmd)
         else:
-            pin_mapping = [_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN]
-            if pin in pin_mapping:
-                cmd = bytearray([pin_mapping.index(pin), value])
+            if pin in self.pin_mapping.pwm_pins:
+                cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), value])
                 self.write(_TIMER_BASE, _TIMER_PWM, cmd)
 
     def set_pwm_freq(self, pin, freq):
-        if self.variant == SEESAW_CRICKIT:
-            pin_mapping = [_CRICKIT_S4, _CRICKIT_S3, _CRICKIT_S2, _CRICKIT_S1,
-                           _CRICKIT_M1_A1, _CRICKIT_M1_A2, _CRICKIT_M1_B1,
-                           _CRICKIT_M1_B2, _CRICKIT_DRIVE1, _CRICKIT_DRIVE2,
-                           _CRICKIT_DRIVE3, _CRICKIT_DRIVE4]
-        else:
-            pin_mapping = [_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN]
-
-        if pin in pin_mapping:
-            cmd = bytearray([pin_mapping.index(pin), (freq >> 8), freq])
+        if pin in self.pin_mapping.pwm_pins:
+            cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (freq >> 8), freq])
             self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
 
     # def enable_sercom_data_rdy_interrupt(self, sercom):
