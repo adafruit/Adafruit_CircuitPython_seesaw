@@ -27,18 +27,18 @@ S4 = servo.Servo(pwm4)
 
 servos = [S1, S2, S3, S4]
 
-CRCKIT_NUM_ADC = 8
-CRCKit_adc = [2, 3, 40, 41, 11, 10, 9, 8]
+CRICKIT_NUM_ADC = 8
+CRICKIT_adc = [2, 3, 40, 41, 11, 10, 9, 8]
 
-CRCKIT_NUM_DRIVE = 4
-CRCKit_drive = [42, 43, 12, 13]
+CRICKIT_NUM_DRIVE = 4
+CRICKIT_drive = [42, 43, 12, 13]
 
 CAPTOUCH_THRESH = 500
 
-_CRCKIT_M1_A1 = 18
-_CRCKIT_M1_A2 = 19
-_CRCKIT_M1_B1 = 22
-_CRCKIT_M1_B2 = 23
+_CRICKIT_M1_A1 = 18
+_CRICKIT_M1_A2 = 19
+_CRICKIT_M1_B1 = 22
+_CRICKIT_M1_B2 = 23
 
 cap_state = [False, False, False, False]
 cap_justtouched = [False, False, False, False]
@@ -64,7 +64,7 @@ while True:
         print("-------------------- analog -----------------------")
         str_out = ""
         for i in range(8):
-            val = ss.analog_read(CRCKit_adc[i]) * 3.3/1024
+            val = ss.analog_read(CRICKIT_adc[i]) * 3.3/1024
             str_out = str_out + str(round(val, 2)) + "\t"
 
         print(str_out + "\n")
@@ -138,45 +138,45 @@ while True:
 
             if counter % 64 == 0:
                 print("DRIVE" + str(drivenum) + " ON")
-                ss.analog_write(CRCKit_drive[drivenum], 65535)
+                ss.analog_write(CRICKIT_drive[drivenum], 65535)
 
             else:
                 print("DRIVE" + str(drivenum) + " OFF")
-                ss.analog_write(CRCKit_drive[drivenum], 0)
+                ss.analog_write(CRICKIT_drive[drivenum], 0)
 
     if test_motors:
         if counter < 128:
             if motor1_dir:
-                ss.analog_write(_CRCKIT_M1_A1, 0)
-                ss.analog_write(_CRCKIT_M1_A2, counter * 512)
+                ss.analog_write(_CRICKIT_M1_A1, 0)
+                ss.analog_write(_CRICKIT_M1_A2, counter * 512)
             else:
-                ss.analog_write(_CRCKIT_M1_A2, 0)
-                ss.analog_write(_CRCKIT_M1_A1, counter * 512)
+                ss.analog_write(_CRICKIT_M1_A2, 0)
+                ss.analog_write(_CRICKIT_M1_A1, counter * 512)
         else:
             if motor1_dir:
-                ss.analog_write(_CRCKIT_M1_A1, 0)
-                ss.analog_write(_CRCKIT_M1_A2, (255-counter) * 512)
+                ss.analog_write(_CRICKIT_M1_A1, 0)
+                ss.analog_write(_CRICKIT_M1_A2, (255-counter) * 512)
             else:
-                ss.analog_write(_CRCKIT_M1_A2, 0)
-                ss.analog_write(_CRCKIT_M1_A1, (255-counter) * 512)
+                ss.analog_write(_CRICKIT_M1_A2, 0)
+                ss.analog_write(_CRICKIT_M1_A1, (255-counter) * 512)
         if counter == 255:
             print("-------------------- motor 1 -----------------------")
             motor1_dir = not motor1_dir
 
         if counter < 128:
             if motor2_dir:
-                ss.analog_write(_CRCKIT_M1_B1, 0)
-                ss.analog_write(_CRCKIT_M1_B2, counter * 512)
+                ss.analog_write(_CRICKIT_M1_B1, 0)
+                ss.analog_write(_CRICKIT_M1_B2, counter * 512)
             else:
-                ss.analog_write(_CRCKIT_M1_B2, 0)
-                ss.analog_write(_CRCKIT_M1_B1, counter * 512)
+                ss.analog_write(_CRICKIT_M1_B2, 0)
+                ss.analog_write(_CRICKIT_M1_B1, counter * 512)
         else:
             if motor2_dir:
-                ss.analog_write(_CRCKIT_M1_B1, 0)
-                ss.analog_write(_CRCKIT_M1_B2, (255-counter) * 512)
+                ss.analog_write(_CRICKIT_M1_B1, 0)
+                ss.analog_write(_CRICKIT_M1_B2, (255-counter) * 512)
             else:
-                ss.analog_write(_CRCKIT_M1_B2, 0)
-                ss.analog_write(_CRCKIT_M1_B1, (255-counter) * 512)
+                ss.analog_write(_CRICKIT_M1_B2, 0)
+                ss.analog_write(_CRICKIT_M1_B1, (255-counter) * 512)
         if counter == 255:
             print("-------------------- motor 2 -----------------------")
             motor2_dir = not motor2_dir

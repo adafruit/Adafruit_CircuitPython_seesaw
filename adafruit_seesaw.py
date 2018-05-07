@@ -117,47 +117,47 @@ _ADC_INPUT_1_PIN = const(0x03)
 _ADC_INPUT_2_PIN = const(0x04)
 _ADC_INPUT_3_PIN = const(0x05)
 
-_ADC_INPUT_0_PIN_CRCKIT = const(2)
-_ADC_INPUT_1_PIN_CRCKIT = const(3)
-_ADC_INPUT_2_PIN_CRCKIT = const(40)
-_ADC_INPUT_3_PIN_CRCKIT = const(41)
-_ADC_INPUT_4_PIN_CRCKIT = const(11)
-_ADC_INPUT_5_PIN_CRCKIT = const(10)
-_ADC_INPUT_6_PIN_CRCKIT = const(9)
-_ADC_INPUT_7_PIN_CRCKIT = const(8)
+_ADC_INPUT_0_PIN_CRICKIT = const(2)
+_ADC_INPUT_1_PIN_CRICKIT = const(3)
+_ADC_INPUT_2_PIN_CRICKIT = const(40)
+_ADC_INPUT_3_PIN_CRICKIT = const(41)
+_ADC_INPUT_4_PIN_CRICKIT = const(11)
+_ADC_INPUT_5_PIN_CRICKIT = const(10)
+_ADC_INPUT_6_PIN_CRICKIT = const(9)
+_ADC_INPUT_7_PIN_CRICKIT = const(8)
 
 _PWM_0_PIN = const(0x04)
 _PWM_1_PIN = const(0x05)
 _PWM_2_PIN = const(0x06)
 _PWM_3_PIN = const(0x07)
 
-_CRCKIT_S4 = const(14)
-_CRCKIT_S3 = const(15)
-_CRCKIT_S2 = const(16)
-_CRCKIT_S1 = const(17)
+_CRICKIT_S4 = const(14)
+_CRICKIT_S3 = const(15)
+_CRICKIT_S2 = const(16)
+_CRICKIT_S1 = const(17)
 
-_CRCKIT_M1_A1 = const(18)
-_CRCKIT_M1_A2 = const(19)
-_CRCKIT_M1_B1 = const(22)
-_CRCKIT_M1_B2 = const(23)
-_CRCKIT_DRIVE1 = const(42)
-_CRCKIT_DRIVE2 = const(43)
-_CRCKIT_DRIVE3 = const(12)
-_CRCKIT_DRIVE4 = const(13)
+_CRICKIT_M1_A1 = const(18)
+_CRICKIT_M1_A2 = const(19)
+_CRICKIT_M1_B1 = const(22)
+_CRICKIT_M1_B2 = const(23)
+_CRICKIT_DRIVE1 = const(42)
+_CRICKIT_DRIVE2 = const(43)
+_CRICKIT_DRIVE3 = const(12)
+_CRICKIT_DRIVE4 = const(13)
 
-_CRCKIT_CT1 = const(0)
-_CRCKIT_CT2 = const(1)
-_CRCKIT_CT3 = const(2)
-_CRCKIT_CT4 = const(3)
+_CRICKIT_CT1 = const(0)
+_CRICKIT_CT2 = const(1)
+_CRICKIT_CT3 = const(2)
+_CRICKIT_CT4 = const(3)
 
 _HW_ID_CODE = const(0x55)
 _EEPROM_I2C_ADDR = const(0x3F)
 
 SEESAW_SAMD09 = const(0x00)
-SEESAW_CRCKIT = const(0x01)
+SEESAW_CRICKIT = const(0x01)
 
 #TODO: update when we get real PID
-_CRCKIT_PID = const(9999)
+_CRICKIT_PID = const(9999)
 
 class DigitalIO:
     def __init__(self, seesaw, pin):
@@ -368,8 +368,8 @@ class Seesaw:
                                .format(chip_id, _HW_ID_CODE))
 
         pid = self.get_version() >> 16
-        if pid == _CRCKIT_PID:
-            self.variant = SEESAW_CRCKIT
+        if pid == _CRICKIT_PID:
+            self.variant = SEESAW_CRICKIT
         else:
             self.variant = SEESAW_SAMD09
 
@@ -436,11 +436,11 @@ class Seesaw:
 
     def analog_read(self, pin):
         buf = bytearray(2)
-        if self.variant == SEESAW_CRCKIT:
-            pin_mapping = [_ADC_INPUT_0_PIN_CRCKIT, _ADC_INPUT_1_PIN_CRCKIT,
-                           _ADC_INPUT_2_PIN_CRCKIT, _ADC_INPUT_3_PIN_CRCKIT,
-                           _ADC_INPUT_4_PIN_CRCKIT, _ADC_INPUT_5_PIN_CRCKIT,
-                           _ADC_INPUT_6_PIN_CRCKIT, _ADC_INPUT_7_PIN_CRCKIT]
+        if self.variant == SEESAW_CRICKIT:
+            pin_mapping = [_ADC_INPUT_0_PIN_CRICKIT, _ADC_INPUT_1_PIN_CRICKIT,
+                           _ADC_INPUT_2_PIN_CRICKIT, _ADC_INPUT_3_PIN_CRICKIT,
+                           _ADC_INPUT_4_PIN_CRICKIT, _ADC_INPUT_5_PIN_CRICKIT,
+                           _ADC_INPUT_6_PIN_CRICKIT, _ADC_INPUT_7_PIN_CRICKIT]
         else:
             pin_mapping = [_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
                            _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN]
@@ -456,7 +456,7 @@ class Seesaw:
     def touch_read(self, pin):
         buf = bytearray(2)
 
-        pin_mapping = [_CRCKIT_CT1, _CRCKIT_CT2, _CRCKIT_CT3, _CRCKIT_CT4]
+        pin_mapping = [_CRICKIT_CT1, _CRICKIT_CT2, _CRICKIT_CT3, _CRICKIT_CT4]
 
         if pin not in pin_mapping:
             raise ValueError("Invalid touch pin")
@@ -510,11 +510,11 @@ class Seesaw:
         return PWMChannel(self, pin)
 
     def analog_write(self, pin, value):
-        if self.variant == SEESAW_CRCKIT:
-            pin_mapping = [_CRCKIT_S4, _CRCKIT_S3, _CRCKIT_S2, _CRCKIT_S1,
-                           _CRCKIT_M1_A1, _CRCKIT_M1_A2, _CRCKIT_M1_B1,
-                           _CRCKIT_M1_B2, _CRCKIT_DRIVE1, _CRCKIT_DRIVE2,
-                           _CRCKIT_DRIVE3, _CRCKIT_DRIVE4]
+        if self.variant == SEESAW_CRICKIT:
+            pin_mapping = [_CRICKIT_S4, _CRICKIT_S3, _CRICKIT_S2, _CRICKIT_S1,
+                           _CRICKIT_M1_A1, _CRICKIT_M1_A2, _CRICKIT_M1_B1,
+                           _CRICKIT_M1_B2, _CRICKIT_DRIVE1, _CRICKIT_DRIVE2,
+                           _CRICKIT_DRIVE3, _CRICKIT_DRIVE4]
             if pin in pin_mapping:
                 cmd = bytearray([pin_mapping.index(pin), (value >> 8), value])
                 self.write(_TIMER_BASE, _TIMER_PWM, cmd)
@@ -525,11 +525,11 @@ class Seesaw:
                 self.write(_TIMER_BASE, _TIMER_PWM, cmd)
 
     def set_pwm_freq(self, pin, freq):
-        if self.variant == SEESAW_CRCKIT:
-            pin_mapping = [_CRCKIT_S4, _CRCKIT_S3, _CRCKIT_S2, _CRCKIT_S1,
-                           _CRCKIT_M1_A1, _CRCKIT_M1_A2, _CRCKIT_M1_B1,
-                           _CRCKIT_M1_B2, _CRCKIT_DRIVE1, _CRCKIT_DRIVE2,
-                           _CRCKIT_DRIVE3, _CRCKIT_DRIVE4]
+        if self.variant == SEESAW_CRICKIT:
+            pin_mapping = [_CRICKIT_S4, _CRICKIT_S3, _CRICKIT_S2, _CRICKIT_S1,
+                           _CRICKIT_M1_A1, _CRICKIT_M1_A2, _CRICKIT_M1_B1,
+                           _CRICKIT_M1_B2, _CRICKIT_DRIVE1, _CRICKIT_DRIVE2,
+                           _CRICKIT_DRIVE3, _CRICKIT_DRIVE4]
         else:
             pin_mapping = [_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN]
 
