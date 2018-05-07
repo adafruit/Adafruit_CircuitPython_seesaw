@@ -44,7 +44,7 @@ Implementation Notes
 
 # This code needs to be broken up into analogio, busio, digitalio, and pulseio
 # compatible classes so we won't bother with some lints until then.
-# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
+# pylint: disable=missing-docstring,invalid-name,too-many-public-methods,no-name-in-module
 
 import time
 

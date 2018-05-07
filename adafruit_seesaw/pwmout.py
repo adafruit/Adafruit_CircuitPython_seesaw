@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+# pylint: disable=missing-docstring,invalid-name,too-many-public-methods,too-few-public-methods
 
 class PWMOut:
     """A single seesaw channel that matches the :py:class:`~pulseio.PWMOut` API."""
@@ -50,3 +51,4 @@ class PWMOut:
             raise ValueError("Out of range")
         self._seesaw.analog_write(self._pin, value)
         self._dc = value
+        

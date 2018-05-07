@@ -25,6 +25,9 @@ try:
     import struct
 except ImportError:
     import ustruct as struct
+from micropython import const
+
+_NEOPIXEL_BASE = const(0x0E)
 
 _NEOPIXEL_STATUS = const(0x00)
 _NEOPIXEL_PIN = const(0x01)

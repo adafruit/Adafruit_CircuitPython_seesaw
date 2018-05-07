@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
+# pylint: disable=missing-docstring,invalid-name,too-many-public-methods,too-few-public-methods
 
 from micropython import const
 
@@ -65,6 +65,4 @@ class Crickit_Pinmap:
                _CRICKIT_DRIVE3, _CRICKIT_DRIVE4)
 
     touch_pins = (_CRICKIT_CT1, _CRICKIT_CT2, _CRICKIT_CT3, _CRICKIT_CT4)
-
-  def __init__(self):
-    pass
+    
