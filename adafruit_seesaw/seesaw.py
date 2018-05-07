@@ -265,19 +265,26 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
 
     def analog_write(self, pin, value):
+        pin_found = False
         if self.pin_mapping.pwm_width == 16:
             if pin in self.pin_mapping.pwm_pins:
+                pin_found = True
                 cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (value >> 8), value])
-                self.write(_TIMER_BASE, _TIMER_PWM, cmd)
         else:
             if pin in self.pin_mapping.pwm_pins:
+                pin_found = True
                 cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), value])
-                self.write(_TIMER_BASE, _TIMER_PWM, cmd)
+
+        if pin_found is False:
+            raise ValueError("Invalid PWM pin")
+        self.write(_TIMER_BASE, _TIMER_PWM, cmd)
 
     def set_pwm_freq(self, pin, freq):
         if pin in self.pin_mapping.pwm_pins:
             cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (freq >> 8), freq])
             self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
+        else:
+            raise ValueError("Invalid PWM pin")
 
     # def enable_sercom_data_rdy_interrupt(self, sercom):
     #
