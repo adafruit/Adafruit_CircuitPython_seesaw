@@ -48,7 +48,10 @@ Implementation Notes
 
 import time
 
-import struct
+try:
+    import struct
+except ImportError:
+    import ustruct as struct
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
 import digitalio
