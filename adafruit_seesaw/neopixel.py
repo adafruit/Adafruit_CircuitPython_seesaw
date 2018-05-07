@@ -19,11 +19,19 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
 try:
     import struct
 except ImportError:
     import ustruct as struct
+
+_NEOPIXEL_STATUS = const(0x00)
+_NEOPIXEL_PIN = const(0x01)
+_NEOPIXEL_SPEED = const(0x02)
+_NEOPIXEL_BUF_LENGTH = const(0x03)
+_NEOPIXEL_BUF = const(0x04)
+_NEOPIXEL_SHOW = const(0x05)
 
 class Neopixel:
     def __init__(self, seesaw, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):

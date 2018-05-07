@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
 from micropython import const
 
@@ -33,11 +34,14 @@ _PWM_2_PIN = const(0x06)
 _PWM_3_PIN = const(0x07)
 
 class SAMD09_Pinmap:
-	analog_pins = (_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
-				   _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN)
+    analog_pins = (_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
+                  _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN)
 
-	pwm_width = 8
+    pwm_width = 8
 
-	pwm_pins = (_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN)
+    pwm_pins = (_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN)
 
-	touch_pins = ()
+    touch_pins = ()
+
+    def __init__(self):
+        pass

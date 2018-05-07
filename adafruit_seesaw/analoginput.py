@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
 class AnalogInput:
     def __init__(self, seesaw, pin):
@@ -35,3 +36,4 @@ class AnalogInput:
     @property
     def reference_voltage(self):
         return 3.3
+        
