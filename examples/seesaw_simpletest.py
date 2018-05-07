@@ -6,11 +6,11 @@ import time
 
 from board import SCL, SDA
 import busio
-import adafruit_seesaw
+from adafruit_seesaw.seesaw import Seesaw
 
 i2c_bus = busio.I2C(SCL, SDA)
 
-ss = adafruit_seesaw.Seesaw(i2c_bus)
+ss = Seesaw(i2c_bus)
 
 ss.pin_mode(15, ss.OUTPUT)
 
