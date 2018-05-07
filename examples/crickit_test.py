@@ -24,13 +24,13 @@ S2 = servo.Servo(pwm2)
 S3 = servo.Servo(pwm3)
 S4 = servo.Servo(pwm4)
 
-servos = [S1, S2, S3, S4]
+servos = (S1, S2, S3, S4)
 
 CRCKIT_NUM_ADC = 8
-CRCKit_adc = [2, 3, 40, 41, 11, 10, 9, 8]
+CRCKit_adc = (2, 3, 40, 41, 11, 10, 9, 8)
 
 CRCKIT_NUM_DRIVE = 4
-CRCKit_drive = [42, 43, 12, 13]
+CRCKit_drive = (42, 43, 12, 13)
 
 CAPTOUCH_THRESH = 500
 
