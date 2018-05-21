@@ -125,6 +125,7 @@ class Seesaw:
     INPUT = const(0x00)
     OUTPUT = const(0x01)
     INPUT_PULLUP = const(0x02)
+    INPUT_PULLDOWN = const(0x03)
 
     def __init__(self, i2c_bus, addr=0x49, drdy=None):
         self._drdy = drdy
@@ -186,13 +187,14 @@ class Seesaw:
     def digital_read_bulk(self, pins):
         buf = bytearray(4)
         self.read(_GPIO_BASE, _GPIO_BULK, buf)
+        buf[0] = buf[0] & 0x3F
         ret = struct.unpack(">I", buf)[0]
         return ret & pins
 
     def digital_read_bulk_b(self, pins):
         buf = bytearray(8)
         self.read(_GPIO_BASE, _GPIO_BULK, buf)
-        ret = struct.unpack(">II", buf)[1]
+        ret = struct.unpack(">I", buf[4:])[0]
         return ret & pins
 
 
@@ -235,6 +237,14 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_PULLENSET, cmd)
             self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
 
+        elif mode == self.INPUT_PULLDOWN:
+            self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
+            self.write(_GPIO_BASE, _GPIO_PULLENSET, cmd)
+            self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
+
+        else:
+            raise ValueError("Invalid pin mode")
+
     def pin_mode_bulk_b(self, pins, mode):
         cmd = bytearray(8)
         cmd[4:] = struct.pack(">I", pins)
@@ -247,6 +257,14 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
             self.write(_GPIO_BASE, _GPIO_PULLENSET, cmd)
             self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
+
+        elif mode == self.INPUT_PULLDOWN:
+            self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
+            self.write(_GPIO_BASE, _GPIO_PULLENSET, cmd)
+            self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
+
+        else:
+            raise ValueError("Invalid pin mode")
 
     def digital_write_bulk(self, pins, value):
         cmd = struct.pack(">I", pins)
