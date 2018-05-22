@@ -23,6 +23,9 @@
 
 from micropython import const
 
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
+
 _ADC_INPUT_0_PIN_CRICKIT = const(2)
 _ADC_INPUT_1_PIN_CRICKIT = const(3)
 _ADC_INPUT_2_PIN_CRICKIT = const(40)

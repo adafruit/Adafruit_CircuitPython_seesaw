@@ -21,6 +21,9 @@
 # THE SOFTWARE.
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods,too-few-public-methods
 
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
+
 class PWMOut:
     """A single seesaw channel that matches the :py:class:`~pulseio.PWMOut` API."""
     def __init__(self, seesaw, pin):
@@ -51,4 +54,3 @@ class PWMOut:
             raise ValueError("Out of range")
         self._seesaw.analog_write(self._pin, value)
         self._dc = value
-        

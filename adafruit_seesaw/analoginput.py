@@ -21,6 +21,9 @@
 # THE SOFTWARE.
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
+
 class AnalogInput:
     def __init__(self, seesaw, pin):
         self._seesaw = seesaw
@@ -36,4 +39,3 @@ class AnalogInput:
     @property
     def reference_voltage(self):
         return 3.3
-        

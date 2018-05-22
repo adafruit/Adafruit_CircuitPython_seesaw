@@ -27,6 +27,9 @@ except ImportError:
     import ustruct as struct
 from micropython import const
 
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
+
 _NEOPIXEL_BASE = const(0x0E)
 
 _NEOPIXEL_STATUS = const(0x00)
@@ -88,4 +91,3 @@ class Neopixel:
 
     def show(self):
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)
-        

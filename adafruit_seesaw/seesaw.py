@@ -55,7 +55,11 @@ except ImportError:
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
 
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
+
 _STATUS_BASE = const(0x00)
+
 _GPIO_BASE = const(0x01)
 _SERCOM0_BASE = const(0x02)
 
