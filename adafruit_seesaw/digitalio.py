@@ -23,6 +23,9 @@
 
 import digitalio
 
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
+
 class DigitalIO:
     def __init__(self, seesaw, pin):
         self._seesaw = seesaw
