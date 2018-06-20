@@ -49,10 +49,10 @@ _CRICKIT_DRIVE2 = const(43)
 _CRICKIT_DRIVE3 = const(12)
 _CRICKIT_DRIVE4 = const(13)
 
-_CRICKIT_CT1 = const(0)
-_CRICKIT_CT2 = const(1)
-_CRICKIT_CT3 = const(2)
-_CRICKIT_CT4 = const(3)
+_CRICKIT_CT1 = const(4)
+_CRICKIT_CT2 = const(5)
+_CRICKIT_CT3 = const(6)
+_CRICKIT_CT4 = const(7)
 
 class Crickit_Pinmap:
     analog_pins = (_ADC_INPUT_0_PIN_CRICKIT, _ADC_INPUT_1_PIN_CRICKIT,
