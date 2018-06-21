@@ -39,20 +39,32 @@ _NEOPIXEL_BUF_LENGTH = const(0x03)
 _NEOPIXEL_BUF = const(0x04)
 _NEOPIXEL_SHOW = const(0x05)
 
-class Neopixel:
+# Pixel color order constants
+RGB = (0, 1, 2)
+"""Red Green Blue"""
+GRB = (1, 0, 2)
+"""Green Red Blue"""
+RGBW = (0, 1, 2, 3)
+"""Red Green Blue White"""
+GRBW = (1, 0, 2, 3)
+"""Green Red Blue White"""
+
+class NeoPixel:
     def __init__(self, seesaw, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):
+        # TODO: brightness not yet implemented.
         self._seesaw = seesaw
         self._pin = pin
         self._bpp = bpp
-        self._auto_write = auto_write
-        self._pixel_order = pixel_order
+        self.auto_write = auto_write
         self._n = n
         self._brightness = brightness
+        self._pixel_order = GRBW if pixel_order is None else pixel_order
 
         cmd = bytearray([pin])
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_PIN, cmd)
         cmd = struct.pack(">H", n*self._bpp)
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF_LENGTH, cmd)
+
 
     @property
     def brightness(self):
@@ -68,26 +80,51 @@ class Neopixel:
     def __len__(self):
         return self._n
 
-    def __setitem__(self, key, value):
-        cmd = bytearray(6)
-        cmd[:2] = struct.pack(">H", key * self._bpp)
-        cmd[2:] = struct.pack(">I", value)
+    def __setitem__(self, key, color):
+        cmd = bytearray(2 + self._bpp)
+        struct.pack_into(">H", cmd, 0, key * self._bpp)
+        if isinstance(color, int):
+            w = color >> 24
+            r = (color >> 16) & 0xff
+            g = (color >> 8) & 0xff
+            b = color & 0xff
+        else:
+            if self._bpp == 3:
+                r, g, b = color
+            else:
+                r, g, b, w = color
+
+        # If all components are the same and we have a white pixel then use it
+        # instead of the individual components.
+        if self._bpp == 4 and r == g == b:
+            w = r
+            r = 0
+            g = 0
+            b = 0
+
+        # Store colors in correct slots
+        cmd[2 + self._pixel_order[0]] = r
+        cmd[2 + self._pixel_order[1]] = g
+        cmd[2 + self._pixel_order[2]] = b
+        if self._bpp == 4:
+            cmd[2 + self._pixel_order[3]] = w
+
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, cmd)
-        if self._auto_write:
+        if self.auto_write:
             self.show()
 
     def __getitem__(self, key):
         pass
 
     def fill(self, color):
-        cmd = bytearray(self._n*self._bpp+2)
+        # Suppress auto_write while filling.
+        current_auto_write = self.auto_write
+        self.auto_write = False
         for i in range(self._n):
-            cmd[self._bpp*i+2:] = struct.pack(">I", color)
-
-        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, cmd)
-
-        if self._auto_write:
+            self[i] = color
+        if current_auto_write:
             self.show()
+        self.auto_write = current_auto_write
 
     def show(self):
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)
