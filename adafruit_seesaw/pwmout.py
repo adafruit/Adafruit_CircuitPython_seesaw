@@ -44,8 +44,10 @@ class PWMOut:
 
     @property
     def duty_cycle(self):
-        """16-bit value that dictates how much of one cycle is high (1) versus low (0). 65535 (0xffff) will
-           always be high, 0 will always be low and 32767 (0x7fff) will be half high and then half low."""
+        """16-bit value that dictates how much of one cycle is high (1) versus low (0).
+        65535 (0xffff) will always be high, 0 will always be low,
+        and 32767 (0x7fff) will be half high and then half low.
+        """
         return self._dc
 
     @duty_cycle.setter
