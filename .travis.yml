@@ -1,32 +1,31 @@
-# This is a common .travis.yml for generating library release zip files for
-# CircuitPython library releases using circuitpython-build-tools.
-# See https://github.com/adafruit/circuitpython-build-tools for detailed setup
-# instructions.
-
 dist: trusty
 sudo: false
 language: python
 python:
-    - "3.6"
-
+- '3.6'
 cache:
-    pip: true
-
+  pip: true
 deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
+- provider: releases
+  api_key: "$GITHUB_TOKEN"
   file_glob: true
-  file: $TRAVIS_BUILD_DIR/bundles/*
+  file: "$TRAVIS_BUILD_DIR/bundles/*"
   skip_cleanup: true
   overwrite: true
   on:
     tags: true
-
+- provider: pypi
+  user: adafruit-travis
+  on:
+    tags: true
+  password:
+    secure: oqlm4dJIzX2JH8Qbd+qU0g+M+1NSHD0f9pWQxvdhl+JlCtzRmBtyv6t24EN+SUGD3eKOK9A21/+QxsQJ2sB8/g8qh07OUNKw+erv9NqA2Wc0oHvOpwpN+TkS6hF0GI/Tn53hwm+qiTsXmBfbDoXDyu6Qe9rsht7Llv1wbHErCk7vkZ9zEL0zfhkgV5hzXPoRdwQclLeyleoJMyw0ZdfPqupMCGGAMPd6aTIYQfJ1PVmzYu9VqtK7yEB9lltc6U16dwp2huN2HBz5EzlRWszCli8mx1+MuZxNFlYkMo8vgWpSQmJpw22nSzI8ez57QibNGEm9u4Y9nb7PlzH9ZOeTVI7OZ9k3BPSN0db8WKGLz9VJxyTilqPNs737TCf36tdshPnuEtEDwk8YNReyK5uE5TnjnnXL2g3qSyhIniKLusY5d9cF3PEhwG6DcNqt39NrT6rG9PaeURYzKY19BgwhWD2CucEM6RDBRp+31citzM35NjET+5+xSOmDXdCdr+Ar+AWNxyfGn0N+Za/de8JyFjuk5TN4muB61eJPXPpinn8+egNyeiONPT96vJDVvFrEdG3bIEspYd6ZAMQ8Aou1Ii+CxOEXiY+57AK20LAieX8Nv2sTLLHo5wa7c4xghHVZdN187cesqm0LZtNYGhs/CeMP+9bC3bn7/IHGdcRZvg4=
 install:
-  - pip install pylint circuitpython-build-tools Sphinx sphinx-rtd-theme
-
+- pip install -r requirements.txt
+- pip install pylint circuitpython-build-tools Sphinx sphinx-rtd-theme
 script:
-  - pylint adafruit_seesaw/*.py
-  - ([[ ! -d "examples" ]] || pylint --disable=missing-docstring,invalid-name examples/*.py)
-  - circuitpython-build-bundles --filename_prefix adafruit-circuitpython-seesaw --library_location .
-  - cd docs && sphinx-build -E -W -b html . _build/html
+- pylint adafruit_seesaw/*.py
+- ([[ ! -d "examples" ]] || pylint --disable=missing-docstring,invalid-name examples/*.py)
+- circuitpython-build-bundles --filename_prefix adafruit-circuitpython-seesaw --library_location
+  .
+- cd docs && sphinx-build -E -W -b html . _build/html && cd ..
