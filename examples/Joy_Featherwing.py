@@ -2,8 +2,9 @@ import time
 
 from board import SCL, SDA
 import busio
-from adafruit_seesaw.seesaw import Seesaw
 from micropython import const
+
+from adafruit_seesaw.seesaw import Seesaw
 
 # pylint: disable=bad-whitespace
 BUTTON_RIGHT = const(6)
