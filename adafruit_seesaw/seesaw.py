@@ -291,7 +291,7 @@ class Seesaw:
         if self.pin_mapping.pwm_width == 16:
             if pin in self.pin_mapping.pwm_pins:
                 pin_found = True
-                cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (value >> 8), value])
+                cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (value >> 8), value & 0xFF])
         else:
             if pin in self.pin_mapping.pwm_pins:
                 pin_found = True
