@@ -303,7 +303,7 @@ class Seesaw:
 
     def set_pwm_freq(self, pin, freq):
         if pin in self.pin_mapping.pwm_pins:
-            cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (freq >> 8), freq])
+            cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (freq >> 8), freq & 0xFF])
             self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
         else:
             raise ValueError("Invalid PWM pin")
