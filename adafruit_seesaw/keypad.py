@@ -36,10 +36,12 @@ _KEYPAD_INTENCLR = const(0x03)
 _KEYPAD_COUNT = const(0x04)
 _KEYPAD_FIFO = const(0x10)
 
+# pylint: disable=too-few-public-methods
 class KeyEvent:
     def __init__(self, num, edge):
         self.number = int(num)
         self.edge = int(edge)
+# pylint: enable=too-few-public-methods
 
 class Keypad(Seesaw):
 
@@ -49,7 +51,7 @@ class Keypad(Seesaw):
     EDGE_RISING = 3
 
     def __init__(self, i2c_bus, addr=0x49, drdy=None):
-        super(Seesaw, self).__init__(i2c_bus, addr, drdy)
+        super(Keypad, self).__init__(i2c_bus, addr, drdy)
         self._interrupt_enabled = False
 
     @property

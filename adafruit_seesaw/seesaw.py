@@ -133,7 +133,7 @@ class Seesaw:
 
     def __init__(self, i2c_bus, addr=0x49, drdy=None):
         self._drdy = drdy
-        if drdy != None:
+        if drdy is not None:
             drdy.switch_to_input()
 
         self.i2c_device = I2CDevice(i2c_bus, addr)
