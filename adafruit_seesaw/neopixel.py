@@ -27,7 +27,7 @@ except ImportError:
     import ustruct as struct
 from micropython import const
 
-__version__ = "0.0.0-auto.0"
+__version__ = "1.2.3"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
 _NEOPIXEL_BASE = const(0x0E)
@@ -57,7 +57,7 @@ class NeoPixel:
         self._bpp = bpp
         self.auto_write = auto_write
         self._n = n
-        self._brightness = brightness
+        self._brightness = min(max(brightness, 0.0), 1.0)
         self._pixel_order = GRBW if pixel_order is None else pixel_order
 
         cmd = bytearray([pin])
@@ -65,14 +65,17 @@ class NeoPixel:
         cmd = struct.pack(">H", n*self._bpp)
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF_LENGTH, cmd)
 
-
     @property
     def brightness(self):
-        pass
+        """Overall brightness of the pixel"""
+        return self._brightness
 
     @brightness.setter
-    def brightness(self, value):
-        pass
+    def brightness(self, brightness):
+        # pylint: disable=attribute-defined-outside-init
+        self._brightness = min(max(brightness, 0.0), 1.0)
+        if self.auto_write:
+            self.show()
 
     def deinit(self):
         pass
@@ -101,6 +104,13 @@ class NeoPixel:
             r = 0
             g = 0
             b = 0
+
+        if self.brightness < 0.99:
+            r = int(r * self.brightness)
+            g = int(g * self.brightness)
+            b = int(b * self.brightness)
+            if self._bpp == 4:
+                w = int(w * self.brightness)
 
         # Store colors in correct slots
         cmd[2 + self._pixel_order[0]] = r
