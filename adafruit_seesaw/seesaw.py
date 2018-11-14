@@ -87,6 +87,7 @@ _GPIO_PULLENCLR = const(0x0C)
 _STATUS_HW_ID = const(0x01)
 _STATUS_VERSION = const(0x02)
 _STATUS_OPTIONS = const(0x03)
+_STATUS_TEMP = const(0x04)
 _STATUS_SWRST = const(0x7F)
 
 _TIMER_STATUS = const(0x00)
@@ -229,6 +230,14 @@ class Seesaw:
         ret = struct.unpack(">H", buf)[0]
         return ret
 
+    def moisture_read(self):
+        buf = bytearray(2)
+
+        self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, .005)
+        ret = struct.unpack(">H", buf)[0]
+        time.sleep(.001)
+        return ret
+
     def pin_mode_bulk(self, pins, mode):
         cmd = struct.pack(">I", pins)
         if mode == self.OUTPUT:
@@ -300,6 +309,13 @@ class Seesaw:
         if pin_found is False:
             raise ValueError("Invalid PWM pin")
         self.write(_TIMER_BASE, _TIMER_PWM, cmd)
+
+    def get_temp(self):
+        buf = bytearray(4)
+        self.read(_STATUS_BASE, _STATUS_TEMP, buf)
+        buf[0] = buf[0] & 0x3F
+        ret = struct.unpack(">I", buf)[0]
+        return 0.00001525878 * ret
 
     def set_pwm_freq(self, pin, freq):
         if pin in self.pin_mapping.pwm_pins:
