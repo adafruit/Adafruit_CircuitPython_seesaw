@@ -2,7 +2,6 @@ import time
 
 from board import SCL, SDA
 import busio
-from micropython import const
 
 from adafruit_seesaw.seesaw import Seesaw
 
@@ -10,7 +9,7 @@ i2c_bus = busio.I2C(SCL, SDA)
 
 ss = Seesaw(i2c_bus, addr=0x36)
 
-while(1):
+while True:
     # read moisture level through capacitive touch pad
     touch = ss.moisture_read()
 
