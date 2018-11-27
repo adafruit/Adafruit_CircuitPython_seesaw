@@ -309,6 +309,7 @@ class Seesaw:
         if pin_found is False:
             raise ValueError("Invalid PWM pin")
         self.write(_TIMER_BASE, _TIMER_PWM, cmd)
+        time.sleep(.001)
 
     def get_temp(self):
         buf = bytearray(4)
