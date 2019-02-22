@@ -236,6 +236,17 @@ class Seesaw:
         self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, .005)
         ret = struct.unpack(">H", buf)[0]
         time.sleep(.001)
+
+        # retry if reading was bad
+        count = 0
+        while ret > 4095:
+            self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, .005)
+            ret = struct.unpack(">H", buf)[0]
+            time.sleep(.001)
+            count += 1
+            if count > 3:
+                raise RuntimeError("Could not get a valid moisture reading.")
+
         return ret
 
     def pin_mode_bulk(self, pins, mode):
