@@ -39,7 +39,7 @@ _MM1_D4 = const(0) # (GPS_SDA)
 _MM1_D5 = const(1) # (GPS_SCL)
 _MM1_D6 = const(28) # (POWER_ENABLE)
 _MM1_D7 = const(2) # (BATTERY)
-_MM1_D8 = const(20) # (NEOPIXEL) 
+_MM1_D8 = const(20) # (NEOPIXEL)
 _MM1_D9 = const(43) # PWM (SPI_SCK)
 _MM1_D10 = const(41) # PWM (SPI_SS)
 _MM1_D11 = const(42) # PWM (SPI_MOSI)
@@ -74,9 +74,9 @@ _MM1_RCH4 = const(4)
 
 class MM1_Pinmap:
     # seesaw firmware (mm1_hat) analog pin map:
-    # analog[0]:47    analog[1]:48    analog[2]:     analog[3]: 
+    # analog[0]:47    analog[1]:48    analog[2]:     analog[3]:
     # analog[4]:    analog[5]:    analog[6]:    analog[7]:
-    # 
+    #
     analog_pins = (_MM1_D3, _MM1_D2)
 
     pwm_width = 16
