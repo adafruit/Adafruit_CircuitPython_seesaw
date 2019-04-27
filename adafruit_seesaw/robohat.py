@@ -26,6 +26,7 @@ from micropython import const
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
+# Robo HAT MM1 Board: https://www.crowdsupply.com/robotics-masters/robo-hat-mm1
 
 # The ordering here reflects the seesaw firmware (mm1_hat) pinmap for Robo HAT MM1,
 # not logical ordering of the HAT terminals.
@@ -76,17 +77,17 @@ class MM1_Pinmap:
     # analog[0]:47    analog[1]:48    analog[2]:     analog[3]: 
     # analog[4]:    analog[5]:    analog[6]:    analog[7]:
     # 
-    analog_pins = (_MM1_SIGNAL3, _MM1_SIGNAL2)
+    analog_pins = (_MM1_D3, _MM1_D2)
 
     pwm_width = 16
 
     # seesaw firmware (mm1_hat) pwm pin map:
-    # pwm[0]:    pwm[1]:    pwm[2]:    pwm[3]:    pwm[4]:    pwm[5]:
-    # pwm[6]:    pwm[7]:    pwm[8]:    pwm[9]:    pwm[10]:   pwm[11]:
+    # pwm[0]:16   pwm[1]:17    pwm[2]:18    pwm[3]:19    pwm[4]:11    pwm[5]:10
+    # pwm[6]:9    pwm[7]:8    pwm[8]:40    pwm[9]:41    pwm[10]:42   pwm[11]:43
     #
     pwm_pins = (_MM1_SERVO1, _MM1_SERVO2, _MM1_SERVO3, _MM1_SERVO4,
                 _MM1_SERVO5, _MM1_SERVO6, _MM1_SERVO7, _MM1_SERVO8,
-                _MM1_SIGNAL12, _MM1_SIGNAL10, _MM1_SIGNAL11, _MM1_SIGNAL9)
+                _MM1_D12, _MM1_D10, _MM1_D11, _MM1_D9)
 
     # seesaw firmware touch pin map:
     # touch[0]: 7    touch[1]: 6    touch[2]: 5    touch[3]: 4
