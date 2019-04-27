@@ -121,6 +121,7 @@ _EEPROM_I2C_ADDR = const(0x3F)
 
 #TODO: update when we get real PID
 _CRICKIT_PID = const(9999)
+_ROBOHATMM1_PID = const(9998)
 
 class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
@@ -156,6 +157,9 @@ class Seesaw:
         if pid == _CRICKIT_PID:
             from adafruit_seesaw.crickit import Crickit_Pinmap
             self.pin_mapping = Crickit_Pinmap
+	elif pid == _ROBOHATMM1_PID:
+	    from adafruit_seesaw.robohat import MM1_Pinmap
+	    self.pin_mapping = MM1_Pinmap
         else:
             from adafruit_seesaw.samd09 import SAMD09_Pinmap
             self.pin_mapping = SAMD09_Pinmap
