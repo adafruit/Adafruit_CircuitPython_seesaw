@@ -29,9 +29,6 @@ ss = Seesaw(i2c_bus, 0x5E)
 
 ss.pin_mode_bulk(button_mask, ss.INPUT_PULLUP)
 
-last_x = 0
-last_y = 0
-
 while True:
     buttons = ss.digital_read_bulk(button_mask)
     if not buttons & (1 << BUTTON_RIGHT):
