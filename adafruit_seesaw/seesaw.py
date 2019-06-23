@@ -328,7 +328,7 @@ class Seesaw:
 
     def get_temp(self):
         buf = bytearray(4)
-        self.read(_STATUS_BASE, _STATUS_TEMP, buf)
+        self.read(_STATUS_BASE, _STATUS_TEMP, buf, .005)
         buf[0] = buf[0] & 0x3F
         ret = struct.unpack(">I", buf)[0]
         return 0.00001525878 * ret
