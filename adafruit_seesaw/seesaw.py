@@ -253,8 +253,9 @@ class Seesaw:
 
         return ret
 
-    def pin_mode_bulk(self, pins, mode):
-        cmd = struct.pack(">I", pins)
+    def _pin_mode_bulk_x(self, capacity, offset, pins, mode):
+        cmd = bytearray(capacity)
+        cmd[offset:] = struct.pack(">I", pins)
         if mode == self.OUTPUT:
             self.write(_GPIO_BASE, _GPIO_DIRSET_BULK, cmd)
         elif mode == self.INPUT:
@@ -272,27 +273,12 @@ class Seesaw:
 
         else:
             raise ValueError("Invalid pin mode")
+
+    def pin_mode_bulk(self, pins, mode):
+        self._pin_mode_bulk_x(4, 0, pins, mode)
 
     def pin_mode_bulk_b(self, pins, mode):
-        cmd = bytearray(8)
-        cmd[4:] = struct.pack(">I", pins)
-        if mode == self.OUTPUT:
-            self.write(_GPIO_BASE, _GPIO_DIRSET_BULK, cmd)
-        elif mode == self.INPUT:
-            self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
-
-        elif mode == self.INPUT_PULLUP:
-            self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
-            self.write(_GPIO_BASE, _GPIO_PULLENSET, cmd)
-            self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
-
-        elif mode == self.INPUT_PULLDOWN:
-            self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
-            self.write(_GPIO_BASE, _GPIO_PULLENSET, cmd)
-            self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
-
-        else:
-            raise ValueError("Invalid pin mode")
+        self._pin_mode_bulk_x(8, 4, pins, mode)
 
     def digital_write_bulk(self, pins, value):
         cmd = struct.pack(">I", pins)
