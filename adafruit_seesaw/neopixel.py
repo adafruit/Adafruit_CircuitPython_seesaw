@@ -99,7 +99,7 @@ class NeoPixel:
 
         # If all components are the same and we have a white pixel then use it
         # instead of the individual components.
-        if self._bpp == 4 and r == g == b:
+        if self._bpp == 4 and r == g == b and w == 0:
             w = r
             r = 0
             g = 0
