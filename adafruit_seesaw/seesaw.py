@@ -372,7 +372,7 @@ class Seesaw:
         self.read(reg_base, reg, ret)
         return ret[0]
 
-    def read(self, reg_base, reg, buf, delay=.003):
+    def read(self, reg_base, reg, buf, delay=.005):
         self.write(reg_base, reg)
         if self._drdy is not None:
             while self._drdy.value is False:
