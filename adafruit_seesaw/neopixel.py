@@ -21,11 +21,20 @@
 # THE SOFTWARE.
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
+"""
+`adafruit_seesaw.neopixel`
+====================================================
+"""
+
 try:
     import struct
 except ImportError:
     import ustruct as struct
-from micropython import const
+try:
+    from micropython import const
+except ImportError:
+    def const(x):
+        return x
 
 __version__ = "1.2.3"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
@@ -50,6 +59,17 @@ GRBW = (1, 0, 2, 3)
 """Green Red Blue White"""
 
 class NeoPixel:
+    """Control NeoPixels connected to a seesaw
+
+    :param ~adafruit_seesaw.seesaw.Seesaw seesaw: The device
+    :param int pin: The pin number on the device
+    :param int n: The number of pixels
+    :param int bpp: The number of bytes per pixel
+    :param float brightness: The brightness, from 0.0 to 1.0
+    :param bool auto_write: Automatically update the pixels when changed
+    :param tuple pixel_order: The layout of the pixels.
+        Use one of the order constants such as RGBW.
+"""
     def __init__(self, seesaw, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):
         # TODO: brightness not yet implemented.
         self._seesaw = seesaw
@@ -84,6 +104,7 @@ class NeoPixel:
         return self._n
 
     def __setitem__(self, key, color):
+        """Set one pixel to a new value"""
         cmd = bytearray(2 + self._bpp)
         struct.pack_into(">H", cmd, 0, key * self._bpp)
         if isinstance(color, int):
@@ -127,6 +148,7 @@ class NeoPixel:
         pass
 
     def fill(self, color):
+        """Set all pixels to the same value"""
         # Suppress auto_write while filling.
         current_auto_write = self.auto_write
         self.auto_write = False
@@ -137,4 +159,5 @@ class NeoPixel:
         self.auto_write = current_auto_write
 
     def show(self):
+        """Update the pixels even if auto_write is False"""
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)

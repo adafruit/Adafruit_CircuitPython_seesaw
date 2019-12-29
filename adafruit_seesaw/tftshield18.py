@@ -21,9 +21,18 @@
 # THE SOFTWARE.
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
+"""
+`adafruit_seesaw.tftshield18` - Pin definitions for 1.8" TFT Shield V2
+======================================================================
+"""
+
 from collections import namedtuple
 import board
-from micropython import const
+try:
+    from micropython import const
+except ImportError:
+    def const(x):
+        return x
 from adafruit_seesaw.seesaw import Seesaw
 
 __version__ = "0.0.0-auto.0"
@@ -51,14 +60,21 @@ class TFTShield18(Seesaw):
     _BACKLIGHT_ON = b"\xFF\xFF"
     _BACKLIGHT_OFF = b"\x00\x00"
 
-    _button_mask = ((1 << _BUTTON_RIGHT) |
-                    (1 << _BUTTON_DOWN) |
-                    (1 << _BUTTON_LEFT) |
-                    (1 << _BUTTON_UP) |
-                    (1 << _BUTTON_SELECT) |
-                    (1 << _BUTTON_A) |
-                    (1 << _BUTTON_B) |
-                    (1 << _BUTTON_C))
+    try:
+        _button_mask = ((1 << _BUTTON_RIGHT) |
+                        (1 << _BUTTON_DOWN) |
+                        (1 << _BUTTON_LEFT) |
+                        (1 << _BUTTON_UP) |
+                        (1 << _BUTTON_SELECT) |
+                        (1 << _BUTTON_A) |
+                        (1 << _BUTTON_B) |
+                        (1 << _BUTTON_C))
+    except TypeError:
+# During Sphinx build, the following error occurs:
+#  File ".../tftshield18.py", line 60, in TFTShield18
+#    (1 << _BUTTON_B) |
+# TypeError: unsupported operand type(s) for <<: 'int' and '_MockObject'
+        _button_mask = 0xff
 
     def __init__(self, i2c_bus=board.I2C(), addr=0x2E):
         super(TFTShield18, self).__init__(i2c_bus, addr)
