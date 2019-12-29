@@ -29,7 +29,8 @@
 try:
     from micropython import const
 except ImportError:
-    def const(x): return x
+    def const(x):
+        return x
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
@@ -89,22 +90,22 @@ class MM1_Pinmap:
     # analog[0]:47    analog[1]:48    analog[2]:     analog[3]:
     # analog[4]:    analog[5]:    analog[6]:    analog[7]:
     #
-    """The pins capable of analog output"""
+    #: The pins capable of analog output
     analog_pins = (_MM1_D3, _MM1_D2)
 
-    """The effective bit resolution of the PWM pins"""
+    #: The effective bit resolution of the PWM pins
     pwm_width = 16
 
     # seesaw firmware (mm1_hat) pwm pin map:
     # pwm[0]:16   pwm[1]:17    pwm[2]:18    pwm[3]:19    pwm[4]:11    pwm[5]:10
     # pwm[6]:9    pwm[7]:8    pwm[8]:40    pwm[9]:41    pwm[10]:42   pwm[11]:43
     #
-    """The pins capable of PWM output"""
+    #: The pins capable of PWM output
     pwm_pins = (_MM1_SERVO1, _MM1_SERVO2, _MM1_SERVO3, _MM1_SERVO4,
                 _MM1_SERVO5, _MM1_SERVO6, _MM1_SERVO7, _MM1_SERVO8,
                 _MM1_D12, _MM1_D10, _MM1_D11, _MM1_D9)
 
     # seesaw firmware touch pin map:
     # touch[0]: 7    touch[1]: 6    touch[2]: 5    touch[3]: 4
-    """The pins capable of touch input"""
+    #: The pins capable of touch input
     touch_pins = (_MM1_RCH1, _MM1_RCH2, _MM1_RCH3, _MM1_RCH4)

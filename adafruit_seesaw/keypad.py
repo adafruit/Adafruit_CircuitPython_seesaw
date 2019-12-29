@@ -29,7 +29,8 @@
 try:
     from micropython import const
 except ImportError:
-    def const(x): return x
+    def const(x):
+        return x
 from adafruit_seesaw.seesaw import Seesaw
 
 __version__ = "0.0.0-auto.0"
@@ -63,13 +64,13 @@ class Keypad(Seesaw):
        :param int addr: I2C address of the SeeSaw device
        :param ~digitalio.DigitalInOut drdy: Pin connected to SeeSaw's 'ready' output"""
 
-    """Indicates that the key is currently pressed"""
+    #: Indicates that the key is currently pressed
     EDGE_HIGH = 0
-    """Indicates that the key is currently released"""
+    #: Indicates that the key is currently released
     EDGE_LOW = 1
-    """Indicates that the key was recently pressed"""
+    #: Indicates that the key was recently pressed
     EDGE_FALLING = 2
-    """Indicates that the key was recently released"""
+    #: Indicates that the key was recently released
     EDGE_RISING = 3
 
     def __init__(self, i2c_bus, addr=0x49, drdy=None):

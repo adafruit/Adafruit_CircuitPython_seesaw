@@ -33,7 +33,8 @@ except ImportError:
 try:
     from micropython import const
 except ImportError:
-    def const(x): return x
+    def const(x):
+        return x
 
 __version__ = "1.2.3"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
@@ -66,7 +67,8 @@ class NeoPixel:
     :param int bpp: The number of bytes per pixel
     :param float brightness: The brightness, from 0.0 to 1.0
     :param bool auto_write: Automatically update the pixels when changed
-    :param tuple pixel_order: The layout of the pixels.  Use one of the order constants such as RGBW.
+    :param tuple pixel_order: The layout of the pixels.
+        Use one of the order constants such as RGBW.
 """
     def __init__(self, seesaw, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):
         # TODO: brightness not yet implemented.

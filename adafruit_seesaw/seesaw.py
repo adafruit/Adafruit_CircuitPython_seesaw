@@ -55,7 +55,8 @@ except ImportError:
 try:
     from micropython import const
 except ImportError:
-    def const(x): return x
+    def const(x):
+        return x
 
 from adafruit_bus_device.i2c_device import I2CDevice
 
@@ -159,6 +160,7 @@ class Seesaw:
                                .format(chip_id, _HW_ID_CODE))
 
         pid = self.get_version() >> 16
+        # pylint: disable=import-outside-toplevel
         if pid == _CRICKIT_PID:
             from adafruit_seesaw.crickit import Crickit_Pinmap
             self.pin_mapping = Crickit_Pinmap
@@ -168,6 +170,7 @@ class Seesaw:
         else:
             from adafruit_seesaw.samd09 import SAMD09_Pinmap
             self.pin_mapping = SAMD09_Pinmap
+        # pylint: enable=import-outside-toplevel
 
     def get_options(self):
         """Retrieve the 'options' word from the SeeSaw board"""

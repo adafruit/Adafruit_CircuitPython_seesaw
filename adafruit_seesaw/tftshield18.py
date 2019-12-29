@@ -31,7 +31,8 @@ import board
 try:
     from micropython import const
 except ImportError:
-    def const(x): return x
+    def const(x):
+        return x
 from adafruit_seesaw.seesaw import Seesaw
 
 __version__ = "0.0.0-auto.0"
@@ -70,7 +71,7 @@ class TFTShield18(Seesaw):
                         (1 << _BUTTON_C))
     except TypeError:
 # During Sphinx build, the following error occurs:
-#  File "/home/jepler/src/Adafruit_CircuitPython_seesaw/adafruit_seesaw/tftshield18.py", line 60, in TFTShield18
+#  File ".../tftshield18.py", line 60, in TFTShield18
 #    (1 << _BUTTON_B) |
 # TypeError: unsupported operand type(s) for <<: 'int' and '_MockObject'
         _button_mask = 0xff

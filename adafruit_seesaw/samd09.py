@@ -29,7 +29,8 @@
 try:
     from micropython import const
 except ImportError:
-    def const(x): return x
+    def const(x):
+        return x
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
@@ -50,7 +51,7 @@ class SAMD09_Pinmap:
 
     It is also a reference for the capabilities of each pin."""
 
-    """The pins capable of analog output"""
+    #: The pins capable of analog output
     analog_pins = (_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
                    _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN)
 

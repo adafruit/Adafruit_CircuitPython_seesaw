@@ -63,7 +63,7 @@ class DigitalIO:
         """Switch the pin to input mode"""
         if pull == digitalio.Pull.DOWN:
             raise ValueError("Pull Down currently not supported")
-        elif pull == digitalio.Pull.UP:
+        if pull == digitalio.Pull.UP:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
         else:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
@@ -116,9 +116,9 @@ class DigitalIO:
     def pull(self, mode):
         if self._direction == digitalio.Direction.OUTPUT:
             raise AttributeError("cannot set pull on an output pin")
-        elif mode == digitalio.Pull.DOWN:
+        if mode == digitalio.Pull.DOWN:
             raise ValueError("Pull Down currently not supported")
-        elif mode == digitalio.Pull.UP:
+        if mode == digitalio.Pull.UP:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
         elif mode is None:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
