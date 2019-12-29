@@ -21,7 +21,15 @@
 # THE SOFTWARE.
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
-from micropython import const
+"""
+`adafruit_seesaw.keypad`
+====================================================
+"""
+
+try:
+    from micropython import const
+except ImportError:
+    def const(x): return x
 from adafruit_seesaw.seesaw import Seesaw
 
 __version__ = "0.0.0-auto.0"
@@ -38,16 +46,30 @@ _KEYPAD_FIFO = const(0x10)
 
 # pylint: disable=too-few-public-methods
 class KeyEvent:
+    """Holds information about a key event in its properties
+
+       :param int num: The number of the key
+       :param int edge: One of the EDGE propertes of `adafruit_seesaw.keypad.Keypad`
+    """
     def __init__(self, num, edge):
         self.number = int(num)
         self.edge = int(edge)
 # pylint: enable=too-few-public-methods
 
 class Keypad(Seesaw):
+    """On compatible SeeSaw devices, reads from a keypad.
 
+       :param ~busio.I2C i2c_bus: Bus the SeeSaw is connected to
+       :param int addr: I2C address of the SeeSaw device
+       :param ~digitalio.DigitalInOut drdy: Pin connected to SeeSaw's 'ready' output"""
+
+    """Indicates that the key is currently pressed"""
     EDGE_HIGH = 0
+    """Indicates that the key is currently released"""
     EDGE_LOW = 1
+    """Indicates that the key was recently pressed"""
     EDGE_FALLING = 2
+    """Indicates that the key was recently released"""
     EDGE_RISING = 3
 
     def __init__(self, i2c_bus, addr=0x49, drdy=None):
@@ -56,6 +78,7 @@ class Keypad(Seesaw):
 
     @property
     def interrupt_enabled(self):
+        """Retrieve or set the interrupt enable flag"""
         return self._interrupt_enabled
 
     @interrupt_enabled.setter
@@ -71,6 +94,7 @@ class Keypad(Seesaw):
 
     @property
     def count(self):
+        """Retrieve or set the number of keys"""
         return self.read8(_KEYPAD_BASE, _KEYPAD_COUNT)
 
     # pylint: disable=unused-argument, no-self-use
@@ -80,6 +104,12 @@ class Keypad(Seesaw):
     # pylint: enable=unused-argument, no-self-use
 
     def set_event(self, key, edge, enable):
+        """Control which kinds of events are set
+
+           :param int key: The key number
+           :param int edge: The type of event
+           :param bool enable: True to enable the event, False to disable it"""
+
         if enable not in (True, False):
             raise ValueError("event enable must be True or False")
         if edge > 3 or edge < 0:
@@ -92,6 +122,9 @@ class Keypad(Seesaw):
         self.write(_KEYPAD_BASE, _KEYPAD_EVENT, cmd)
 
     def read_keypad(self, num):
+        """Read data from the keypad
+
+        :param int num: The number of bytes to read"""
         ret = bytearray(num)
         self.read(_KEYPAD_BASE, _KEYPAD_FIFO, ret)
         return ret

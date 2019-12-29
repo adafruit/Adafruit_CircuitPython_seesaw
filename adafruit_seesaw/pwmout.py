@@ -21,6 +21,11 @@
 # THE SOFTWARE.
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods,too-few-public-methods
 
+"""
+`adafruit_seesaw.pwmout`
+====================================================
+"""
+
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
@@ -34,7 +39,7 @@ class PWMOut:
 
     @property
     def frequency(self):
-        """The overall PWM frequency in herz."""
+        """The overall PWM frequency in Hertz."""
         return self._frequency
 
     @frequency.setter

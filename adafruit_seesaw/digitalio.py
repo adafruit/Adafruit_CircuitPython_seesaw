@@ -21,12 +21,26 @@
 # THE SOFTWARE.
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
+"""
+`adafruit_seesaw.digitalio`
+====================================================
+"""
+
 import digitalio
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
 class DigitalIO:
+    """CircuitPython-compatible class for digital I/O pins
+
+    This class is intended to be a compatible subset of `digitalio.DigitalInOut`.
+
+    Due to technical limitations, PULL_DOWNs are not supported.
+
+    :param ~adafruit_seesaw.seesaw.Seesaw seesaw: The device
+    :param int pin: The pin number on the device
+"""
     def __init__(self, seesaw, pin):
         self._seesaw = seesaw
         self._pin = pin
@@ -39,12 +53,14 @@ class DigitalIO:
         pass
 
     def switch_to_output(self, value=False, drive_mode=digitalio.DriveMode.PUSH_PULL):
+        """Switch the pin to output mode"""
         self._seesaw.pin_mode(self._pin, self._seesaw.OUTPUT)
         self._seesaw.digital_write(self._pin, value)
         self._drive_mode = drive_mode
         self._pull = None
 
     def switch_to_input(self, pull=None):
+        """Switch the pin to input mode"""
         if pull == digitalio.Pull.DOWN:
             raise ValueError("Pull Down currently not supported")
         elif pull == digitalio.Pull.UP:
@@ -55,6 +71,7 @@ class DigitalIO:
 
     @property
     def direction(self):
+        """Retrieve or set the direction of the pin"""
         return self._direction
 
     @direction.setter
@@ -69,6 +86,7 @@ class DigitalIO:
 
     @property
     def value(self):
+        """Retrieve or set the value of the pin"""
         if self._direction == digitalio.Direction.OUTPUT:
             return self._value
         return self._seesaw.digital_read(self._pin)
@@ -82,6 +100,7 @@ class DigitalIO:
 
     @property
     def drive_mode(self):
+        """Retrieve or set the drive mode of an output pin"""
         return self._drive_mode
 
     @drive_mode.setter
@@ -90,6 +109,7 @@ class DigitalIO:
 
     @property
     def pull(self):
+        """Retrieve or set the pull mode of an input pin"""
         return self._pull
 
     @pull.setter

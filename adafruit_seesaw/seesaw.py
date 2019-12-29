@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-`seesaw`
+`adafruit_seesaw.seesaw`
 ====================================================
 
 An I2C to whatever helper chip.
@@ -37,8 +37,8 @@ Implementation Notes
 
 **Software and Dependencies:**
 
-* Adafruit CircuitPython firmware for the ESP8622 and M0-based boards:
-  https://github.com/adafruit/circuitpython/releases
+* Adafruit CircuitPython firmware: https://circuitpython.org/
+* or Adafruit Blinka: https://circuitpython.org/blinka
 * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
 
@@ -52,7 +52,11 @@ try:
     import struct
 except ImportError:
     import ustruct as struct
-from micropython import const
+try:
+    from micropython import const
+except ImportError:
+    def const(x): return x
+
 from adafruit_bus_device.i2c_device import I2CDevice
 
 __version__ = "0.0.0-auto.0"
@@ -127,7 +131,8 @@ class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
 
        :param ~busio.I2C i2c_bus: Bus the SeeSaw is connected to
-       :param int addr: I2C address of the SeeSaw device"""
+       :param int addr: I2C address of the SeeSaw device
+       :param ~digitalio.DigitalInOut drdy: Pin connected to SeeSaw's 'ready' output"""
     INPUT = const(0x00)
     OUTPUT = const(0x01)
     INPUT_PULLUP = const(0x02)
@@ -165,35 +170,41 @@ class Seesaw:
             self.pin_mapping = SAMD09_Pinmap
 
     def get_options(self):
+        """Retrieve the 'options' word from the SeeSaw board"""
         buf = bytearray(4)
         self.read(_STATUS_BASE, _STATUS_OPTIONS, buf)
         ret = struct.unpack(">I", buf)[0]
         return ret
 
     def get_version(self):
+        """Retrieve the 'version' word from the SeeSaw board"""
         buf = bytearray(4)
         self.read(_STATUS_BASE, _STATUS_VERSION, buf)
         ret = struct.unpack(">I", buf)[0]
         return ret
 
     def pin_mode(self, pin, mode):
+        """Set the mode of a pin by number"""
         if pin >= 32:
             self.pin_mode_bulk_b(1 << (pin - 32), mode)
         else:
             self.pin_mode_bulk(1 << pin, mode)
 
     def digital_write(self, pin, value):
+        """Set the value of an output pin by number"""
         if pin >= 32:
             self.digital_write_bulk_b(1 << (pin - 32), value)
         else:
             self.digital_write_bulk(1 << pin, value)
 
     def digital_read(self, pin):
+        """Get the value of an input pin by number"""
         if pin >= 32:
             return self.digital_read_bulk_b((1 << (pin - 32))) != 0
         return self.digital_read_bulk((1 << pin)) != 0
 
     def digital_read_bulk(self, pins):
+        """Get the values of all the pins on the 'A' port as a bitmask"""
         buf = bytearray(4)
         self.read(_GPIO_BASE, _GPIO_BULK, buf)
         buf[0] = buf[0] & 0x3F
@@ -201,6 +212,7 @@ class Seesaw:
         return ret & pins
 
     def digital_read_bulk_b(self, pins):
+        """Get the values of all the pins on the 'B' port as a bitmask"""
         buf = bytearray(8)
         self.read(_GPIO_BASE, _GPIO_BULK, buf)
         ret = struct.unpack(">I", buf[4:])[0]
@@ -208,6 +220,7 @@ class Seesaw:
 
 
     def set_GPIO_interrupts(self, pins, enabled):
+        """Enable or disable the GPIO interrupt"""
         cmd = struct.pack(">I", pins)
         if enabled:
             self.write(_GPIO_BASE, _GPIO_INTENSET, cmd)
@@ -215,6 +228,7 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
 
     def analog_read(self, pin):
+        """Read the value of an analog pin by number"""
         buf = bytearray(2)
         if pin not in self.pin_mapping.analog_pins:
             raise ValueError("Invalid ADC pin")
@@ -225,6 +239,7 @@ class Seesaw:
         return ret
 
     def touch_read(self, pin):
+        """Read the value of a touch pin by number"""
         buf = bytearray(2)
 
         if pin not in self.pin_mapping.touch_pins:
@@ -235,6 +250,7 @@ class Seesaw:
         return ret
 
     def moisture_read(self):
+        """Read the value of the moisture sensor"""
         buf = bytearray(2)
 
         self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, .005)
@@ -275,12 +291,15 @@ class Seesaw:
             raise ValueError("Invalid pin mode")
 
     def pin_mode_bulk(self, pins, mode):
+        """Set the mode of all the pins on the 'A' port as a bitmask"""
         self._pin_mode_bulk_x(4, 0, pins, mode)
 
     def pin_mode_bulk_b(self, pins, mode):
+        """Set the mode of all the pins on the 'B' port as a bitmask"""
         self._pin_mode_bulk_x(8, 4, pins, mode)
 
     def digital_write_bulk(self, pins, value):
+        """Set the mode of pins on the 'A' port as a bitmask"""
         cmd = struct.pack(">I", pins)
         if value:
             self.write(_GPIO_BASE, _GPIO_BULK_SET, cmd)
@@ -289,6 +308,7 @@ class Seesaw:
 
 
     def digital_write_bulk_b(self, pins, value):
+        """Set the mode of pins on the 'B' port as a bitmask"""
         cmd = bytearray(8)
         cmd[4:] = struct.pack(">I", pins)
         if value:
@@ -297,6 +317,7 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
 
     def analog_write(self, pin, value):
+        """Set the value of an analog output by number"""
         pin_found = False
         if self.pin_mapping.pwm_width == 16:
             if pin in self.pin_mapping.pwm_pins:
@@ -313,6 +334,7 @@ class Seesaw:
         time.sleep(.001)
 
     def get_temp(self):
+        """Read the temperature"""
         buf = bytearray(4)
         self.read(_STATUS_BASE, _STATUS_TEMP, buf, .005)
         buf[0] = buf[0] & 0x3F
@@ -320,6 +342,7 @@ class Seesaw:
         return 0.00001525878 * ret
 
     def set_pwm_freq(self, pin, freq):
+        """Set the PWM frequency of a pin by number"""
         if pin in self.pin_mapping.pwm_pins:
             cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (freq >> 8), freq & 0xFF])
             self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
@@ -343,36 +366,45 @@ class Seesaw:
     #     return self.read8(SEESAW_SERCOM0_BASE + sercom, SEESAW_SERCOM_DATA)
 
     def set_i2c_addr(self, addr):
+        """Store a new address in the device's EEPROM and reboot it."""
         self.eeprom_write8(_EEPROM_I2C_ADDR, addr)
         time.sleep(.250)
         self.i2c_device.device_address = addr
         self.sw_reset()
 
     def get_i2c_addr(self):
+        """Return the device's I2C address stored in its EEPROM"""
         return self.read8(_EEPROM_BASE, _EEPROM_I2C_ADDR)
 
     def eeprom_write8(self, addr, val):
+        """Write a single byte directly to the device's EEPROM"""
         self.eeprom_write(addr, bytearray([val]))
 
     def eeprom_write(self, addr, buf):
+        """Write multiple bytes directly to the device's EEPROM"""
         self.write(_EEPROM_BASE, addr, buf)
 
     def eeprom_read8(self, addr):
+        """Read a single byte directly to the device's EEPROM"""
         return self.read8(_EEPROM_BASE, addr)
 
     def uart_set_baud(self, baud):
+        """Set the serial baudrate of the device"""
         cmd = struct.pack(">I", baud)
         self.write(_SERCOM0_BASE, _SERCOM_BAUD, cmd)
 
     def write8(self, reg_base, reg, value):
+        """Write an arbitrary I2C byte register on the device"""
         self.write(reg_base, reg, bytearray([value]))
 
     def read8(self, reg_base, reg):
+        """Read an arbitrary I2C byte register on the device"""
         ret = bytearray(1)
         self.read(reg_base, reg, ret)
         return ret[0]
 
     def read(self, reg_base, reg, buf, delay=.005):
+        """Read an arbitrary I2C register range on the device"""
         self.write(reg_base, reg)
         if self._drdy is not None:
             while self._drdy.value is False:
@@ -383,6 +415,7 @@ class Seesaw:
             i2c.readinto(buf)
 
     def write(self, reg_base, reg, buf=None):
+        """Write an arbitrary I2C register range on the device"""
         full_buffer = bytearray([reg_base, reg])
         if buf is not None:
             full_buffer += buf
