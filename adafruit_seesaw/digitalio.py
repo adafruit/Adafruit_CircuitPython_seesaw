@@ -45,7 +45,7 @@ class DigitalIO:
         self._seesaw = seesaw
         self._pin = pin
         self._drive_mode = digitalio.DriveMode.PUSH_PULL
-        self._direction = False
+        self._direction = digitalio.Direction.INPUT
         self._pull = None
         self._value = False
 
