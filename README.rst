@@ -10,8 +10,8 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-.. image:: https://travis-ci.com/adafruit/Adafruit_CircuitPython_seesaw.svg?branch=master
-    :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_seesaw
+.. image:: https://github.com/adafruit/Adafruit_CircuitPython_seesaw/workflows/Build%20CI/badge.svg
+    :target: https://github.com/adafruit/Adafruit_CircuitPython_seesaw/actions
     :alt: Build Status
 
 CircuitPython module for use with the Adafruit ATSAMD09 seesaw.
