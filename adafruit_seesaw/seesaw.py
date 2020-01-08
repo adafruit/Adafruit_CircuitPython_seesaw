@@ -277,6 +277,7 @@ class Seesaw:
             self.write(_GPIO_BASE, _GPIO_DIRSET_BULK, cmd)
         elif mode == self.INPUT:
             self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)
+            self.write(_GPIO_BASE, _GPIO_PULLENCLR, cmd)
 
         elif mode == self.INPUT_PULLUP:
             self.write(_GPIO_BASE, _GPIO_DIRCLR_BULK, cmd)

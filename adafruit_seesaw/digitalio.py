@@ -45,7 +45,7 @@ class DigitalIO:
         self._seesaw = seesaw
         self._pin = pin
         self._drive_mode = digitalio.DriveMode.PUSH_PULL
-        self._direction = False
+        self._direction = digitalio.Direction.INPUT
         self._pull = None
         self._value = False
 
@@ -62,8 +62,8 @@ class DigitalIO:
     def switch_to_input(self, pull=None):
         """Switch the pin to input mode"""
         if pull == digitalio.Pull.DOWN:
-            raise ValueError("Pull Down currently not supported")
-        if pull == digitalio.Pull.UP:
+            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLDOWN)
+        elif pull == digitalio.Pull.UP:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
         else:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
@@ -117,8 +117,8 @@ class DigitalIO:
         if self._direction == digitalio.Direction.OUTPUT:
             raise AttributeError("cannot set pull on an output pin")
         if mode == digitalio.Pull.DOWN:
-            raise ValueError("Pull Down currently not supported")
-        if mode == digitalio.Pull.UP:
+            self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLDOWN)
+        elif mode == digitalio.Pull.UP:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT_PULLUP)
         elif mode is None:
             self._seesaw.pin_mode(self._pin, self._seesaw.INPUT)
