@@ -204,18 +204,18 @@ class Seesaw:
             return self.digital_read_bulk_b((1 << (pin - 32))) != 0
         return self.digital_read_bulk((1 << pin)) != 0
 
-    def digital_read_bulk(self, pins):
+    def digital_read_bulk(self, pins, delay=0.008):
         """Get the values of all the pins on the 'A' port as a bitmask"""
         buf = bytearray(4)
-        self.read(_GPIO_BASE, _GPIO_BULK, buf)
+        self.read(_GPIO_BASE, _GPIO_BULK, buf, delay=delay)
         buf[0] = buf[0] & 0x3F
         ret = struct.unpack(">I", buf)[0]
         return ret & pins
 
-    def digital_read_bulk_b(self, pins):
+    def digital_read_bulk_b(self, pins, delay=0.008):
         """Get the values of all the pins on the 'B' port as a bitmask"""
         buf = bytearray(8)
-        self.read(_GPIO_BASE, _GPIO_BULK, buf)
+        self.read(_GPIO_BASE, _GPIO_BULK, buf, delay=delay)
         ret = struct.unpack(">I", buf[4:])[0]
         return ret & pins
 
@@ -405,7 +405,7 @@ class Seesaw:
         self.read(reg_base, reg, ret)
         return ret[0]
 
-    def read(self, reg_base, reg, buf, delay=.005):
+    def read(self, reg_base, reg, buf, delay=.008):
         """Read an arbitrary I2C register range on the device"""
         self.write(reg_base, reg)
         if self._drdy is not None:
