@@ -28,11 +28,15 @@
 
 from collections import namedtuple
 import board
+
 try:
     from micropython import const
 except ImportError:
+
     def const(x):
         return x
+
+
 from adafruit_seesaw.seesaw import Seesaw
 
 __version__ = "0.0.0-auto.0"
@@ -55,26 +59,29 @@ _BUTTON_C = const(14)
 
 Buttons = namedtuple("Buttons", "right down left up select a b c")
 
+
 class TFTShield18(Seesaw):
 
     _BACKLIGHT_ON = b"\xFF\xFF"
     _BACKLIGHT_OFF = b"\x00\x00"
 
     try:
-        _button_mask = ((1 << _BUTTON_RIGHT) |
-                        (1 << _BUTTON_DOWN) |
-                        (1 << _BUTTON_LEFT) |
-                        (1 << _BUTTON_UP) |
-                        (1 << _BUTTON_SELECT) |
-                        (1 << _BUTTON_A) |
-                        (1 << _BUTTON_B) |
-                        (1 << _BUTTON_C))
+        _button_mask = (
+            (1 << _BUTTON_RIGHT)
+            | (1 << _BUTTON_DOWN)
+            | (1 << _BUTTON_LEFT)
+            | (1 << _BUTTON_UP)
+            | (1 << _BUTTON_SELECT)
+            | (1 << _BUTTON_A)
+            | (1 << _BUTTON_B)
+            | (1 << _BUTTON_C)
+        )
     except TypeError:
-# During Sphinx build, the following error occurs:
-#  File ".../tftshield18.py", line 60, in TFTShield18
-#    (1 << _BUTTON_B) |
-# TypeError: unsupported operand type(s) for <<: 'int' and '_MockObject'
-        _button_mask = 0xff
+        # During Sphinx build, the following error occurs:
+        #  File ".../tftshield18.py", line 60, in TFTShield18
+        #    (1 << _BUTTON_B) |
+        # TypeError: unsupported operand type(s) for <<: 'int' and '_MockObject'
+        _button_mask = 0xFF
 
     def __init__(self, i2c_bus=board.I2C(), addr=0x2E):
         super(TFTShield18, self).__init__(i2c_bus, addr)
@@ -111,6 +118,18 @@ class TFTShield18(Seesaw):
         Return a set of buttons with current push values
         """
         button_values = self.digital_read_bulk(self._button_mask)
-        return Buttons(*[not button_values & (1 << button) for button in
-                         (_BUTTON_RIGHT, _BUTTON_DOWN, _BUTTON_LEFT, _BUTTON_UP,
-                          _BUTTON_SELECT, _BUTTON_A, _BUTTON_B, _BUTTON_C)])
+        return Buttons(
+            *[
+                not button_values & (1 << button)
+                for button in (
+                    _BUTTON_RIGHT,
+                    _BUTTON_DOWN,
+                    _BUTTON_LEFT,
+                    _BUTTON_UP,
+                    _BUTTON_SELECT,
+                    _BUTTON_A,
+                    _BUTTON_B,
+                    _BUTTON_C,
+                )
+            ]
+        )

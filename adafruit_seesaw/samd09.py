@@ -29,8 +29,10 @@
 try:
     from micropython import const
 except ImportError:
+
     def const(x):
         return x
+
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
@@ -45,6 +47,7 @@ _PWM_1_PIN = const(0x05)
 _PWM_2_PIN = const(0x06)
 _PWM_3_PIN = const(0x07)
 
+
 class SAMD09_Pinmap:
     """This class is automatically used by `adafruit_seesaw.seesaw.Seesaw` when
     a SAMD09 Breakout is detected.
@@ -52,8 +55,12 @@ class SAMD09_Pinmap:
     It is also a reference for the capabilities of each pin."""
 
     #: The pins capable of analog output
-    analog_pins = (_ADC_INPUT_0_PIN, _ADC_INPUT_1_PIN,
-                   _ADC_INPUT_2_PIN, _ADC_INPUT_3_PIN)
+    analog_pins = (
+        _ADC_INPUT_0_PIN,
+        _ADC_INPUT_1_PIN,
+        _ADC_INPUT_2_PIN,
+        _ADC_INPUT_3_PIN,
+    )
 
     """The effective bit resolution of the PWM pins"""
     pwm_width = 8

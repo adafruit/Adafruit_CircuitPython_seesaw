@@ -29,8 +29,11 @@
 try:
     from micropython import const
 except ImportError:
+
     def const(x):
         return x
+
+
 from adafruit_seesaw.seesaw import Seesaw
 
 __version__ = "0.0.0-auto.0"
@@ -52,10 +55,14 @@ class KeyEvent:
        :param int num: The number of the key
        :param int edge: One of the EDGE propertes of `adafruit_seesaw.keypad.Keypad`
     """
+
     def __init__(self, num, edge):
         self.number = int(num)
         self.edge = int(edge)
+
+
 # pylint: enable=too-few-public-methods
+
 
 class Keypad(Seesaw):
     """On compatible SeeSaw devices, reads from a keypad.
@@ -102,6 +109,7 @@ class Keypad(Seesaw):
     @count.setter
     def count(self, value):
         raise AttributeError("count is read only")
+
     # pylint: enable=unused-argument, no-self-use
 
     def set_event(self, key, edge, enable):
@@ -118,7 +126,7 @@ class Keypad(Seesaw):
 
         cmd = bytearray(2)
         cmd[0] = key
-        cmd[1] = (1 << (edge+1)) | enable
+        cmd[1] = (1 << (edge + 1)) | enable
 
         self.write(_KEYPAD_BASE, _KEYPAD_EVENT, cmd)
 

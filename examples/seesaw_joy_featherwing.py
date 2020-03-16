@@ -8,16 +8,18 @@ from adafruit_seesaw.seesaw import Seesaw
 
 # pylint: disable=bad-whitespace
 BUTTON_RIGHT = const(6)
-BUTTON_DOWN  = const(7)
-BUTTON_LEFT  = const(9)
-BUTTON_UP    = const(10)
-BUTTON_SEL   = const(14)
+BUTTON_DOWN = const(7)
+BUTTON_LEFT = const(9)
+BUTTON_UP = const(10)
+BUTTON_SEL = const(14)
 # pylint: enable=bad-whitespace
-button_mask = const((1 << BUTTON_RIGHT) |
-                    (1 << BUTTON_DOWN) |
-                    (1 << BUTTON_LEFT) |
-                    (1 << BUTTON_UP) |
-                    (1 << BUTTON_SEL))
+button_mask = const(
+    (1 << BUTTON_RIGHT)
+    | (1 << BUTTON_DOWN)
+    | (1 << BUTTON_LEFT)
+    | (1 << BUTTON_UP)
+    | (1 << BUTTON_SEL)
+)
 
 i2c_bus = busio.I2C(SCL, SDA)
 
@@ -32,7 +34,7 @@ while True:
     x = ss.analog_read(2)
     y = ss.analog_read(3)
 
-    if  (abs(x - last_x) > 3) or (abs(y - last_y) > 3):
+    if (abs(x - last_x) > 3) or (abs(y - last_y) > 3):
         print(x, y)
         last_x = x
         last_y = y
@@ -53,4 +55,4 @@ while True:
     if not buttons & (1 << BUTTON_SEL):
         print("Button SEL pressed")
 
-    time.sleep(.01)
+    time.sleep(0.01)

@@ -29,6 +29,7 @@
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
+
 class AnalogInput:
     """CircuitPython-compatible class for analog inputs
 
@@ -37,6 +38,7 @@ class AnalogInput:
     :param ~adafruit_seesaw.seesaw.Seesaw seesaw: The device
     :param int pin: The pin number on the device
 """
+
     def __init__(self, seesaw, pin):
         self._seesaw = seesaw
         self._pin = pin
