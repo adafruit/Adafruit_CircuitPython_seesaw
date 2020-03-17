@@ -31,6 +31,7 @@ import digitalio
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
+
 class DigitalIO:
     """CircuitPython-compatible class for digital I/O pins
 
@@ -41,6 +42,7 @@ class DigitalIO:
     :param ~adafruit_seesaw.seesaw.Seesaw seesaw: The device
     :param int pin: The pin number on the device
 """
+
     def __init__(self, seesaw, pin):
         self._seesaw = seesaw
         self._pin = pin

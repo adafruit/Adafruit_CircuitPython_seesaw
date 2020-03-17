@@ -55,8 +55,10 @@ except ImportError:
 try:
     from micropython import const
 except ImportError:
+
     def const(x):
         return x
+
 
 from adafruit_bus_device.i2c_device import I2CDevice
 
@@ -124,9 +126,10 @@ _TOUCH_CHANNEL_OFFSET = const(0x10)
 _HW_ID_CODE = const(0x55)
 _EEPROM_I2C_ADDR = const(0x3F)
 
-#TODO: update when we get real PID
+# TODO: update when we get real PID
 _CRICKIT_PID = const(9999)
 _ROBOHATMM1_PID = const(9998)
+
 
 class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
@@ -134,6 +137,7 @@ class Seesaw:
        :param ~busio.I2C i2c_bus: Bus the SeeSaw is connected to
        :param int addr: I2C address of the SeeSaw device
        :param ~digitalio.DigitalInOut drdy: Pin connected to SeeSaw's 'ready' output"""
+
     INPUT = const(0x00)
     OUTPUT = const(0x01)
     INPUT_PULLUP = const(0x02)
@@ -150,25 +154,33 @@ class Seesaw:
     def sw_reset(self):
         """Trigger a software reset of the SeeSaw chip"""
         self.write8(_STATUS_BASE, _STATUS_SWRST, 0xFF)
-        time.sleep(.500)
+        time.sleep(0.500)
 
         chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
 
         if chip_id != _HW_ID_CODE:
-            raise RuntimeError("Seesaw hardware ID returned (0x{:x}) is not "
-                               "correct! Expected 0x{:x}. Please check your wiring."
-                               .format(chip_id, _HW_ID_CODE))
+            raise RuntimeError(
+                "Seesaw hardware ID returned (0x{:x}) is not "
+                "correct! Expected 0x{:x}. Please check your wiring.".format(
+                    chip_id, _HW_ID_CODE
+                )
+            )
 
         pid = self.get_version() >> 16
+        # pylint: disable=import-outside-toplevel
         if pid == _CRICKIT_PID:
             from adafruit_seesaw.crickit import Crickit_Pinmap
+
             self.pin_mapping = Crickit_Pinmap
         elif pid == _ROBOHATMM1_PID:
             from adafruit_seesaw.robohat import MM1_Pinmap
+
             self.pin_mapping = MM1_Pinmap
         else:
             from adafruit_seesaw.samd09 import SAMD09_Pinmap
+
             self.pin_mapping = SAMD09_Pinmap
+        # pylint: enable=import-outside-toplevel
 
     def get_options(self):
         """Retrieve the 'options' word from the SeeSaw board"""
@@ -219,7 +231,6 @@ class Seesaw:
         ret = struct.unpack(">I", buf[4:])[0]
         return ret & pins
 
-
     def set_GPIO_interrupts(self, pins, enabled):
         """Enable or disable the GPIO interrupt"""
         cmd = struct.pack(">I", pins)
@@ -234,9 +245,13 @@ class Seesaw:
         if pin not in self.pin_mapping.analog_pins:
             raise ValueError("Invalid ADC pin")
 
-        self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + self.pin_mapping.analog_pins.index(pin), buf)
+        self.read(
+            _ADC_BASE,
+            _ADC_CHANNEL_OFFSET + self.pin_mapping.analog_pins.index(pin),
+            buf,
+        )
         ret = struct.unpack(">H", buf)[0]
-        time.sleep(.001)
+        time.sleep(0.001)
         return ret
 
     def touch_read(self, pin):
@@ -246,7 +261,11 @@ class Seesaw:
         if pin not in self.pin_mapping.touch_pins:
             raise ValueError("Invalid touch pin")
 
-        self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET + self.pin_mapping.touch_pins.index(pin), buf)
+        self.read(
+            _TOUCH_BASE,
+            _TOUCH_CHANNEL_OFFSET + self.pin_mapping.touch_pins.index(pin),
+            buf,
+        )
         ret = struct.unpack(">H", buf)[0]
         return ret
 
@@ -254,16 +273,16 @@ class Seesaw:
         """Read the value of the moisture sensor"""
         buf = bytearray(2)
 
-        self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, .005)
+        self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, 0.005)
         ret = struct.unpack(">H", buf)[0]
-        time.sleep(.001)
+        time.sleep(0.001)
 
         # retry if reading was bad
         count = 0
         while ret > 4095:
-            self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, .005)
+            self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, 0.005)
             ret = struct.unpack(">H", buf)[0]
-            time.sleep(.001)
+            time.sleep(0.001)
             count += 1
             if count > 3:
                 raise RuntimeError("Could not get a valid moisture reading.")
@@ -308,7 +327,6 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
 
-
     def digital_write_bulk_b(self, pins, value):
         """Set the mode of pins on the 'B' port as a bitmask"""
         cmd = bytearray(8)
@@ -324,7 +342,9 @@ class Seesaw:
         if self.pin_mapping.pwm_width == 16:
             if pin in self.pin_mapping.pwm_pins:
                 pin_found = True
-                cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (value >> 8), value & 0xFF])
+                cmd = bytearray(
+                    [self.pin_mapping.pwm_pins.index(pin), (value >> 8), value & 0xFF]
+                )
         else:
             if pin in self.pin_mapping.pwm_pins:
                 pin_found = True
@@ -333,12 +353,12 @@ class Seesaw:
         if pin_found is False:
             raise ValueError("Invalid PWM pin")
         self.write(_TIMER_BASE, _TIMER_PWM, cmd)
-        time.sleep(.001)
+        time.sleep(0.001)
 
     def get_temp(self):
         """Read the temperature"""
         buf = bytearray(4)
-        self.read(_STATUS_BASE, _STATUS_TEMP, buf, .005)
+        self.read(_STATUS_BASE, _STATUS_TEMP, buf, 0.005)
         buf[0] = buf[0] & 0x3F
         ret = struct.unpack(">I", buf)[0]
         return 0.00001525878 * ret
@@ -346,7 +366,9 @@ class Seesaw:
     def set_pwm_freq(self, pin, freq):
         """Set the PWM frequency of a pin by number"""
         if pin in self.pin_mapping.pwm_pins:
-            cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), (freq >> 8), freq & 0xFF])
+            cmd = bytearray(
+                [self.pin_mapping.pwm_pins.index(pin), (freq >> 8), freq & 0xFF]
+            )
             self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
         else:
             raise ValueError("Invalid PWM pin")
@@ -370,7 +392,7 @@ class Seesaw:
     def set_i2c_addr(self, addr):
         """Store a new address in the device's EEPROM and reboot it."""
         self.eeprom_write8(_EEPROM_I2C_ADDR, addr)
-        time.sleep(.250)
+        time.sleep(0.250)
         self.i2c_device.device_address = addr
         self.sw_reset()
 
@@ -405,7 +427,7 @@ class Seesaw:
         self.read(reg_base, reg, ret)
         return ret[0]
 
-    def read(self, reg_base, reg, buf, delay=.008):
+    def read(self, reg_base, reg, buf, delay=0.008):
         """Read an arbitrary I2C register range on the device"""
         self.write(reg_base, reg)
         if self._drdy is not None:

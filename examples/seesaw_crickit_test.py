@@ -4,8 +4,8 @@ from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.pwmout import PWMOut
 from adafruit_motor import servo
 
-#from analogio import AnalogOut
-#import board
+# from analogio import AnalogOut
+# import board
 
 i2c_bus = busio.I2C(SCL, SDA)
 ss = Seesaw(i2c_bus)
@@ -53,8 +53,8 @@ test_speaker = False
 
 counter = 0
 
-#analog_out = AnalogOut(board.A0)
-#analog_out.value = 512
+# analog_out = AnalogOut(board.A0)
+# analog_out.value = 512
 
 while True:
     counter = (counter + 1) % 256
@@ -63,11 +63,10 @@ while True:
         print("-------------------- analog -----------------------")
         str_out = ""
         for i in range(8):
-            val = ss.analog_read(CRCKit_adc[i]) * 3.3/1024
+            val = ss.analog_read(CRCKit_adc[i]) * 3.3 / 1024
             str_out = str_out + str(round(val, 2)) + "\t"
 
         print(str_out + "\n")
-
 
     for i in range(4):
         val = ss.touch_read(i)
@@ -116,7 +115,6 @@ while True:
         else:
             print("Stopping speaker")
 
-
     if test_servos:
         if counter % 32 == 0:
             print("-------------------- servos -----------------------")
@@ -128,7 +126,6 @@ while True:
             else:
                 print("SER" + str(servonum) + " RIGHT")
                 servos[servonum].angle = 180
-
 
     if test_drives:
         if counter % 32 == 0:
@@ -154,10 +151,10 @@ while True:
         else:
             if motor1_dir:
                 ss.analog_write(_CRCKIT_M1_A1, 0)
-                ss.analog_write(_CRCKIT_M1_A2, (255-counter) * 512)
+                ss.analog_write(_CRCKIT_M1_A2, (255 - counter) * 512)
             else:
                 ss.analog_write(_CRCKIT_M1_A2, 0)
-                ss.analog_write(_CRCKIT_M1_A1, (255-counter) * 512)
+                ss.analog_write(_CRCKIT_M1_A1, (255 - counter) * 512)
         if counter == 255:
             print("-------------------- motor 1 -----------------------")
             motor1_dir = not motor1_dir
@@ -172,10 +169,10 @@ while True:
         else:
             if motor2_dir:
                 ss.analog_write(_CRCKIT_M1_B1, 0)
-                ss.analog_write(_CRCKIT_M1_B2, (255-counter) * 512)
+                ss.analog_write(_CRCKIT_M1_B2, (255 - counter) * 512)
             else:
                 ss.analog_write(_CRCKIT_M1_B2, 0)
-                ss.analog_write(_CRCKIT_M1_B1, (255-counter) * 512)
+                ss.analog_write(_CRCKIT_M1_B1, (255 - counter) * 512)
         if counter == 255:
             print("-------------------- motor 2 -----------------------")
             motor2_dir = not motor2_dir

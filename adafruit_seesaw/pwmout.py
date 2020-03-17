@@ -29,8 +29,10 @@
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
+
 class PWMOut:
     """A single seesaw channel that matches the :py:class:`~pulseio.PWMOut` API."""
+
     def __init__(self, seesaw, pin):
         self._seesaw = seesaw
         self._pin = pin
@@ -57,7 +59,7 @@ class PWMOut:
 
     @duty_cycle.setter
     def duty_cycle(self, value):
-        if not 0 <= value <= 0xffff:
+        if not 0 <= value <= 0xFFFF:
             raise ValueError("Must be 0 to 65535")
         self._seesaw.analog_write(self._pin, value)
         self._dc = value

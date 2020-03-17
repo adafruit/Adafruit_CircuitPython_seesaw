@@ -33,8 +33,10 @@ except ImportError:
 try:
     from micropython import const
 except ImportError:
+
     def const(x):
         return x
+
 
 __version__ = "1.2.3"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
@@ -58,6 +60,7 @@ RGBW = (0, 1, 2, 3)
 GRBW = (1, 0, 2, 3)
 """Green Red Blue White"""
 
+
 class NeoPixel:
     """Control NeoPixels connected to a seesaw
 
@@ -70,7 +73,18 @@ class NeoPixel:
     :param tuple pixel_order: The layout of the pixels.
         Use one of the order constants such as RGBW.
 """
-    def __init__(self, seesaw, pin, n, *, bpp=3, brightness=1.0, auto_write=True, pixel_order=None):
+
+    def __init__(
+        self,
+        seesaw,
+        pin,
+        n,
+        *,
+        bpp=3,
+        brightness=1.0,
+        auto_write=True,
+        pixel_order=None
+    ):
         # TODO: brightness not yet implemented.
         self._seesaw = seesaw
         self._pin = pin
@@ -82,7 +96,7 @@ class NeoPixel:
 
         cmd = bytearray([pin])
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_PIN, cmd)
-        cmd = struct.pack(">H", n*self._bpp)
+        cmd = struct.pack(">H", n * self._bpp)
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF_LENGTH, cmd)
 
     @property
@@ -109,9 +123,9 @@ class NeoPixel:
         struct.pack_into(">H", cmd, 0, key * self._bpp)
         if isinstance(color, int):
             w = color >> 24
-            r = (color >> 16) & 0xff
-            g = (color >> 8) & 0xff
-            b = color & 0xff
+            r = (color >> 16) & 0xFF
+            g = (color >> 8) & 0xFF
+            b = color & 0xFF
         else:
             if self._bpp == 3:
                 r, g, b = color
