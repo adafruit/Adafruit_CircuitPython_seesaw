@@ -50,7 +50,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "Adafruit SEESAW Library"
+project = "Adafruit seesaw Library"
 copyright = "2017 Dean Miller"
 author = "Dean Miller"
 
@@ -125,7 +125,7 @@ html_static_path = ["_static"]
 html_favicon = "_static/favicon.ico"
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "AdafruitSEESAWLibrarydoc"
+htmlhelp_basename = "AdafruitseesawLibrarydoc"
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -150,8 +150,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "AdafruitSEESAWLibrary.tex",
-        "Adafruit SEESAW Library Documentation",
+        "Adafruitseesawibrary.tex",
+        "Adafruit seesaw Library Documentation",
         author,
         "manual",
     ),
@@ -164,8 +164,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "adafruitSEESAWlibrary",
-        "Adafruit SEESAW Library Documentation",
+        "adafruitseesawlibrary",
+        "Adafruit seesaw Library Documentation",
         [author],
         1,
     )
