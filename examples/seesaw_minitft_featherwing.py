@@ -5,7 +5,6 @@ from micropython import const
 
 from adafruit_seesaw.seesaw import Seesaw
 
-# pylint: disable=bad-whitespace
 BUTTON_RIGHT = const(7)
 BUTTON_DOWN = const(4)
 BUTTON_LEFT = const(3)
@@ -14,7 +13,6 @@ BUTTON_SEL = const(11)
 BUTTON_A = const(10)
 BUTTON_B = const(9)
 
-# pylint: enable=bad-whitespace
 button_mask = const(
     (1 << BUTTON_RIGHT)
     | (1 << BUTTON_DOWN)
