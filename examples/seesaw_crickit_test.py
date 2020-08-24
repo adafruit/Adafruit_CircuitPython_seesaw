@@ -1,8 +1,8 @@
 from board import SCL, SDA
 import busio
+from adafruit_motor import servo
 from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.pwmout import PWMOut
-from adafruit_motor import servo
 
 # from analogio import AnalogOut
 # import board
