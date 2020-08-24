@@ -84,7 +84,7 @@ class TFTShield18(Seesaw):
         _button_mask = 0xFF
 
     def __init__(self, i2c_bus=board.I2C(), addr=0x2E):
-        super(TFTShield18, self).__init__(i2c_bus, addr)
+        super().__init__(i2c_bus, addr)
         self.pin_mode(_TFTSHIELD_RESET_PIN, self.OUTPUT)
         self.pin_mode_bulk(self._button_mask, self.INPUT_PULLUP)
 
