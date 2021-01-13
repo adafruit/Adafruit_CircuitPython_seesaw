@@ -36,4 +36,3 @@
 
 .. automodule:: adafruit_seesaw.tftshield18
    :members:
-

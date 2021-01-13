@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
+# SPDX-License-Identifier: MIT
+
 # Simple seesaw test using an LED attached to Pin 15.
 #
 # See the seesaw Learn Guide for wiring details:
