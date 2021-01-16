@@ -1,24 +1,7 @@
-# The MIT License (MIT)
+# SPDX-FileCopyrightText: 2018 Dean Miller for Adafruit Industries
 #
-# Copyright (c) 2018 Dean Miller for Adafruit Industries
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# SPDX-License-Identifier: MIT
+
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
 """
@@ -52,8 +35,8 @@ _KEYPAD_FIFO = const(0x10)
 class KeyEvent:
     """Holds information about a key event in its properties
 
-       :param int num: The number of the key
-       :param int edge: One of the EDGE propertes of `adafruit_seesaw.keypad.Keypad`
+    :param int num: The number of the key
+    :param int edge: One of the EDGE propertes of `adafruit_seesaw.keypad.Keypad`
     """
 
     def __init__(self, num, edge):
@@ -67,9 +50,9 @@ class KeyEvent:
 class Keypad(Seesaw):
     """On compatible SeeSaw devices, reads from a keypad.
 
-       :param ~busio.I2C i2c_bus: Bus the SeeSaw is connected to
-       :param int addr: I2C address of the SeeSaw device
-       :param ~digitalio.DigitalInOut drdy: Pin connected to SeeSaw's 'ready' output"""
+    :param ~busio.I2C i2c_bus: Bus the SeeSaw is connected to
+    :param int addr: I2C address of the SeeSaw device
+    :param ~digitalio.DigitalInOut drdy: Pin connected to SeeSaw's 'ready' output"""
 
     #: Indicates that the key is currently pressed
     EDGE_HIGH = 0
@@ -115,9 +98,9 @@ class Keypad(Seesaw):
     def set_event(self, key, edge, enable):
         """Control which kinds of events are set
 
-           :param int key: The key number
-           :param int edge: The type of event
-           :param bool enable: True to enable the event, False to disable it"""
+        :param int key: The key number
+        :param int edge: The type of event
+        :param bool enable: True to enable the event, False to disable it"""
 
         if enable not in (True, False):
             raise ValueError("event enable must be True or False")
