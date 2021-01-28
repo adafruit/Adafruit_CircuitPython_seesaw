@@ -14,7 +14,7 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
 
 class PWMOut:
-    """A single seesaw channel that matches the :py:class:`~pulseio.PWMOut` API."""
+    """A single seesaw channel that matches the :py:class:`~pwmio.PWMOut` API."""
 
     def __init__(self, seesaw, pin):
         self._seesaw = seesaw
