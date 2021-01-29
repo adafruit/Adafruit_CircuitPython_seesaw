@@ -66,7 +66,12 @@ class TFTShield18(Seesaw):
         # TypeError: unsupported operand type(s) for <<: 'int' and '_MockObject'
         _button_mask = 0xFF
 
-    def __init__(self, i2c_bus=board.I2C(), addr=0x2E):
+    def __init__(self, i2c_bus=None, addr=0x2E):
+        if i2c_bus == None:
+            if hasattr(board, "I2C"):
+                i2c_bus = board.I2C
+            else:
+                print("Warning: board has no default I2C bus.")
         super().__init__(i2c_bus, addr)
         self.pin_mode(_TFTSHIELD_RESET_PIN, self.OUTPUT)
         self.pin_mode_bulk(self._button_mask, self.INPUT_PULLUP)
