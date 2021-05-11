@@ -222,6 +222,12 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
 
+    def get_GPIO_interrupt_flag(self, delay=0.008):
+        """Read and clear GPIO interrupts that have fired"""
+        buf = bytearray(4)
+        self.read(_GPIO_BASE, _GPIO_INTFLAG, buf, delay=delay)
+        return struct.unpack(">I", buf)[0]
+
     def analog_read(self, pin):
         """Read the value of an analog pin by number"""
         buf = bytearray(2)
