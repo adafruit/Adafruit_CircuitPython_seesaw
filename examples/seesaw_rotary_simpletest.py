@@ -21,7 +21,7 @@ while True:
     position = seesaw.encoder_position()
     if position != last_position:
         last_position = position
-        print(f"Position: {position}")
+        print("Position: {}".format(position))
 
     if not button.value and not button_held:
         button_held = True
