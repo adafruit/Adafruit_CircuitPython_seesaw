@@ -2,11 +2,10 @@
 # SPDX-License-Identifier: MIT
 
 import board
-import busio
 from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.digitalio import DigitalIO
 
-i2c_bus = busio.I2C(board.SCL, board.SDA)
+i2c_bus = board.I2C()
 
 seesaw = Seesaw(i2c_bus, addr=0x36)
 

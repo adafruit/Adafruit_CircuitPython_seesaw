@@ -7,11 +7,10 @@
 # https://learn.adafruit.com/adafruit-seesaw-atsamd09-breakout?view=all#circuitpython-wiring-and-test
 import time
 
-from board import SCL, SDA
-import busio
+import board
 from adafruit_seesaw.seesaw import Seesaw
 
-i2c_bus = busio.I2C(SCL, SDA)
+i2c_bus = board.I2C()
 
 ss = Seesaw(i2c_bus)
 
