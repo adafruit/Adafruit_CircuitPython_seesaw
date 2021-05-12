@@ -369,19 +369,19 @@ class Seesaw:
         else:
             raise ValueError("Invalid PWM pin")
 
-    def get_encoder_pos(self, encoder=0):
-        """Read the current position of the encoder"""
+    def encoder_position(self, encoder=0):
+        """The current position of the encoder"""
         buf = bytearray(4)
         self.read(_ENCODER_BASE, _ENCODER_POSITION + encoder, buf)
         return struct.unpack(">i", buf)[0]
 
-    def set_encoder_pos(self, pos, encoder=0):
+    def set_encoder_position(self, pos, encoder=0):
         """Set the current position of the encoder"""
         cmd = struct.pack(">i", pos)
         self.write(_ENCODER_BASE, _ENCODER_POSITION + encoder, cmd)
 
-    def get_encoder_delta(self, encoder=0):
-        """Read the change in encoder position since it was last read"""
+    def encoder_delta(self, encoder=0):
+        """The change in encoder position since it was last read"""
         buf = bytearray(4)
         self.read(_ENCODER_BASE, _ENCODER_DELTA + encoder, buf)
         return struct.unpack(">i", buf)[0]
