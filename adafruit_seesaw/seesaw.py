@@ -61,6 +61,7 @@ _DAP_BASE = const(0x0C)
 _EEPROM_BASE = const(0x0D)
 _NEOPIXEL_BASE = const(0x0E)
 _TOUCH_BASE = const(0x0F)
+_ENCODER_BASE = const(0x11)
 
 _GPIO_DIRSET_BULK = const(0x02)
 _GPIO_DIRCLR_BULK = const(0x03)
@@ -108,6 +109,12 @@ _TOUCH_CHANNEL_OFFSET = const(0x10)
 
 _HW_ID_CODE = const(0x55)
 _EEPROM_I2C_ADDR = const(0x3F)
+
+_ENCODER_STATUS = const(0x00)
+_ENCODER_INTENSET = const(0x10)
+_ENCODER_INTENCLR = const(0x20)
+_ENCODER_POSITION = const(0x30)
+_ENCODER_DELTA = const(0x40)
 
 # TODO: update when we get real PID
 _CRICKIT_PID = const(9999)
@@ -361,6 +368,31 @@ class Seesaw:
             self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
         else:
             raise ValueError("Invalid PWM pin")
+
+    def get_encoder_pos(self, encoder=0):
+        """Read the current position of the encoder"""
+        buf = bytearray(4)
+        self.read(_ENCODER_BASE, _ENCODER_POSITION + encoder, buf)
+        return struct.unpack(">i", buf)[0]
+
+    def set_encoder_pos(self, pos, encoder=0):
+        """Set the current position of the encoder"""
+        cmd = struct.pack(">i", pos)
+        self.write(_ENCODER_BASE, _ENCODER_POSITION + encoder, cmd)
+
+    def get_encoder_delta(self, encoder=0):
+        """Read the change in encoder position since it was last read"""
+        buf = bytearray(4)
+        self.read(_ENCODER_BASE, _ENCODER_DELTA + encoder, buf)
+        return struct.unpack(">i", buf)[0]
+
+    def enable_encoder_interrupt(self, encoder=0):
+        """Enable the interrupt to fire when the encoder changes position"""
+        self.write8(_ENCODER_BASE, _ENCODER_INTENSET + encoder, 0x01)
+
+    def disable_encoder_interrupt(self, encoder=0):
+        """Disable the interrupt from firing when the encoder changes"""
+        self.write8(_ENCODER_BASE, _ENCODER_INTENCLR + encoder, 0x01)
 
     # def enable_sercom_data_rdy_interrupt(self, sercom):
     #
