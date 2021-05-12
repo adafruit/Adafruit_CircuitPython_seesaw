@@ -5,6 +5,7 @@ import board
 import busio
 from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.digitalio import DigitalIO
+from adafruit_seesaw.rotaryio import IncrementalEncoder
 
 i2c_bus = busio.I2C(board.SCL, board.SDA)
 
@@ -13,12 +14,13 @@ seesaw = Seesaw(i2c_bus, addr=0x36)
 button = DigitalIO(seesaw, 24)
 button_held = False
 
-last_position = seesaw.encoder_position()
+encoder = IncrementalEncoder(seesaw)
+last_position = None
 
 while True:
 
     # read position of the rotary encoder
-    position = seesaw.encoder_position()
+    position = encoder.position
     if position != last_position:
         last_position = position
         print("Position: {}".format(position))
