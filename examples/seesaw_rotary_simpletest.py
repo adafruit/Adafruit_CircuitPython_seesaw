@@ -11,7 +11,7 @@ i2c_bus = busio.I2C(board.SCL, board.SDA)
 
 seesaw = Seesaw(i2c_bus, addr=0x36)
 
-seesaw_product = (seesaw.get_product() >> 16) & 0xFFFF
+seesaw_product = (seesaw.get_version() >> 16) & 0xFFFF
 print("Found product {}".format(seesaw_product))
 if seesaw_product != 4991:
     print("Wrong firmware loaded?  Expected 4991")
