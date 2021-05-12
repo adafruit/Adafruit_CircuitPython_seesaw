@@ -13,15 +13,15 @@ seesaw = Seesaw(i2c_bus, addr=0x36)
 button = DigitalIO(seesaw, 24)
 button_held = False
 
-last_pos = seesaw.get_encoder_pos()
+last_position = seesaw.encoder_position()
 
 while True:
 
     # read position of the rotary encoder
-    pos = seesaw.get_encoder_pos()
-    if pos != last_pos:
-        last_pos = pos
-        print(f"Position: {pos}")
+    position = seesaw.encoder_position()
+    if position != last_position:
+        last_position = position
+        print(f"Position: {position}")
 
     if not button.value and not button_held:
         button_held = True
