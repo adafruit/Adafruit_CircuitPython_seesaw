@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
 # SPDX-License-Identifier: MIT
 
-from board import SCL, SDA
-import busio
+import board
 from adafruit_motor import servo
 from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.pwmout import PWMOut
@@ -10,7 +9,7 @@ from adafruit_seesaw.pwmout import PWMOut
 # from analogio import AnalogOut
 # import board
 
-i2c_bus = busio.I2C(SCL, SDA)
+i2c_bus = board.I2C()
 ss = Seesaw(i2c_bus)
 pwm1 = PWMOut(ss, 17)
 pwm2 = PWMOut(ss, 16)

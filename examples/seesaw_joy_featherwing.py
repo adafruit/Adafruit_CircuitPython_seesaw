@@ -3,8 +3,7 @@
 
 import time
 
-from board import SCL, SDA
-import busio
+import board
 from micropython import const
 
 from adafruit_seesaw.seesaw import Seesaw
@@ -22,7 +21,7 @@ button_mask = const(
     | (1 << BUTTON_SEL)
 )
 
-i2c_bus = busio.I2C(SCL, SDA)
+i2c_bus = board.I2C()
 
 ss = Seesaw(i2c_bus)
 
