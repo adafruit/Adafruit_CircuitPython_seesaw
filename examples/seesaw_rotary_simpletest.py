@@ -4,20 +4,27 @@
 import board
 from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.digitalio import DigitalIO
+from adafruit_seesaw.rotaryio import IncrementalEncoder
 
 i2c_bus = board.I2C()
 
 seesaw = Seesaw(i2c_bus, addr=0x36)
 
+seesaw_product = (seesaw.get_version() >> 16) & 0xFFFF
+print("Found product {}".format(seesaw_product))
+if seesaw_product != 4991:
+    print("Wrong firmware loaded?  Expected 4991")
+
 button = DigitalIO(seesaw, 24)
 button_held = False
 
-last_position = seesaw.encoder_position()
+encoder = IncrementalEncoder(seesaw)
+last_position = None
 
 while True:
 
     # read position of the rotary encoder
-    position = seesaw.encoder_position()
+    position = encoder.position
     if position != last_position:
         last_position = position
         print("Position: {}".format(position))
