@@ -27,3 +27,7 @@ Here are some other examples using the Seesaw library
 .. literalinclude:: ../examples/seesaw_minitft_featherwing.py
     :caption: examples/seesaw_minitft_featherwing.py
     :linenos:
+
+.. literalinclude:: ../examples/seesaw_rotary_simpletest.py
+    :caption: examples/seesaw_rotary_simpletest.py
+    :linenos:
