@@ -6,7 +6,7 @@
 
 
 """
-`adafruit_seesaw.digitalio`
+`adafruit_seesaw.rotaryio`
 ====================================================
 """
 
