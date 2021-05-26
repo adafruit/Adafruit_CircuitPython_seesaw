@@ -2,7 +2,7 @@
 .. If you created a package, create one automodule per module in the package.
 
 .. automodule:: adafruit_seesaw
-    :members:
+   :members:
 
 .. automodule:: adafruit_seesaw.seesaw
    :members:
@@ -29,6 +29,9 @@
    :members:
 
 .. automodule:: adafruit_seesaw.robohat
+   :members:
+
+.. automodule:: adafruit_seesaw.rotaryio
    :members:
 
 .. automodule:: adafruit_seesaw.samd09
