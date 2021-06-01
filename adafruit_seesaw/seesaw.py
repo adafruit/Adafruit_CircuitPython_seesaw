@@ -373,7 +373,7 @@ class Seesaw:
         """The current position of the encoder"""
         buf = bytearray(4)
         self.read(_ENCODER_BASE, _ENCODER_POSITION + encoder, buf)
-        return struct.unpack(">i", buf)[0]
+        return struct.unpack(">i", buf)[0] * -1
 
     def set_encoder_position(self, pos, encoder=0):
         """Set the current position of the encoder"""
@@ -384,7 +384,7 @@ class Seesaw:
         """The change in encoder position since it was last read"""
         buf = bytearray(4)
         self.read(_ENCODER_BASE, _ENCODER_DELTA + encoder, buf)
-        return struct.unpack(">i", buf)[0]
+        return struct.unpack(">i", buf)[0] * -1
 
     def enable_encoder_interrupt(self, encoder=0):
         """Enable the interrupt to fire when the encoder changes position"""
