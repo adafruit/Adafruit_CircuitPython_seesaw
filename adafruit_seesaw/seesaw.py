@@ -373,6 +373,8 @@ class Seesaw:
         """The current position of the encoder"""
         buf = bytearray(4)
         self.read(_ENCODER_BASE, _ENCODER_POSITION + encoder, buf)
+
+        # using negation to make clockwise rotation positive
         return -struct.unpack(">i", buf)[0]
 
     def set_encoder_position(self, pos, encoder=0):
@@ -384,6 +386,8 @@ class Seesaw:
         """The change in encoder position since it was last read"""
         buf = bytearray(4)
         self.read(_ENCODER_BASE, _ENCODER_DELTA + encoder, buf)
+
+        # using negation to make clockwise rotation positive
         return -struct.unpack(">i", buf)[0]
 
     def enable_encoder_interrupt(self, encoder=0):
