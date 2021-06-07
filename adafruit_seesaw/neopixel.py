@@ -80,6 +80,7 @@ class NeoPixel:
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_PIN, cmd)
         cmd = struct.pack(">H", n * self._bpp)
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF_LENGTH, cmd)
+        self._pre_brightness_color = [None] * n
 
     @property
     def brightness(self):
@@ -90,8 +91,16 @@ class NeoPixel:
     def brightness(self, brightness):
         # pylint: disable=attribute-defined-outside-init
         self._brightness = min(max(brightness, 0.0), 1.0)
-        if self.auto_write:
+
+        # Suppress auto_write while updating brightness.
+        current_auto_write = self.auto_write
+        self.auto_write = False
+        for i in range(self._n):
+            if self._pre_brightness_color[i] is not None:
+                self[i] = self._pre_brightness_color[i]
+        if current_auto_write:
             self.show()
+        self.auto_write = current_auto_write
 
     def deinit(self):
         pass
@@ -113,6 +122,8 @@ class NeoPixel:
                 r, g, b = color
             else:
                 r, g, b, w = color
+
+        self._pre_brightness_color[key] = color
 
         # If all components are the same and we have a white pixel then use it
         # instead of the individual components.
