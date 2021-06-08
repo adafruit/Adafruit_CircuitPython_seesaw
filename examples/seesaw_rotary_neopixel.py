@@ -4,6 +4,7 @@
 """I2C rotary encoder NeoPixel color picker and brightness setting example."""
 import board
 from adafruit_seesaw import seesaw, neopixel, rotaryio, digitalio
+
 try:
     import _pixelbuf
 except ImportError:
