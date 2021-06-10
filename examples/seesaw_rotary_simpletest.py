@@ -1,30 +1,35 @@
 # SPDX-FileCopyrightText: 2021 John Furcean
 # SPDX-License-Identifier: MIT
 
+"""I2C rotary encoder simple test example."""
+
 import board
-from adafruit_seesaw.seesaw import Seesaw
-from adafruit_seesaw.digitalio import DigitalIO
-from adafruit_seesaw.rotaryio import IncrementalEncoder
+from adafruit_seesaw import seesaw, rotaryio, digitalio
 
-i2c_bus = board.I2C()
+# For use with the STEMMA connector on QT Py RP2040
+# import busio
+# i2c = busio.I2C(board.SCL1, board.SDA1)
+# seesaw = seesaw.Seesaw(i2c, 0x36)
 
-seesaw = Seesaw(i2c_bus, addr=0x36)
+seesaw = seesaw.Seesaw(board.I2C(), addr=0x36)
 
 seesaw_product = (seesaw.get_version() >> 16) & 0xFFFF
 print("Found product {}".format(seesaw_product))
 if seesaw_product != 4991:
     print("Wrong firmware loaded?  Expected 4991")
 
-button = DigitalIO(seesaw, 24)
+seesaw.pin_mode(24, seesaw.INPUT_PULLUP)
+button = digitalio.DigitalIO(seesaw, 24)
 button_held = False
 
-encoder = IncrementalEncoder(seesaw)
+encoder = rotaryio.IncrementalEncoder(seesaw)
 last_position = None
 
 while True:
 
-    # read position of the rotary encoder
-    position = encoder.position
+    # negate the position to make clockwise rotation positive
+    position = -encoder.position
+
     if position != last_position:
         last_position = position
         print("Position: {}".format(position))
