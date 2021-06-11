@@ -18,6 +18,7 @@ except ImportError:
 seesaw = seesaw.Seesaw(board.I2C(), 0x36)
 
 encoder = rotaryio.IncrementalEncoder(seesaw)
+seesaw.pin_mode(24, seesaw.INPUT_PULLUP)
 switch = digitalio.DigitalIO(seesaw, 24)
 
 pixel = neopixel.NeoPixel(seesaw, 6, 1)
@@ -27,7 +28,9 @@ last_position = -1
 color = 0  # start at red
 
 while True:
-    position = encoder.position
+
+    # negate the position to make clockwise rotation positive
+    position = -encoder.position
 
     if position != last_position:
         print(position)
