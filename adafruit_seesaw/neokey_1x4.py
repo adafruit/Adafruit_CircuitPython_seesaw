@@ -52,8 +52,10 @@ _NK14_COUNT = const(4)
 # Event class used for both single- and multi-NeoKey_1x4
 _KeyEvent = namedtuple("_KeyEvent", "obj key action".split())
 
+
 def _bits_to_keys(bits):
     return [k for k in range(_NK14_COUNT) if _NK14_KEYS[k] & bits]
+
 
 class NeoKey_1x4(Seesaw):
     """Implements the Seesaw-based four-key I2C keyboard with Neopixel lights
@@ -64,16 +66,15 @@ class NeoKey_1x4(Seesaw):
     :param float brightness: NeoPixel intensity
     :param ~auto_write: NeoPixel auto-show"""
 
-
     #: Indicates that the key was recently released
     RELEASED = 0
     #: Indicates that the key was recently pressed
     PRESSED = 1
 
     def __init__(self, i2c_bus, addr=_NK14_ADDR, *, brightness=1.0, auto_write=True):
-        super().__init__(i2c_bus, addr, None) # drdy omitted from our __init__
+        super().__init__(i2c_bus, addr, None)  # drdy omitted from our __init__
         self._pixels = NeoPixel(
-            self, # we're a child of Seesaw
+            self,  # we're a child of Seesaw
             _NK14_NEOPIXEL,
             _NK14_COUNT,
             pixel_order=GRB,
@@ -123,12 +124,12 @@ class NeoKey_1x4(Seesaw):
 
     def read_keys(self):
         """Read key status from the NeoKey_1x4
-            Invoke callbacks if any keys have just been pressed or released
-            Return lists of keys currently pressed, just pressed and just released"""
+        Invoke callbacks if any keys have just been pressed or released
+        Return lists of keys currently pressed, just pressed and just released"""
         # next several lifted from Adafruit_NeoKey_1x4.cpp
         pressed = self.digital_read_bulk(_NK14_KEYMASK)
-        pressed ^= _NK14_KEYMASK # invert
-        pressed &= _NK14_KEYMASK # re-mask
+        pressed ^= _NK14_KEYMASK  # invert
+        pressed &= _NK14_KEYMASK  # re-mask
         just_pressed = (pressed ^ self._pressed) & pressed
         just_released = (pressed ^ self._pressed) & ~pressed
         self._pressed = pressed
@@ -150,17 +151,20 @@ class NeoKey_1x4(Seesaw):
     def deregister_callback(self, key):
         self._callback[key] = None
 
+
 def _localize(xy):
     """Board coords and key number from x,y coords"""
     x, y = xy
     return ((x // _NK14_COUNT, y), x % _NK14_COUNT)
+
 
 def _globalize(xy, key):
     """Coordinates from board x,y and key number"""
     x, y = xy
     return (x * _NK14_COUNT + key, y)
 
-class MultiNeoKey_1x4():
+
+class MultiNeoKey_1x4:
     """Implements a two-dimensional arrangement of NeoKey_1x4's
 
     :param ~busio.I2C i2c_bus: Bus the NeoKey_1x4 is connected to
@@ -176,7 +180,7 @@ class MultiNeoKey_1x4():
         self._callback = {}
         for y, row in enumerate(addrs):
             for x, i2c_addr in enumerate(row):
-                if i2c_addr is not None: # allow gaps
+                if i2c_addr is not None:  # allow gaps
                     self._nk14[x, y] = NeoKey_1x4(
                         i2c_bus,
                         i2c_addr,
@@ -200,8 +204,8 @@ class MultiNeoKey_1x4():
 
     def read_keys(self):
         """Read key status from all NeoKey_1x4 keys
-            Invoke callbacks if any keys have just been pressed or released
-            Return lists of keys currently pressed, just pressed and just released"""
+        Invoke callbacks if any keys have just been pressed or released
+        Return lists of keys currently pressed, just pressed and just released"""
         pressed = []
         just_pressed = []
         just_released = []
@@ -231,7 +235,7 @@ class MultiNeoKey_1x4():
             try:
                 del self._callback[xy]
             except KeyError:
-                pass # deregistering nothing is okay
+                pass  # deregistering nothing is okay
 
     def deregister_callback(self, xy):
         self.register_callback(xy, None)
