@@ -7,7 +7,6 @@ from rainbowio import colorwheel
 from adafruit_seesaw import seesaw, neopixel, rotaryio, digitalio
 
 
-
 # For use with the STEMMA connector on QT Py RP2040
 # import busio
 # i2c = busio.I2C(board.SCL1, board.SDA1)
