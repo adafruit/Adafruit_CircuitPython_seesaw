@@ -147,9 +147,9 @@ class Seesaw:
         self.write8(_STATUS_BASE, _STATUS_SWRST, 0xFF)
         time.sleep(0.500)
 
-        chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
+        self.chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
 
-        if chip_id not in (_ATTINY8X7_HW_ID_CODE, _SAMD09_HW_ID_CODE):
+        if self.chip_id not in (_ATTINY8X7_HW_ID_CODE, _SAMD09_HW_ID_CODE):
             raise RuntimeError(
                 "Seesaw hardware ID returned (0x{:x}) is not "
                 "correct! Expected 0x{:x} or 0x{:x}. Please check your wiring.".format(
@@ -167,10 +167,12 @@ class Seesaw:
             from adafruit_seesaw.robohat import MM1_Pinmap
 
             self.pin_mapping = MM1_Pinmap
-        else:
+        elif self.chip_id == _SAMD09_HW_ID_CODE:
             from adafruit_seesaw.samd09 import SAMD09_Pinmap
-
             self.pin_mapping = SAMD09_Pinmap
+        elif self.chip_id == _ATTINY8X7_HW_ID_CODE:
+            from adafruit_seesaw.attiny8x7 import ATtiny8x7_Pinmap
+            self.pin_mapping = ATtiny8x7_Pinmap           
         # pylint: enable=import-outside-toplevel
 
     def get_options(self):
@@ -242,9 +244,14 @@ class Seesaw:
         if pin not in self.pin_mapping.analog_pins:
             raise ValueError("Invalid ADC pin")
 
+        if self.chip_id == _ATTINY8X7_HW_ID_CODE:
+            offset = pin
+        elif self.chip_id == _SAMD09_HW_ID_CODE:
+            offset = self.pin_mapping.analog_pins.index(pin)
+
         self.read(
             _ADC_BASE,
-            _ADC_CHANNEL_OFFSET + self.pin_mapping.analog_pins.index(pin),
+            _ADC_CHANNEL_OFFSET + offset,
             buf,
         )
         ret = struct.unpack(">H", buf)[0]
