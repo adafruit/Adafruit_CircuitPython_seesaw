@@ -21,4 +21,4 @@ analog_in = AnalogInput(ss, analogin_pin)
 
 while True:
     print(analog_in.value)
-    time.sleep(.1)
+    time.sleep(0.1)

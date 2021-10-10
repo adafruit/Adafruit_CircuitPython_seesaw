@@ -15,10 +15,10 @@ from adafruit_seesaw import seesaw, neopixel
 i2c_bus = board.I2C()
 ss = seesaw.Seesaw(i2c_bus)
 
-NEOPIXEL_PIN = 6       # change to any pin
-NEOPIXEL_NUM = 30      # no more than 60!
+NEOPIXEL_PIN = 6  # change to any pin
+NEOPIXEL_NUM = 30  # no more than 60!
 pixels = neopixel.NeoPixel(ss, NEOPIXEL_PIN, NEOPIXEL_NUM)
-pixels.brightness = 0.3 # not so brite!
+pixels.brightness = 0.3  # not so brite!
 
 color_offset = 0  # start at red
 

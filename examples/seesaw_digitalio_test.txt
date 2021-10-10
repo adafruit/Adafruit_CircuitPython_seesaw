@@ -28,4 +28,4 @@ led.direction = digitalio.Direction.OUTPUT
 while True:
     # simply set the LED to the same 'value' as the button pin
     led.value = button.value
-    time.sleep(.1)
+    time.sleep(0.1)

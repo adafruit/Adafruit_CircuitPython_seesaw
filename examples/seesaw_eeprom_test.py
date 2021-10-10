@@ -15,13 +15,13 @@ from adafruit_seesaw import seesaw
 i2c_bus = board.I2C()
 ss = seesaw.Seesaw(i2c_bus)
 
-val = ss.eeprom_read8(0x02)   # read from address 2
+val = ss.eeprom_read8(0x02)  # read from address 2
 print("Read 0x%02x from EEPROM address 0x02" % val)
 
 print("Incremening value")
 ss.eeprom_write8(0x02, val + 1)
 
-val = ss.eeprom_read8(0x02)   # read from address 2
+val = ss.eeprom_read8(0x02)  # read from address 2
 print("Second read 0x%02x from EEPROM address 0x02" % val)
 
 while True:
