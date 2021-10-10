@@ -150,7 +150,7 @@ class Seesaw:
             raise RuntimeError(
                 "Seesaw hardware ID returned (0x{:x}) is not "
                 "correct! Expected 0x{:x} or 0x{:x}. Please check your wiring.".format(
-                    chip_id, _SAMD09_HW_ID_CODE, _ATTINY8X7_HW_ID_CODE
+                    self.chip_id, _SAMD09_HW_ID_CODE, _ATTINY8X7_HW_ID_CODE
                 )
             )
 
