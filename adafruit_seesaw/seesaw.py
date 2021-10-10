@@ -166,17 +166,18 @@ class Seesaw:
             self.pin_mapping = MM1_Pinmap
         elif self.chip_id == _SAMD09_HW_ID_CODE:
             from adafruit_seesaw.samd09 import SAMD09_Pinmap
+
             self.pin_mapping = SAMD09_Pinmap
         elif self.chip_id == _ATTINY8X7_HW_ID_CODE:
             from adafruit_seesaw.attiny8x7 import ATtiny8x7_Pinmap
-            self.pin_mapping = ATtiny8x7_Pinmap           
+
+            self.pin_mapping = ATtiny8x7_Pinmap
         # pylint: enable=import-outside-toplevel
 
     def sw_reset(self):
         """Trigger a software reset of the SeeSaw chip"""
         self.write8(_STATUS_BASE, _STATUS_SWRST, 0xFF)
         time.sleep(0.500)
-
 
     def get_options(self):
         """Retrieve the 'options' word from the SeeSaw board"""
@@ -352,7 +353,7 @@ class Seesaw:
             offset = pin
         elif self.chip_id == _SAMD09_HW_ID_CODE:
             offset = self.pin_mapping.pwm_pins.index(pin)
-            
+
         if self.pin_mapping.pwm_width == 16:
             cmd = bytearray([offset, (value >> 8), value & 0xFF])
         else:
