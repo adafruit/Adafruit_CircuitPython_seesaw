@@ -127,25 +127,22 @@ class Seesaw:
 
     :param ~busio.I2C i2c_bus: Bus the SeeSaw is connected to
     :param int addr: I2C address of the SeeSaw device
-    :param ~digitalio.DigitalInOut drdy: Pin connected to SeeSaw's 'ready' output"""
+    :param ~digitalio.DigitalInOut drdy: Pin connected to SeeSaw's 'ready' output
+    :param bool reset: Whether to do a software reset on init"""
 
     INPUT = const(0x00)
     OUTPUT = const(0x01)
     INPUT_PULLUP = const(0x02)
     INPUT_PULLDOWN = const(0x03)
 
-    def __init__(self, i2c_bus, addr=0x49, drdy=None):
+    def __init__(self, i2c_bus, addr=0x49, drdy=None, reset=True):
         self._drdy = drdy
         if drdy is not None:
             drdy.switch_to_input()
 
         self.i2c_device = I2CDevice(i2c_bus, addr)
-        self.sw_reset()
-
-    def sw_reset(self):
-        """Trigger a software reset of the SeeSaw chip"""
-        self.write8(_STATUS_BASE, _STATUS_SWRST, 0xFF)
-        time.sleep(0.500)
+        if reset:
+            self.sw_reset()
 
         self.chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
 
@@ -174,6 +171,12 @@ class Seesaw:
             from adafruit_seesaw.attiny8x7 import ATtiny8x7_Pinmap
             self.pin_mapping = ATtiny8x7_Pinmap           
         # pylint: enable=import-outside-toplevel
+
+    def sw_reset(self):
+        """Trigger a software reset of the SeeSaw chip"""
+        self.write8(_STATUS_BASE, _STATUS_SWRST, 0xFF)
+        time.sleep(0.500)
+
 
     def get_options(self):
         """Retrieve the 'options' word from the SeeSaw board"""
