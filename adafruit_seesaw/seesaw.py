@@ -342,20 +342,19 @@ class Seesaw:
 
     def analog_write(self, pin, value):
         """Set the value of an analog output by number"""
-        pin_found = False
-        if self.pin_mapping.pwm_width == 16:
-            if pin in self.pin_mapping.pwm_pins:
-                pin_found = True
-                cmd = bytearray(
-                    [self.pin_mapping.pwm_pins.index(pin), (value >> 8), value & 0xFF]
-                )
-        else:
-            if pin in self.pin_mapping.pwm_pins:
-                pin_found = True
-                cmd = bytearray([self.pin_mapping.pwm_pins.index(pin), value])
-
-        if pin_found is False:
+        if pin not in self.pin_mapping.pwm_pins:
             raise ValueError("Invalid PWM pin")
+
+        if self.chip_id == _ATTINY8X7_HW_ID_CODE:
+            offset = pin
+        elif self.chip_id == _SAMD09_HW_ID_CODE:
+            offset = self.pin_mapping.pwm_pins.index(pin)
+            
+        if self.pin_mapping.pwm_width == 16:
+            cmd = bytearray([offset, (value >> 8), value & 0xFF])
+        else:
+            cmd = bytearray([offset, value])
+
         self.write(_TIMER_BASE, _TIMER_PWM, cmd)
         time.sleep(0.001)
 

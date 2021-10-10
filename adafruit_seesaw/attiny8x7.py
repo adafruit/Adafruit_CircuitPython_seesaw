@@ -21,12 +21,6 @@ __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
 
-_PWM_0_PIN = const(0x04)
-_PWM_1_PIN = const(0x05)
-_PWM_2_PIN = const(0x06)
-_PWM_3_PIN = const(0x07)
-
-
 class ATtiny8x7_Pinmap:
     """This class is automatically used by `adafruit_seesaw.seesaw.Seesaw` when
     a ATtiny8x7 Breakout is detected.
@@ -37,10 +31,10 @@ class ATtiny8x7_Pinmap:
     analog_pins = (0, 1, 2, 3, 6, 7, 18, 19, 20)
 
     """The effective bit resolution of the PWM pins"""
-    pwm_width = 8
+    pwm_width = 16  # we dont actually use all 16 bits but whatever
 
     """The pins capable of PWM output"""
-    pwm_pins = (_PWM_0_PIN, _PWM_1_PIN, _PWM_2_PIN, _PWM_3_PIN)
+    pwm_pins = (0, 1, 9, 12, 13)
 
     """No pins on this board are capable of touch input"""
     touch_pins = ()
