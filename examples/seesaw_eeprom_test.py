@@ -9,18 +9,17 @@ import time
 import board
 from adafruit_seesaw import seesaw
 
-ss = seesaw.Seesaw(board.I2C())
-
-write_value = 42
-
-value = ss.eeprom_read8(0x02)  # Read from address 2
-print("Read 0x%02x from EEPROM address 0x02" % value)
-
-ss.eeprom_write8(0x02, write_value)  # Write value to address 2
-print("Writing value")
+i2c_bus = board.I2C()
+ss = seesaw.Seesaw(i2c_bus)
 
 value = ss.eeprom_read8(0x02)  # Read from address 2
 print("Read 0x%02x from EEPROM address 0x02" % value)
+
+print("Incrementing value")
+ss.eeprom_write8(0x02, (value + 1) % 0xFF)
+
+value = ss.eeprom_read8(0x02)  # Read from address 2
+print("Second read 0x%02x from EEPROM address 0x02" % value)
 
 while True:
     # Do not write EEPROM in a loop, it has 100k cycle life
