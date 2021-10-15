@@ -3,8 +3,11 @@
 
 # Simple seesaw test using an LED attached to Pin 5 and a button on pin 2
 #
-# See the seesaw Learn Guide for wiring details:
+# See the seesaw Learn Guide for wiring details.
+# For SAMD09:
 # https://learn.adafruit.com/adafruit-seesaw-atsamd09-breakout?view=all#circuitpython-wiring-and-test
+# For ATtiny8x7:
+# https://learn.adafruit.com/adafruit-attiny817-seesaw/digital-input
 
 import time
 import board
@@ -12,8 +15,7 @@ import digitalio
 from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.digitalio import DigitalIO
 
-i2c_bus = board.I2C()
-ss = Seesaw(i2c_bus)
+ss = Seesaw(board.I2C())
 
 button_pin = 2
 led_pin = 5

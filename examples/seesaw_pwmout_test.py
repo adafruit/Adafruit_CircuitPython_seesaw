@@ -5,21 +5,28 @@
 # On the SAMD09 breakout these are pins 5, 6, and 7
 # On the ATtiny8x7 breakout these are pins 0, 1, 9, 12, 13
 #
-# See the seesaw Learn Guide for wiring details:
+# See the seesaw Learn Guide for wiring details.
+# For SAMD09:
 # https://learn.adafruit.com/adafruit-seesaw-atsamd09-breakout?view=all#circuitpython-wiring-and-test
+# For ATtiny8x7:
+# https://learn.adafruit.com/adafruit-attiny817-seesaw/pwmout
 
 import time
 import board
 from adafruit_seesaw import seesaw, pwmout
 
-i2c_bus = board.I2C()
-ss = seesaw.Seesaw(i2c_bus)
+ss = seesaw.Seesaw(board.I2C())
 
-PWM_PIN = 9  # change to a valid PWM output!
-pwm = pwmout.PWMOut(ss, PWM_PIN)
+PWM_PIN = 12  # If desired, change to any valid PWM output!
+led = pwmout.PWMOut(ss, PWM_PIN)
 
+delay = 0.01
 while True:
-    # the API PWM range is 0 to 65535, but we increment by 256 since our
+    # The API PWM range is 0 to 65535, but we increment by 256 since our
     # resolution is often only 8 bits underneath
-    pwm.duty_cycle = (pwm.duty_cycle + 256) % 65536
-    time.sleep(0.01)
+    for cycle in range(0, 65535, 256):  #
+        led.duty_cycle = cycle
+        time.sleep(delay)
+    for cycle in range(65534, 0, -256):
+        led.duty_cycle = cycle
+        time.sleep(delay)
