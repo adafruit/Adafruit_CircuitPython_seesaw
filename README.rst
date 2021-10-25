@@ -57,6 +57,11 @@ Usage Example
 
 See examples/seesaw_simpletest.py for usage example.
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/seesaw/en/latest/>`_.
+
 Contributing
 ============
 
