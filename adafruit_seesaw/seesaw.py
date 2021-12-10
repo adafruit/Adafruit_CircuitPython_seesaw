@@ -242,7 +242,7 @@ class Seesaw:
         self.read(_GPIO_BASE, _GPIO_INTFLAG, buf, delay=delay)
         return struct.unpack(">I", buf)[0]
 
-    def analog_read(self, pin):
+    def analog_read(self, pin, delay=0.008):
         """Read the value of an analog pin by number"""
         buf = bytearray(2)
         if pin not in self.pin_mapping.analog_pins:
@@ -257,9 +257,9 @@ class Seesaw:
             _ADC_BASE,
             _ADC_CHANNEL_OFFSET + offset,
             buf,
+            delay
         )
         ret = struct.unpack(">H", buf)[0]
-        time.sleep(0.001)
         return ret
 
     def touch_read(self, pin):

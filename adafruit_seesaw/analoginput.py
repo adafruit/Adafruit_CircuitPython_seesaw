@@ -21,9 +21,10 @@ class AnalogInput:
     :param ~adafruit_seesaw.seesaw.Seesaw seesaw: The device
     :param int pin: The pin number on the device"""
 
-    def __init__(self, seesaw, pin):
+    def __init__(self, seesaw, pin, delay=0.008):
         self._seesaw = seesaw
         self._pin = pin
+        self._delay = delay
 
     def deinit(self):
         pass
@@ -31,7 +32,7 @@ class AnalogInput:
     @property
     def value(self):
         """The current analog value on the pin, as an integer from 0..65535 (inclusive)"""
-        return self._seesaw.analog_read(self._pin)
+        return self._seesaw.analog_read(self._pin, self._delay)
 
     @property
     def reference_voltage(self):
