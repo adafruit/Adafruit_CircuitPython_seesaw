@@ -253,12 +253,7 @@ class Seesaw:
         elif self.chip_id == _SAMD09_HW_ID_CODE:
             offset = self.pin_mapping.analog_pins.index(pin)
 
-        self.read(
-            _ADC_BASE,
-            _ADC_CHANNEL_OFFSET + offset,
-            buf,
-            delay
-        )
+        self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + offset, buf, delay)
         ret = struct.unpack(">H", buf)[0]
         return ret
 
