@@ -29,12 +29,9 @@ Implementation Notes
 # compatible classes so we won't bother with some lints until then.
 # pylint: disable=missing-docstring,invalid-name,too-many-public-methods,no-name-in-module
 
+import struct
 import time
 
-try:
-    import struct
-except ImportError:
-    import ustruct as struct
 try:
     from micropython import const
 except ImportError:
