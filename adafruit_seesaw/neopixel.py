@@ -8,11 +8,8 @@
 `adafruit_seesaw.neopixel`
 ====================================================
 """
+import struct
 
-try:
-    import struct
-except ImportError:
-    import ustruct as struct
 try:
     from micropython import const
 except ImportError:
