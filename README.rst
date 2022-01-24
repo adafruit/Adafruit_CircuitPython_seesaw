@@ -3,7 +3,7 @@ Introduction
 ============
 
 .. image:: https://readthedocs.org/projects/adafruit-circuitpython-seesaw/badge/?version=latest
-    :target: https://circuitpython.readthedocs.io/projects/seesaw/en/latest/
+    :target: https://docs.circuitpython.org/projects/seesaw/en/latest/
     :alt: Documentation Status
 
 .. image :: https://img.shields.io/discord/327254708534116352.svg
@@ -60,7 +60,7 @@ See examples/seesaw_simpletest.py for usage example.
 Documentation
 =============
 
-API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/seesaw/en/latest/>`_.
+API documentation for this library can be found on `Read the Docs <https://docs.circuitpython.org/projects/seesaw/en/latest/>`_.
 
 Contributing
 ============
