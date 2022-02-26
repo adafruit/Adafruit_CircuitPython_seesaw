@@ -171,10 +171,10 @@ class Seesaw:
             self.pin_mapping = ATtiny8x7_Pinmap
         # pylint: enable=import-outside-toplevel
 
-    def sw_reset(self):
+    def sw_reset(self, post_reset_delay=0.5):
         """Trigger a software reset of the SeeSaw chip"""
         self.write8(_STATUS_BASE, _STATUS_SWRST, 0xFF)
-        time.sleep(0.500)
+        time.sleep(post_reset_delay)
 
     def get_options(self):
         """Retrieve the 'options' word from the SeeSaw board"""
