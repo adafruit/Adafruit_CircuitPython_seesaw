@@ -59,7 +59,7 @@ class NeoPixel:
         pin,
         n,
         *,
-        bpp=3,
+        bpp=None,
         brightness=1.0,
         auto_write=True,
         pixel_order=None
@@ -67,11 +67,13 @@ class NeoPixel:
         # TODO: brightness not yet implemented.
         self._seesaw = seesaw
         self._pin = pin
-        self._bpp = bpp
         self.auto_write = auto_write
         self._n = n
         self._brightness = min(max(brightness, 0.0), 1.0)
         self._pixel_order = GRBW if pixel_order is None else pixel_order
+        self._bpp = len(self._pixel_order) if bpp is None else bpp
+        if self._bpp != len(self._pixel_order):
+            raise ValueError("Pixel order and bpp value do not agree.")
 
         cmd = bytearray([pin])
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_PIN, cmd)
