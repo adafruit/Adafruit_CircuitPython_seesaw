@@ -35,16 +35,14 @@ _NEOPIXEL_SHOW = const(0x05)
 _OUTPUT_BUFFER_SIZE = const(24)
 
 # Pixel color order constants
-RGB = (0, 1, 2)
+RGB = "RGB"
 """Red Green Blue"""
-GRB = (1, 0, 2)
+GRB = "GRB"
 """Green Red Blue"""
-RGBW = (0, 1, 2, 3)
+RGBW = "RGBW"
 """Red Green Blue White"""
-GRBW = (1, 0, 2, 3)
+GRBW = "GRBW"
 """Green Red Blue White"""
-
-_pixel_orders = {GRB:"GRB", RGB:"RGB", RGBW:"RGBW", GRBW:"GRBW"}
 
 class NeoPixel(PixelBuf):
     """Control NeoPixels connected to a seesaw
@@ -71,10 +69,10 @@ class NeoPixel(PixelBuf):
     ):
         self._seesaw = seesaw
         self._pin = pin
-        # convert legacy pixel order into PixelBuf pixel order
         if not pixel_order:
             pixel_order = GRB if bpp == 3 else GRBW
         elif isinstance(pixel_order, tuple):
+            # convert legacy pixel order into PixelBuf pixel order
             order_list = ["RGBW"[order] for order in pixel_order]
             pixel_order = "".join(order_list)
 
