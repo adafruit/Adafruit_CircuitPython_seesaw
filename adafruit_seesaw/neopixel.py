@@ -44,6 +44,7 @@ RGBW = "RGBW"
 GRBW = "GRBW"
 """Green Red Blue White"""
 
+
 class NeoPixel(PixelBuf):
     """Control NeoPixels connected to a seesaw
 
@@ -95,7 +96,7 @@ class NeoPixel(PixelBuf):
         step = _OUTPUT_BUFFER_SIZE - 2
         for i in range(0, len(buffer), step):
             self.output_buffer[0:2] = struct.pack(">H", i)
-            self.output_buffer[2:] = buffer[i:i+step]
+            self.output_buffer[2:] = buffer[i : i + step]
             self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, self.output_buffer)
 
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)
