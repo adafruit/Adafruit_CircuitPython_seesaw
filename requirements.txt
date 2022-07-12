@@ -3,4 +3,5 @@
 # SPDX-License-Identifier: Unlicense
 
 adafruit-circuitpython-busdevice
+adafruit-circuitpython-pixelbuf
 Adafruit-Blinka
