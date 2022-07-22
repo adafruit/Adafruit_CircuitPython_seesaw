@@ -9,6 +9,7 @@
 ====================================================
 """
 import struct
+from adafruit_pixelbuf import PixelBuf
 
 try:
     from micropython import const
@@ -30,18 +31,21 @@ _NEOPIXEL_BUF_LENGTH = const(0x03)
 _NEOPIXEL_BUF = const(0x04)
 _NEOPIXEL_SHOW = const(0x05)
 
+# try lower values if IO errors
+_OUTPUT_BUFFER_SIZE = const(24)
+
 # Pixel color order constants
-RGB = (0, 1, 2)
+RGB = "RGB"
 """Red Green Blue"""
-GRB = (1, 0, 2)
+GRB = "GRB"
 """Green Red Blue"""
-RGBW = (0, 1, 2, 3)
+RGBW = "RGBW"
 """Red Green Blue White"""
-GRBW = (1, 0, 2, 3)
+GRBW = "GRBW"
 """Green Red Blue White"""
 
 
-class NeoPixel:
+class NeoPixel(PixelBuf):
     """Control NeoPixels connected to a seesaw
 
     :param ~adafruit_seesaw.seesaw.Seesaw seesaw: The device
@@ -62,108 +66,40 @@ class NeoPixel:
         bpp=None,
         brightness=1.0,
         auto_write=True,
-        pixel_order=None
+        pixel_order="GRB"
     ):
-        # TODO: brightness not yet implemented.
         self._seesaw = seesaw
         self._pin = pin
-        self.auto_write = auto_write
-        self._n = n
-        self._brightness = min(max(brightness, 0.0), 1.0)
-        self._pixel_order = GRB if pixel_order is None else pixel_order
-        self._bpp = len(self._pixel_order) if bpp is None else bpp
-        if self._bpp != len(self._pixel_order):
-            raise ValueError("Pixel order and bpp value do not agree.")
+        if not pixel_order:
+            pixel_order = GRB if bpp == 3 else GRBW
+        elif isinstance(pixel_order, tuple):
+            # convert legacy pixel order into PixelBuf pixel order
+            order_list = ["RGBW"[order] for order in pixel_order]
+            pixel_order = "".join(order_list)
+
+        super().__init__(
+            size=n,
+            byteorder=pixel_order,
+            brightness=brightness,
+            auto_write=auto_write,
+        )
 
         cmd = bytearray([pin])
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_PIN, cmd)
-        cmd = struct.pack(">H", n * self._bpp)
+        cmd = struct.pack(">H", n * self.bpp)
         self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF_LENGTH, cmd)
-        self._pre_brightness_color = [None] * n
+        self.output_buffer = bytearray(_OUTPUT_BUFFER_SIZE)
 
-    @property
-    def brightness(self):
-        """Overall brightness of the pixel"""
-        return self._brightness
+    def _transmit(self, buffer: bytearray) -> None:
+        """Update the pixels even if auto_write is False"""
 
-    @brightness.setter
-    def brightness(self, brightness):
-        # pylint: disable=attribute-defined-outside-init
-        self._brightness = min(max(brightness, 0.0), 1.0)
+        step = _OUTPUT_BUFFER_SIZE - 2
+        for i in range(0, len(buffer), step):
+            self.output_buffer[0:2] = struct.pack(">H", i)
+            self.output_buffer[2:] = buffer[i : i + step]
+            self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, self.output_buffer)
 
-        # Suppress auto_write while updating brightness.
-        current_auto_write = self.auto_write
-        self.auto_write = False
-        for i in range(self._n):
-            if self._pre_brightness_color[i] is not None:
-                self[i] = self._pre_brightness_color[i]
-        if current_auto_write:
-            self.show()
-        self.auto_write = current_auto_write
+        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)
 
     def deinit(self):
         pass
-
-    def __len__(self):
-        return self._n
-
-    def __setitem__(self, key, color):
-        """Set one pixel to a new value"""
-        cmd = bytearray(2 + self._bpp)
-        struct.pack_into(">H", cmd, 0, key * self._bpp)
-        if isinstance(color, int):
-            w = color >> 24
-            r = (color >> 16) & 0xFF
-            g = (color >> 8) & 0xFF
-            b = color & 0xFF
-        else:
-            if self._bpp == 3:
-                r, g, b = color
-            else:
-                r, g, b, w = color
-
-        self._pre_brightness_color[key] = color
-
-        # If all components are the same and we have a white pixel then use it
-        # instead of the individual components.
-        if self._bpp == 4 and r == g == b and w == 0:
-            w = r
-            r = 0
-            g = 0
-            b = 0
-
-        if self.brightness < 0.99:
-            r = int(r * self.brightness)
-            g = int(g * self.brightness)
-            b = int(b * self.brightness)
-            if self._bpp == 4:
-                w = int(w * self.brightness)
-
-        # Store colors in correct slots
-        cmd[2 + self._pixel_order[0]] = r
-        cmd[2 + self._pixel_order[1]] = g
-        cmd[2 + self._pixel_order[2]] = b
-        if self._bpp == 4:
-            cmd[2 + self._pixel_order[3]] = w
-
-        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_BUF, cmd)
-        if self.auto_write:
-            self.show()
-
-    def __getitem__(self, key):
-        pass
-
-    def fill(self, color):
-        """Set all pixels to the same value"""
-        # Suppress auto_write while filling.
-        current_auto_write = self.auto_write
-        self.auto_write = False
-        for i in range(self._n):
-            self[i] = color
-        if current_auto_write:
-            self.show()
-        self.auto_write = current_auto_write
-
-    def show(self):
-        """Update the pixels even if auto_write is False"""
-        self._seesaw.write(_NEOPIXEL_BASE, _NEOPIXEL_SHOW)
