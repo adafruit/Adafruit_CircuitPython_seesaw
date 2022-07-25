@@ -78,7 +78,7 @@ class NeoPixel(PixelBuf):
             pixel_order = "".join(order_list)
 
         super().__init__(
-            size=n,
+            n,
             byteorder=pixel_order,
             brightness=brightness,
             auto_write=auto_write,
