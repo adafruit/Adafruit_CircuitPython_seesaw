@@ -214,7 +214,11 @@ class Seesaw:
         """Get the values of all the pins on the 'A' port as a bitmask"""
         buf = bytearray(4)
         self.read(_GPIO_BASE, _GPIO_BULK, buf, delay=delay)
-        ret = struct.unpack(">I", buf)[0]
+        try:
+            ret = struct.unpack(">I", buf)[0]
+        except OverflowError:
+            buf[0] = buf[0] & 0x3F
+            ret = struct.unpack(">I", buf)[0]
         return ret & pins
 
     def digital_read_bulk_b(self, pins, delay=0.008):
