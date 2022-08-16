@@ -12,7 +12,7 @@ requires = [
 [project]
 name = "adafruit-circuitpython-seesaw"
 description = "CircuitPython library for controlling a SeeSaw helper chip."
-version = "0.0.0-auto.0"
+version = "0.0.0+auto.0"
 readme = "README.rst"
 authors = [
     {name = "Adafruit Industries", email = "circuitpython@adafruit.com"}
