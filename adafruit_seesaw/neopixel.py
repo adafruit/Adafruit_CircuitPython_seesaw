@@ -20,7 +20,7 @@ except ImportError:
 
 
 ### hack to make sure this module is not placed in root CIRCUITPY/lib folder
-if __file__.split("/")[-2] != "adafruit_seesaw":
+if "." not in __name__:
     raise ImportError("seesaw neopixel being imported from wrong location")
 
 __version__ = "0.0.0+auto.0"
