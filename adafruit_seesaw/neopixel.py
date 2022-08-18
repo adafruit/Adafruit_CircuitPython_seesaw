@@ -18,8 +18,9 @@ except ImportError:
     def const(x):
         return x
 
+
 ### hack to make sure this module is not placed in root CIRCUITPY/lib folder
-if __file__.split('/')[-2] != 'adafruit_seesaw':
+if __file__.split("/")[-2] != "adafruit_seesaw":
     raise ImportError("seesaw neopixel being imported from wrong location")
 
 __version__ = "0.0.0+auto.0"
