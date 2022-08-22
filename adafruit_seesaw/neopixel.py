@@ -19,6 +19,12 @@ except ImportError:
         return x
 
 
+### hack to make sure this module is not placed in root CIRCUITPY/lib folder
+if "." not in __name__:
+    raise ImportError(
+        "seesaw neopixel being imported from unexpected location - is seesaw neopixel use intended?"
+    )
+
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_seesaw.git"
 
