@@ -61,8 +61,14 @@ master_doc = "index"
 
 # General information about the project.
 project = "Adafruit seesaw Library"
+creation_year = "2017"
 current_year = str(datetime.datetime.now().year)
-copyright = current_year + " Dean Miller"
+year_duration = (
+    current_year
+    if current_year == creation_year
+    else creation_year + " - " + current_year
+)
+copyright = year_duration + " Dean Miller"
 author = "Dean Miller"
 
 # The version info for the project you're documenting, acts as replacement for
