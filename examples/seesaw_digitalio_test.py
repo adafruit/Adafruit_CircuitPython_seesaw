@@ -15,7 +15,9 @@ import digitalio
 from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.digitalio import DigitalIO
 
-ss = Seesaw(board.I2C())
+i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
+ss = Seesaw(i2c)
 
 button_pin = 2
 led_pin = 5

@@ -12,7 +12,9 @@ from adafruit_seesaw import seesaw, neopixel, rotaryio, digitalio
 # i2c = busio.I2C(board.SCL1, board.SDA1)
 # seesaw = seesaw.Seesaw(i2c, 0x36)
 
-seesaw = seesaw.Seesaw(board.I2C(), 0x36)
+i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
+seesaw = seesaw.Seesaw(i2c, 0x36)
 
 encoder = rotaryio.IncrementalEncoder(seesaw)
 seesaw.pin_mode(24, seesaw.INPUT_PULLUP)

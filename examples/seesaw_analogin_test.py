@@ -10,7 +10,9 @@ import board
 from adafruit_seesaw.seesaw import Seesaw
 from adafruit_seesaw.analoginput import AnalogInput
 
-ss = Seesaw(board.I2C())
+i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
+ss = Seesaw(i2c)
 
 analogin_pin = 2
 analog_in = AnalogInput(ss, analogin_pin)

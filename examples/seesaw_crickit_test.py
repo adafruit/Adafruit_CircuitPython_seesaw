@@ -9,7 +9,8 @@ from adafruit_seesaw.pwmout import PWMOut
 # from analogio import AnalogOut
 # import board
 
-i2c_bus = board.I2C()
+i2c_bus = board.I2C()  # uses board.SCL and board.SDA
+# i2c_bus = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 ss = Seesaw(i2c_bus)
 pwm1 = PWMOut(ss, 17)
 pwm2 = PWMOut(ss, 16)
