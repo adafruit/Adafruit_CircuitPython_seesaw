@@ -12,7 +12,8 @@ from adafruit_seesaw.pwmout import PWMOut
 delay = 0.01
 
 # For most boards.
-i2c = board.I2C()
+i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 
 # For the QT Py RP2040, QT Py ESP32-S2, other boards that have SCL1/SDA1 as the STEMMA QT port.
 # import busio
