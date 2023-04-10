@@ -117,7 +117,8 @@ _ENCODER_DELTA = const(0x40)
 # TODO: update when we get real PID
 _CRICKIT_PID = const(9999)
 _ROBOHATMM1_PID = const(9998)
-
+_5690_PID = const(5690)
+_5681_PID = const(5681)
 
 class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
@@ -161,6 +162,10 @@ class Seesaw:
             from adafruit_seesaw.robohat import MM1_Pinmap
 
             self.pin_mapping = MM1_Pinmap
+        elif pid == _5690_PID or pid == _5681_PID:
+            from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap
+
+            self.pin_mapping = ATtinyx16_Pinmap
         elif self.chip_id == _SAMD09_HW_ID_CODE:
             from adafruit_seesaw.samd09 import SAMD09_Pinmap
 
