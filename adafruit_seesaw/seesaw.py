@@ -120,6 +120,7 @@ _ROBOHATMM1_PID = const(9998)
 _5690_PID = const(5690)
 _5681_PID = const(5681)
 
+
 class Seesaw:
     """Driver for Seesaw i2c generic conversion trip
 
@@ -162,7 +163,7 @@ class Seesaw:
             from adafruit_seesaw.robohat import MM1_Pinmap
 
             self.pin_mapping = MM1_Pinmap
-        elif pid == _5690_PID or pid == _5681_PID:
+        elif pid in (_5690_PID, _5681_PID):
             from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap
 
             self.pin_mapping = ATtinyx16_Pinmap
