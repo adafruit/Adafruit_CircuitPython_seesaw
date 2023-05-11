@@ -28,7 +28,6 @@ encoder = rotaryio.IncrementalEncoder(seesaw)
 last_position = None
 
 while True:
-
     # negate the position to make clockwise rotation positive
     position = -encoder.position
 

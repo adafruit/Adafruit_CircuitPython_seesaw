@@ -44,7 +44,6 @@ Buttons = namedtuple("Buttons", "right down left up select a b c")
 
 
 class TFTShield18(Seesaw):
-
     _BACKLIGHT_ON = b"\xFF\xFF"
     _BACKLIGHT_OFF = b"\x00\x00"
 

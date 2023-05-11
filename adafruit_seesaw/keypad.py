@@ -31,6 +31,7 @@ _KEYPAD_INTENCLR = const(0x03)
 _KEYPAD_COUNT = const(0x04)
 _KEYPAD_FIFO = const(0x10)
 
+
 # pylint: disable=too-few-public-methods
 class KeyEvent:
     """Holds information about a key event in its properties

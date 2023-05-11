@@ -27,7 +27,6 @@ last_position = -1
 color = 0  # start at red
 
 while True:
-
     # negate the position to make clockwise rotation positive
     position = -encoder.position
 

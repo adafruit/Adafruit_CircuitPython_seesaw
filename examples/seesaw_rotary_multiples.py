@@ -37,7 +37,6 @@ pixel2.fill(0x0000FF)
 
 
 while True:
-
     # negate the position to make clockwise rotation positive
     position1 = -encoder1.position
     position2 = -encoder2.position
