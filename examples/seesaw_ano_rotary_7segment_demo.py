@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2021 John Furcean
 # SPDX-License-Identifier: MIT
 
-"""I2C ANO rotary encoder simple test example."""
+"""I2C ANO rotary encoder with 7 segment display example."""
 
 import board
 from adafruit_ht16k33 import segments
