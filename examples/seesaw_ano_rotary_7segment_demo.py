@@ -4,8 +4,8 @@
 """I2C ANO rotary encoder simple test example."""
 
 import board
-from adafruit_seesaw import seesaw, rotaryio, digitalio
 from adafruit_ht16k33 import segments
+from adafruit_seesaw import seesaw, rotaryio, digitalio
 
 # For use with the STEMMA connector on QT Py RP2040
 # import busio
