@@ -54,8 +54,8 @@ while True:
     for b in range(5):
         if not buttons[b].value and button_states[b] is False:
             button_states[b] = True
-            print("%s button pressed" % (button_names[b]))
+            print("{} button pressed".format(button_names[b]))
 
         if buttons[b].value and button_states[b] is True:
             button_states[b] = False
-            print("%s button released" % (button_names[b]))
+            print("{} button released".format(button_names[b]))

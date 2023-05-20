@@ -52,15 +52,15 @@ while True:
 
     if position != last_position:
         last_position = position
-        display.print("   %s" % str(position))
+        display.print("   {}".format(position))
         print("Position: {}".format(position))
     for b in range(5):
         if not buttons[b].value and button_states[b] is False:
             button_states[b] = True
             display.print(seven_segment_names[b])
-            print("%s button pressed" % (button_names[b]))
+            print("{} button pressed".format(button_names[b]))
 
         if buttons[b].value and button_states[b] is True:
             button_states[b] = False
             display.print("    ")
-            print("%s button released" % (button_names[b]))
+            print("{} button released".format(button_names[b]))
