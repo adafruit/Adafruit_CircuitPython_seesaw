@@ -49,13 +49,13 @@ while True:
 
     if position != last_position:
         last_position = position
-        print("Position: {}".format(position))
+        print(f"Position: {position}")
 
     for b in range(5):
         if not buttons[b].value and button_states[b] is False:
             button_states[b] = True
-            print("{} button pressed".format(button_names[b]))
+            print(f"{button_names[b]} button pressed")
 
         if buttons[b].value and button_states[b] is True:
             button_states[b] = False
-            print("{} button released".format(button_names[b]))
+            print(f"{button_names[b]} button released")
