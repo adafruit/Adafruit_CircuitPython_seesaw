@@ -16,7 +16,7 @@ i2c = board.I2C()  # uses board.SCL and board.SDA
 seesaw = seesaw.Seesaw(i2c, addr=0x49)
 
 seesaw_product = (seesaw.get_version() >> 16) & 0xFFFF
-print("Found product {}".format(seesaw_product))
+print(f"Found product {seesaw_product}")
 if seesaw_product != 5740:
     print("Wrong firmware loaded?  Expected 5740")
 
