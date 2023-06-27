@@ -169,7 +169,10 @@ class Seesaw:
             from adafruit_seesaw.robohat import MM1_Pinmap
 
             self.pin_mapping = MM1_Pinmap
-        elif (pid in (_5690_PID, _5681_PID, _5743_PID)) or (self.chip_id in (_ATTINY817_HW_ID_CODE, _ATTINY807_HW_ID_CODE, _ATTINY1617_HW_ID_CODE)):
+        elif (pid in (_5690_PID, _5681_PID, _5743_PID)) or (self.chip_id in
+                                                           (_ATTINY817_HW_ID_CODE,
+                                                            _ATTINY807_HW_ID_CODE,
+                                                            _ATTINY1617_HW_ID_CODE)):
             from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap
 
             self.pin_mapping = ATtinyx16_Pinmap
