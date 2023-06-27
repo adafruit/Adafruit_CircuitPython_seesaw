@@ -170,9 +170,9 @@ class Seesaw:
 
             self.pin_mapping = MM1_Pinmap
         elif (pid in (_5690_PID, _5681_PID, _5743_PID)) or (self.chip_id in
-                                                           (_ATTINY817_HW_ID_CODE,
-                                                            _ATTINY807_HW_ID_CODE,
-                                                            _ATTINY1617_HW_ID_CODE)):
+                                                           (_ATTINY816_HW_ID_CODE,
+                                                            _ATTINY806_HW_ID_CODE,
+                                                            _ATTINY1616_HW_ID_CODE)):
             from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap
 
             self.pin_mapping = ATtinyx16_Pinmap
@@ -265,10 +265,10 @@ class Seesaw:
         if pin not in self.pin_mapping.analog_pins:
             raise ValueError("Invalid ADC pin")
 
-        if self.chip_id == _ATTINY8X7_HW_ID_CODE:
-            offset = pin
-        elif self.chip_id == _SAMD09_HW_ID_CODE:
+        self.chip_id == _SAMD09_HW_ID_CODE:
             offset = self.pin_mapping.analog_pins.index(pin)
+        else:
+            offset = pin
 
         self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + offset, buf, delay)
         ret = struct.unpack(">H", buf)[0]
@@ -361,10 +361,10 @@ class Seesaw:
         if pin not in self.pin_mapping.pwm_pins:
             raise ValueError("Invalid PWM pin")
 
-        if self.chip_id == _ATTINY8X7_HW_ID_CODE:
-            offset = pin
-        elif self.chip_id == _SAMD09_HW_ID_CODE:
+        if self.chip_id == _SAMD09_HW_ID_CODE:
             offset = self.pin_mapping.pwm_pins.index(pin)
+        else:
+            offset = pin
 
         if self.pin_mapping.pwm_width == 16:
             cmd = bytearray([offset, (value >> 8), value & 0xFF])
