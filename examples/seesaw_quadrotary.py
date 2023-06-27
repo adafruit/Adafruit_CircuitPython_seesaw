@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2023 ladyada for Adafruit Industries
 # SPDX-License-Identifier: MIT
 
-"""I2C rotary encoder NeoPixel color picker and brightness setting example."""
+"""Quad I2C rotary encoder NeoPixel color picker example."""
 import board
 from rainbowio import colorwheel
 import digitalio
@@ -12,11 +12,11 @@ import adafruit_seesaw.digitalio
 import time
 
 # For use with the STEMMA connector on QT Py RP2040
-# import busio
-# i2c = busio.I2C(board.SCL1, board.SDA1)
-# seesaw = seesaw.Seesaw(i2c, 0x49)
+import busio
+from adafruit_debug_i2c import DebugI2C
 
-i2c = board.I2C()  # uses board.SCL and board.SDA
+# For boards/chips that don't handle clock-stretching well, try running I2C at 50KHz
+# i2c = busio.I2C(board.SCL, board.SDA, frequency=50000)
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 seesaw = adafruit_seesaw.seesaw.Seesaw(i2c, 0x49)
 
@@ -25,7 +25,7 @@ switches = [adafruit_seesaw.digitalio.DigitalIO(seesaw, pin) for pin in (12, 14,
 for switch in switches:
     switch.switch_to_input(digitalio.Pull.UP)  # input & pullup!
 
-# four neopixels per 'stick'
+# four neopixels per PCB
 pixels = adafruit_seesaw.neopixel.NeoPixel(seesaw, 18, 4)
 pixels.brightness = 0.5
 
@@ -35,7 +35,8 @@ colors = [0, 0, 0, 0]  # start at red
 while True:
     # negate the position to make clockwise rotation positive
     positions = [encoder.position for encoder in encoders]
-
+    print(positions)
+    continue
     for n, rotary_pos in enumerate(positions):
         if rotary_pos != last_positions[n]:
             print("Rotary #%d: %d" % (n, rotary_pos))
