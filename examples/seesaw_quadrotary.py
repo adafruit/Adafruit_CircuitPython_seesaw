@@ -9,7 +9,6 @@ import adafruit_seesaw.seesaw
 import adafruit_seesaw.neopixel
 import adafruit_seesaw.rotaryio
 import adafruit_seesaw.digitalio
-import time
 
 # For use with the STEMMA connector on QT Py RP2040
 # import busio
@@ -38,7 +37,7 @@ while True:
 
     for n, rotary_pos in enumerate(positions):
         if rotary_pos != last_positions[n]:
-            print("Rotary #%d: %d" % (n, rotary_pos))
+            print(f"Rotary #{n}: {rotary_pos}")
             last_positions[n] = rotary_pos
 
             if switches[n].value: # Change the LED color if switch is not pressed
@@ -50,6 +49,6 @@ while True:
 
         # if switch is pressed, light up white, otherwise use the stored color
         if not switches[n].value:
-           pixels[n] = 0xFFFFFF
+            pixels[n] = 0xFFFFFF
         else:
-           pixels[n] = colorwheel(colors[n])
+            pixels[n] = colorwheel(colors[n])
