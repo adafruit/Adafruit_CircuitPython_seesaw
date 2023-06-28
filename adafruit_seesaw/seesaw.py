@@ -105,7 +105,12 @@ _NEOPIXEL_SHOW = const(0x05)
 _TOUCH_CHANNEL_OFFSET = const(0x10)
 
 _SAMD09_HW_ID_CODE = const(0x55)
-_ATTINY8X7_HW_ID_CODE = const(0x87)
+_ATTINY806_HW_ID_CODE = const(0x84)
+_ATTINY807_HW_ID_CODE = const(0x85)
+_ATTINY816_HW_ID_CODE = const(0x86)
+_ATTINY817_HW_ID_CODE = const(0x87)
+_ATTINY1616_HW_ID_CODE = const(0x88)
+_ATTINY1617_HW_ID_CODE = const(0x89)
 _EEPROM_I2C_ADDR = const(0x3F)
 
 _ENCODER_STATUS = const(0x00)
@@ -145,13 +150,18 @@ class Seesaw:
             self.sw_reset()
 
         self.chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
-
-        if self.chip_id not in (_ATTINY8X7_HW_ID_CODE, _SAMD09_HW_ID_CODE):
+        if self.chip_id not in (
+            _ATTINY806_HW_ID_CODE,
+            _ATTINY807_HW_ID_CODE,
+            _ATTINY816_HW_ID_CODE,
+            _ATTINY817_HW_ID_CODE,
+            _ATTINY1616_HW_ID_CODE,
+            _ATTINY1617_HW_ID_CODE,
+            _SAMD09_HW_ID_CODE,
+        ):
             raise RuntimeError(
-                "Seesaw hardware ID returned (0x{:x}) is not "
-                "correct! Expected 0x{:x} or 0x{:x}. Please check your wiring.".format(
-                    self.chip_id, _SAMD09_HW_ID_CODE, _ATTINY8X7_HW_ID_CODE
-                )
+                f"Seesaw hardware ID returned 0x{self.chip_id} is not "
+                "correct! Please check your wiring."
             )
 
         pid = self.get_version() >> 16
@@ -164,7 +174,10 @@ class Seesaw:
             from adafruit_seesaw.robohat import MM1_Pinmap
 
             self.pin_mapping = MM1_Pinmap
-        elif pid in (_5690_PID, _5681_PID, _5743_PID):
+        elif (pid in (_5690_PID, _5681_PID, _5743_PID)) or (
+            self.chip_id
+            in (_ATTINY816_HW_ID_CODE, _ATTINY806_HW_ID_CODE, _ATTINY1616_HW_ID_CODE)
+        ):
             from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap
 
             self.pin_mapping = ATtinyx16_Pinmap
@@ -172,7 +185,11 @@ class Seesaw:
             from adafruit_seesaw.samd09 import SAMD09_Pinmap
 
             self.pin_mapping = SAMD09_Pinmap
-        elif self.chip_id == _ATTINY8X7_HW_ID_CODE:
+        elif self.chip_id in (
+            _ATTINY817_HW_ID_CODE,
+            _ATTINY807_HW_ID_CODE,
+            _ATTINY1617_HW_ID_CODE,
+        ):
             from adafruit_seesaw.attiny8x7 import ATtiny8x7_Pinmap
 
             self.pin_mapping = ATtiny8x7_Pinmap
@@ -255,10 +272,10 @@ class Seesaw:
         if pin not in self.pin_mapping.analog_pins:
             raise ValueError("Invalid ADC pin")
 
-        if self.chip_id == _ATTINY8X7_HW_ID_CODE:
-            offset = pin
-        elif self.chip_id == _SAMD09_HW_ID_CODE:
+        if self.chip_id == _SAMD09_HW_ID_CODE:
             offset = self.pin_mapping.analog_pins.index(pin)
+        else:
+            offset = pin
 
         self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + offset, buf, delay)
         ret = struct.unpack(">H", buf)[0]
@@ -351,10 +368,10 @@ class Seesaw:
         if pin not in self.pin_mapping.pwm_pins:
             raise ValueError("Invalid PWM pin")
 
-        if self.chip_id == _ATTINY8X7_HW_ID_CODE:
-            offset = pin
-        elif self.chip_id == _SAMD09_HW_ID_CODE:
+        if self.chip_id == _SAMD09_HW_ID_CODE:
             offset = self.pin_mapping.pwm_pins.index(pin)
+        else:
+            offset = pin
 
         if self.pin_mapping.pwm_width == 16:
             cmd = bytearray([offset, (value >> 8), value & 0xFF])
