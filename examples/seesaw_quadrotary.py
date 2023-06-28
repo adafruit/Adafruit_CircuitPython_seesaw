@@ -15,7 +15,7 @@ import busio
 from adafruit_debug_i2c import DebugI2C
 
 # For boards/chips that don't handle clock-stretching well, try running I2C at 50KHz
-# i2c = busio.I2C(board.SCL, board.SDA, frequency=50000)
+i2c = busio.I2C(board.SCL, board.SDA, frequency=50000)
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 seesaw = adafruit_seesaw.seesaw.Seesaw(i2c, 0x49)
 
