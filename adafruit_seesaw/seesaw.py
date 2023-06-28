@@ -265,7 +265,7 @@ class Seesaw:
         if pin not in self.pin_mapping.analog_pins:
             raise ValueError("Invalid ADC pin")
 
-        self.chip_id == _SAMD09_HW_ID_CODE:
+        if self.chip_id == _SAMD09_HW_ID_CODE:
             offset = self.pin_mapping.analog_pins.index(pin)
         else:
             offset = pin
