@@ -150,13 +150,18 @@ class Seesaw:
             self.sw_reset()
 
         self.chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
-        if self.chip_id not in (_ATTINY806_HW_ID_CODE,_ATTINY807_HW_ID_CODE,
-                                _ATTINY816_HW_ID_CODE,_ATTINY817_HW_ID_CODE,
-                                _ATTINY1616_HW_ID_CODE,_ATTINY1617_HW_ID_CODE,
-                                _SAMD09_HW_ID_CODE):
+        if self.chip_id not in (
+            _ATTINY806_HW_ID_CODE,
+            _ATTINY807_HW_ID_CODE,
+            _ATTINY816_HW_ID_CODE,
+            _ATTINY817_HW_ID_CODE,
+            _ATTINY1616_HW_ID_CODE,
+            _ATTINY1617_HW_ID_CODE,
+            _SAMD09_HW_ID_CODE,
+        ):
             raise RuntimeError(
-                "Seesaw hardware ID returned (0x{:x}) is not "
-                "correct! Please check your wiring.".format(self.chip_id,)
+                f"Seesaw hardware ID returned 0x{self.chip_id} is not "
+                "correct! Please check your wiring."
             )
 
         pid = self.get_version() >> 16
@@ -169,10 +174,10 @@ class Seesaw:
             from adafruit_seesaw.robohat import MM1_Pinmap
 
             self.pin_mapping = MM1_Pinmap
-        elif (pid in (_5690_PID, _5681_PID, _5743_PID)) or (self.chip_id in
-                                                           (_ATTINY816_HW_ID_CODE,
-                                                            _ATTINY806_HW_ID_CODE,
-                                                            _ATTINY1616_HW_ID_CODE)):
+        elif (pid in (_5690_PID, _5681_PID, _5743_PID)) or (
+            self.chip_id
+            in (_ATTINY816_HW_ID_CODE, _ATTINY806_HW_ID_CODE, _ATTINY1616_HW_ID_CODE)
+        ):
             from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap
 
             self.pin_mapping = ATtinyx16_Pinmap
@@ -180,9 +185,11 @@ class Seesaw:
             from adafruit_seesaw.samd09 import SAMD09_Pinmap
 
             self.pin_mapping = SAMD09_Pinmap
-        elif self.chip_id in (_ATTINY817_HW_ID_CODE,
-                              _ATTINY807_HW_ID_CODE,
-                              _ATTINY1617_HW_ID_CODE):
+        elif self.chip_id in (
+            _ATTINY817_HW_ID_CODE,
+            _ATTINY807_HW_ID_CODE,
+            _ATTINY1617_HW_ID_CODE,
+        ):
             from adafruit_seesaw.attiny8x7 import ATtiny8x7_Pinmap
 
             self.pin_mapping = ATtiny8x7_Pinmap
