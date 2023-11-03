@@ -439,7 +439,6 @@ class Seesaw:
     #
     #     return self.read8(SEESAW_SERCOM0_BASE + sercom, SEESAW_SERCOM_DATA)
 
-
     def _get_eeprom_i2c_addr(self):
         """ Return the EEPROM address used to store I2C address."""
         chip_id = self.chip_id
@@ -455,9 +454,7 @@ class Seesaw:
             _ATTINY1617_HW_ID_CODE,
         ):
             return 0xFF
-        elif chip_id in (
-            _SAMD09_HW_ID_CODE,
-        ):
+        elif chip_id in (_SAMD09_HW_ID_CODE,):
             return 0x3F
         else:
             raise RuntimeError("Unknown chip id", hex(chip_id))
