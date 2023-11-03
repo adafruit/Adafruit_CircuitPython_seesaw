@@ -440,7 +440,7 @@ class Seesaw:
     #     return self.read8(SEESAW_SERCOM0_BASE + sercom, SEESAW_SERCOM_DATA)
 
     def _get_eeprom_i2c_addr(self):
-        """ Return the EEPROM address used to store I2C address."""
+        """Return the EEPROM address used to store I2C address."""
         chip_id = self.chip_id
         if chip_id in (
             _ATTINY806_HW_ID_CODE,
