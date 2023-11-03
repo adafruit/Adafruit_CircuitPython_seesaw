@@ -449,15 +449,14 @@ class Seesaw:
             _ATTINY817_HW_ID_CODE,
         ):
             return 0x7F
-        elif chip_id in (
+        if chip_id in (
             _ATTINY1616_HW_ID_CODE,
             _ATTINY1617_HW_ID_CODE,
         ):
             return 0xFF
-        elif chip_id in (_SAMD09_HW_ID_CODE,):
+        if chip_id in (_SAMD09_HW_ID_CODE,):
             return 0x3F
-        else:
-            return None
+        return None
 
     def set_i2c_addr(self, addr):
         """Store a new address in the device's EEPROM and reboot it."""
