@@ -111,7 +111,6 @@ _ATTINY816_HW_ID_CODE = const(0x86)
 _ATTINY817_HW_ID_CODE = const(0x87)
 _ATTINY1616_HW_ID_CODE = const(0x88)
 _ATTINY1617_HW_ID_CODE = const(0x89)
-_EEPROM_I2C_ADDR = const(0x3F)
 
 _ENCODER_STATUS = const(0x00)
 _ENCODER_INTENSET = const(0x10)
@@ -440,16 +439,36 @@ class Seesaw:
     #
     #     return self.read8(SEESAW_SERCOM0_BASE + sercom, SEESAW_SERCOM_DATA)
 
+
+    def _get_eeprom_i2c_addr(self):
+        """ Return the EEPROM address used to store I2C address."""
+        chip_id = self.chip_id
+        if chip_id in (
+            _ATTINY806_HW_ID_CODE,
+            _ATTINY807_HW_ID_CODE,
+            _ATTINY816_HW_ID_CODE,
+            _ATTINY817_HW_ID_CODE,
+        ):
+            return 0x7F
+        elif chip_id in (
+            _ATTINY1616_HW_ID_CODE,
+            _ATTINY1617_HW_ID_CODE,
+        ):
+            return 0xFF
+        elif chip_id in (
+            _SAMD09_HW_ID_CODE,
+        ):
+            return 0x3F
+        else:
+            raise RuntimeError("Unknown chip id", hex(chip_id))
+
     def set_i2c_addr(self, addr):
         """Store a new address in the device's EEPROM and reboot it."""
-        self.eeprom_write8(_EEPROM_I2C_ADDR, addr)
-        time.sleep(0.250)
-        self.i2c_device.device_address = addr
-        self.sw_reset()
+        self.eeprom_write8(self._get_eeprom_i2c_addr(), addr)
 
     def get_i2c_addr(self):
         """Return the device's I2C address stored in its EEPROM"""
-        return self.read8(_EEPROM_BASE, _EEPROM_I2C_ADDR)
+        return self.read8(_EEPROM_BASE, self._get_eeprom_i2c_addr())
 
     def eeprom_write8(self, addr, val):
         """Write a single byte directly to the device's EEPROM"""
