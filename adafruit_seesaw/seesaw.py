@@ -457,7 +457,7 @@ class Seesaw:
         elif chip_id in (_SAMD09_HW_ID_CODE,):
             return 0x3F
         else:
-            raise RuntimeError("Unknown chip id", hex(chip_id))
+            return None
 
     def set_i2c_addr(self, addr):
         """Store a new address in the device's EEPROM and reboot it."""
