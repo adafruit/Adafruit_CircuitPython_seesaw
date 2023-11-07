@@ -390,13 +390,16 @@ class Seesaw:
 
     def set_pwm_freq(self, pin, freq):
         """Set the PWM frequency of a pin by number"""
-        if pin in self.pin_mapping.pwm_pins:
-            cmd = bytearray(
-                [self.pin_mapping.pwm_pins.index(pin), (freq >> 8), freq & 0xFF]
-            )
-            self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
-        else:
+        if pin not in self.pin_mapping.pwm_pins:
             raise ValueError("Invalid PWM pin")
+
+        if self.chip_id == _SAMD09_HW_ID_CODE:
+            offset = self.pin_mapping.pwm_pins.index(pin)
+        else:
+            offset = pin
+
+        cmd = bytearray([offset, (freq >> 8), freq & 0xFF])
+        self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
 
     def encoder_position(self, encoder=0):
         """The current position of the encoder"""
