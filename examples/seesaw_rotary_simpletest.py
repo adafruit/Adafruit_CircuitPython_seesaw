@@ -20,8 +20,11 @@ print("Found product {}".format(seesaw_product))
 if seesaw_product != 4991:
     print("Wrong firmware loaded?  Expected 4991")
 
+# Configure seesaw pin used to read knob button presses
+# The internal pull up is enabled to prevent floating input
 seesaw.pin_mode(24, seesaw.INPUT_PULLUP)
 button = digitalio.DigitalIO(seesaw, 24)
+
 button_held = False
 
 encoder = rotaryio.IncrementalEncoder(seesaw)
