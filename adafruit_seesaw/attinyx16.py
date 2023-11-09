@@ -25,7 +25,8 @@ class ATtinyx16_Pinmap:
     pwm_width = 16  # we dont actually use all 16 bits but whatever
 
     """The pins capable of PWM output"""
-    pwm_pins = (0, 1, 7, 11, 16)
+    pwm_pins = (0, 1, 7, 11, 16)  # 8 bit PWM mode
+    pwm_pins += (4, 5, 6)  # 16 bit PWM mode
 
     """No pins on this board are capable of touch input"""
     touch_pins = ()
