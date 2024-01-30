@@ -159,7 +159,7 @@ class Seesaw:
             _SAMD09_HW_ID_CODE,
         ):
             raise RuntimeError(
-                f"Seesaw hardware ID returned 0x{self.chip_id} is not "
+                f"Seesaw hardware ID returned 0x{self.chip_id:x} is not "
                 "correct! Please check your wiring."
             )
 
