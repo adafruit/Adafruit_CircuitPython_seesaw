@@ -110,6 +110,7 @@ _ATTINY807_HW_ID_CODE = const(0x85)
 _ATTINY816_HW_ID_CODE = const(0x86)
 _ATTINY817_HW_ID_CODE = const(0x87)
 _ATTINY1616_HW_ID_CODE = const(0x88)
+_ATTINY1616_HW_ID_CODE_2 = const(0x43)
 _ATTINY1617_HW_ID_CODE = const(0x89)
 
 _ENCODER_STATUS = const(0x00)
@@ -155,6 +156,7 @@ class Seesaw:
             _ATTINY816_HW_ID_CODE,
             _ATTINY817_HW_ID_CODE,
             _ATTINY1616_HW_ID_CODE,
+            _ATTINY1616_HW_ID_CODE_2,
             _ATTINY1617_HW_ID_CODE,
             _SAMD09_HW_ID_CODE,
         ):
@@ -175,7 +177,7 @@ class Seesaw:
             self.pin_mapping = MM1_Pinmap
         elif (pid in (_5690_PID, _5681_PID, _5743_PID)) or (
             self.chip_id
-            in (_ATTINY816_HW_ID_CODE, _ATTINY806_HW_ID_CODE, _ATTINY1616_HW_ID_CODE)
+            in (_ATTINY816_HW_ID_CODE, _ATTINY806_HW_ID_CODE, _ATTINY1616_HW_ID_CODE, _ATTINY1616_HW_ID_CODE_2)
         ):
             from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap
 
@@ -454,6 +456,7 @@ class Seesaw:
             return 0x7F
         if chip_id in (
             _ATTINY1616_HW_ID_CODE,
+            _ATTINY1616_HW_ID_CODE_2,
             _ATTINY1617_HW_ID_CODE,
         ):
             return 0xFF
