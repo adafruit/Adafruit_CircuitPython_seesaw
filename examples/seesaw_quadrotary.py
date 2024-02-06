@@ -35,9 +35,6 @@ while True:
     print(positions)
     for n, rotary_pos in enumerate(positions):
         if rotary_pos != last_positions[n]:
-            print(f"Rotary #{n}: {rotary_pos}")
-            last_positions[n] = rotary_pos
-
             if switches[n].value:  # Change the LED color if switch is not pressed
                 if (
                     rotary_pos > last_positions[n]
@@ -46,6 +43,9 @@ while True:
                 else:
                     colors[n] -= 8  # Advance backward through the colorwheel.
                 colors[n] = (colors[n] + 256) % 256  # wrap around to 0-256
+            # Set last position to current position after evaluating
+            print(f"Rotary #{n}: {rotary_pos}")
+            last_positions[n] = rotary_pos
 
         # if switch is pressed, light up white, otherwise use the stored color
         if not switches[n].value:
