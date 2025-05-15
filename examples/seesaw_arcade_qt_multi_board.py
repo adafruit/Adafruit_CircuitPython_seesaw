@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: 2022 Kattni Rembor for Adafruit Industries
 # SPDX-License-Identifier: MIT
 """Arcade QT example for multiple boards that turns on button LED when button is pressed"""
+
 import board
 import digitalio
-from adafruit_seesaw.seesaw import Seesaw
+
 from adafruit_seesaw.digitalio import DigitalIO
+from adafruit_seesaw.seesaw import Seesaw
 
 # For most boards.
 i2c = board.I2C()  # uses board.SCL and board.SDA

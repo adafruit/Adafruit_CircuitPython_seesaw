@@ -3,8 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 import time
+
 import board
 from micropython import const
+
 from adafruit_seesaw.seesaw import Seesaw
 
 BUTTON_1 = const(3)
@@ -17,9 +19,7 @@ JOY1_Y = const(15)
 JOY2_X = const(0)
 JOY2_Y = const(16)
 
-button_mask = const(
-    (1 << BUTTON_1) | (1 << BUTTON_2) | (1 << BUTTON_3) | (1 << BUTTON_4)
-)
+button_mask = const((1 << BUTTON_1) | (1 << BUTTON_2) | (1 << BUTTON_3) | (1 << BUTTON_4))
 
 i2c_bus = board.STEMMA_I2C()  # The built-in STEMMA QT connector on the microcontroller
 # i2c_bus = board.I2C()  # Uses board.SCL and board.SDA. Use with breadboard.

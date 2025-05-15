@@ -3,8 +3,11 @@
 """
 Simple seesaw test for ATtiny8x7 breakout using built-in LED on pin 5.
 """
+
 import time
+
 import board
+
 from adafruit_seesaw.seesaw import Seesaw
 
 i2c = board.I2C()  # uses board.SCL and board.SDA

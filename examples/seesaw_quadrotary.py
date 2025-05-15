@@ -2,13 +2,15 @@
 # SPDX-License-Identifier: MIT
 
 """Quad I2C rotary encoder NeoPixel color picker example."""
+
 import board
-from rainbowio import colorwheel
 import digitalio
-import adafruit_seesaw.seesaw
+from rainbowio import colorwheel
+
+import adafruit_seesaw.digitalio
 import adafruit_seesaw.neopixel
 import adafruit_seesaw.rotaryio
-import adafruit_seesaw.digitalio
+import adafruit_seesaw.seesaw
 
 # For boards/chips that don't handle clock-stretching well, try running I2C at 50KHz
 # import busio
@@ -36,9 +38,7 @@ while True:
     for n, rotary_pos in enumerate(positions):
         if rotary_pos != last_positions[n]:
             if switches[n].value:  # Change the LED color if switch is not pressed
-                if (
-                    rotary_pos > last_positions[n]
-                ):  # Advance forward through the colorwheel.
+                if rotary_pos > last_positions[n]:  # Advance forward through the colorwheel.
                     colors[n] += 8
                 else:
                     colors[n] -= 8  # Advance backward through the colorwheel.

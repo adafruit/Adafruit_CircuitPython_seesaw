@@ -11,9 +11,11 @@
 # https://learn.adafruit.com/adafruit-attiny817-seesaw/neopixel
 
 import time
+
 import board
 from rainbowio import colorwheel
-from adafruit_seesaw import seesaw, neopixel
+
+from adafruit_seesaw import neopixel, seesaw
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller

@@ -27,7 +27,6 @@ Implementation Notes
 
 # This code needs to be broken up into analogio, busio, digitalio, and pulseio
 # compatible classes so we won't bother with some lints until then.
-# pylint: disable=missing-docstring,invalid-name,too-many-public-methods,no-name-in-module
 
 import struct
 import time
@@ -149,7 +148,7 @@ class Seesaw:
             self.sw_reset()
 
         self.chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
-        if self.chip_id not in (
+        if self.chip_id not in {
             _ATTINY806_HW_ID_CODE,
             _ATTINY807_HW_ID_CODE,
             _ATTINY816_HW_ID_CODE,
@@ -157,42 +156,39 @@ class Seesaw:
             _ATTINY1616_HW_ID_CODE,
             _ATTINY1617_HW_ID_CODE,
             _SAMD09_HW_ID_CODE,
-        ):
+        }:
             raise RuntimeError(
                 f"Seesaw hardware ID returned 0x{self.chip_id:x} is not "
                 "correct! Please check your wiring."
             )
 
         pid = self.get_version() >> 16
-        # pylint: disable=import-outside-toplevel
         if pid == _CRICKIT_PID:
-            from adafruit_seesaw.crickit import Crickit_Pinmap
+            from adafruit_seesaw.crickit import Crickit_Pinmap  # noqa: PLC0415
 
             self.pin_mapping = Crickit_Pinmap
         elif pid == _ROBOHATMM1_PID:
-            from adafruit_seesaw.robohat import MM1_Pinmap
+            from adafruit_seesaw.robohat import MM1_Pinmap  # noqa: PLC0415
 
             self.pin_mapping = MM1_Pinmap
-        elif (pid in (_5690_PID, _5681_PID, _5743_PID)) or (
-            self.chip_id
-            in (_ATTINY816_HW_ID_CODE, _ATTINY806_HW_ID_CODE, _ATTINY1616_HW_ID_CODE)
+        elif (pid in {_5690_PID, _5681_PID, _5743_PID}) or (
+            self.chip_id in {_ATTINY816_HW_ID_CODE, _ATTINY806_HW_ID_CODE, _ATTINY1616_HW_ID_CODE}
         ):
-            from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap
+            from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap  # noqa: PLC0415
 
             self.pin_mapping = ATtinyx16_Pinmap
         elif self.chip_id == _SAMD09_HW_ID_CODE:
-            from adafruit_seesaw.samd09 import SAMD09_Pinmap
+            from adafruit_seesaw.samd09 import SAMD09_Pinmap  # noqa: PLC0415
 
             self.pin_mapping = SAMD09_Pinmap
-        elif self.chip_id in (
+        elif self.chip_id in {
             _ATTINY817_HW_ID_CODE,
             _ATTINY807_HW_ID_CODE,
             _ATTINY1617_HW_ID_CODE,
-        ):
-            from adafruit_seesaw.attiny8x7 import ATtiny8x7_Pinmap
+        }:
+            from adafruit_seesaw.attiny8x7 import ATtiny8x7_Pinmap  # noqa: PLC0415
 
             self.pin_mapping = ATtiny8x7_Pinmap
-        # pylint: enable=import-outside-toplevel
 
     def sw_reset(self, post_reset_delay=0.5):
         """Trigger a software reset of the SeeSaw chip"""
@@ -230,8 +226,8 @@ class Seesaw:
     def digital_read(self, pin):
         """Get the value of an input pin by number"""
         if pin >= 32:
-            return self.digital_read_bulk_b((1 << (pin - 32))) != 0
-        return self.digital_read_bulk((1 << pin)) != 0
+            return self.digital_read_bulk_b(1 << (pin - 32)) != 0
+        return self.digital_read_bulk(1 << pin) != 0
 
     def digital_read_bulk(self, pins, delay=0.008):
         """Get the values of all the pins on the 'A' port as a bitmask"""
@@ -445,19 +441,19 @@ class Seesaw:
     def _get_eeprom_i2c_addr(self):
         """Return the EEPROM address used to store I2C address."""
         chip_id = self.chip_id
-        if chip_id in (
+        if chip_id in {
             _ATTINY806_HW_ID_CODE,
             _ATTINY807_HW_ID_CODE,
             _ATTINY816_HW_ID_CODE,
             _ATTINY817_HW_ID_CODE,
-        ):
+        }:
             return 0x7F
-        if chip_id in (
+        if chip_id in {
             _ATTINY1616_HW_ID_CODE,
             _ATTINY1617_HW_ID_CODE,
-        ):
+        }:
             return 0xFF
-        if chip_id in (_SAMD09_HW_ID_CODE,):
+        if chip_id in {_SAMD09_HW_ID_CODE}:
             return 0x3F
         return None
 

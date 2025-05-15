@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: MIT
 
-# pylint: disable=missing-docstring,invalid-name,too-many-public-methods,too-few-public-methods
 
 """
 `adafruit_seesaw.attiny8x7` - Pin definition for Adafruit ATtiny8x7 Breakout with seesaw

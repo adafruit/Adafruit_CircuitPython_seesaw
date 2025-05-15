@@ -5,7 +5,8 @@
 # solder the A0 jumper on the second QT Rotary Encoder board
 
 import board
-from adafruit_seesaw import seesaw, rotaryio, digitalio, neopixel
+
+from adafruit_seesaw import digitalio, neopixel, rotaryio, seesaw
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
@@ -43,7 +44,7 @@ while True:
 
     if position1 != last_position1:
         last_position1 = position1
-        print("Position 1: {}".format(position1))
+        print(f"Position 1: {position1}")
 
     if not button1.value and not button_held1:
         button_held1 = True
@@ -57,7 +58,7 @@ while True:
 
     if position2 != last_position2:
         last_position2 = position2
-        print("Position 2: {}".format(position2))
+        print(f"Position 2: {position2}")
 
     if not button2.value and not button_held2:
         button_held2 = True
