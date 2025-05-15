@@ -1,12 +1,15 @@
 # SPDX-FileCopyrightText: 2022 Kattni Rembor for Adafruit Industries
 # SPDX-License-Identifier: MIT
 """Arcade QT example that pulses the button LED on button press"""
+
 import time
+
 import board
 import digitalio
-from adafruit_seesaw.seesaw import Seesaw
+
 from adafruit_seesaw.digitalio import DigitalIO
 from adafruit_seesaw.pwmout import PWMOut
+from adafruit_seesaw.seesaw import Seesaw
 
 # The delay on the PWM cycles. Increase to slow down the LED pulsing, decrease to speed it up.
 delay = 0.01

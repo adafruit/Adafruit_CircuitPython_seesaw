@@ -10,10 +10,12 @@
 # https://learn.adafruit.com/adafruit-attiny817-seesaw/digital-input
 
 import time
+
 import board
 import digitalio
-from adafruit_seesaw.seesaw import Seesaw
+
 from adafruit_seesaw.digitalio import DigitalIO
+from adafruit_seesaw.seesaw import Seesaw
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller

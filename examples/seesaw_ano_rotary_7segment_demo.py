@@ -5,7 +5,8 @@
 
 import board
 from adafruit_ht16k33 import segments
-from adafruit_seesaw import seesaw, rotaryio, digitalio
+
+from adafruit_seesaw import digitalio, rotaryio, seesaw
 
 # For use with the STEMMA connector on QT Py RP2040
 # import busio

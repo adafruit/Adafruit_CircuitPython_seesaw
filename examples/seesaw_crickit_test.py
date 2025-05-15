@@ -3,8 +3,9 @@
 
 import board
 from adafruit_motor import servo
-from adafruit_seesaw.seesaw import Seesaw
+
 from adafruit_seesaw.pwmout import PWMOut
+from adafruit_seesaw.seesaw import Seesaw
 
 # from analogio import AnalogOut
 # import board
@@ -151,13 +152,12 @@ while True:
             else:
                 ss.analog_write(_CRCKIT_M1_A2, 0)
                 ss.analog_write(_CRCKIT_M1_A1, counter * 512)
+        elif motor1_dir:
+            ss.analog_write(_CRCKIT_M1_A1, 0)
+            ss.analog_write(_CRCKIT_M1_A2, (255 - counter) * 512)
         else:
-            if motor1_dir:
-                ss.analog_write(_CRCKIT_M1_A1, 0)
-                ss.analog_write(_CRCKIT_M1_A2, (255 - counter) * 512)
-            else:
-                ss.analog_write(_CRCKIT_M1_A2, 0)
-                ss.analog_write(_CRCKIT_M1_A1, (255 - counter) * 512)
+            ss.analog_write(_CRCKIT_M1_A2, 0)
+            ss.analog_write(_CRCKIT_M1_A1, (255 - counter) * 512)
         if counter == 255:
             print("-------------------- motor 1 -----------------------")
             motor1_dir = not motor1_dir
@@ -169,13 +169,12 @@ while True:
             else:
                 ss.analog_write(_CRCKIT_M1_B2, 0)
                 ss.analog_write(_CRCKIT_M1_B1, counter * 512)
+        elif motor2_dir:
+            ss.analog_write(_CRCKIT_M1_B1, 0)
+            ss.analog_write(_CRCKIT_M1_B2, (255 - counter) * 512)
         else:
-            if motor2_dir:
-                ss.analog_write(_CRCKIT_M1_B1, 0)
-                ss.analog_write(_CRCKIT_M1_B2, (255 - counter) * 512)
-            else:
-                ss.analog_write(_CRCKIT_M1_B2, 0)
-                ss.analog_write(_CRCKIT_M1_B1, (255 - counter) * 512)
+            ss.analog_write(_CRCKIT_M1_B2, 0)
+            ss.analog_write(_CRCKIT_M1_B1, (255 - counter) * 512)
         if counter == 255:
             print("-------------------- motor 2 -----------------------")
             motor2_dir = not motor2_dir

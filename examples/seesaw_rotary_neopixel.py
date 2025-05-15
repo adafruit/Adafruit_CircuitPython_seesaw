@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 """I2C rotary encoder NeoPixel color picker and brightness setting example."""
+
 import board
 from rainbowio import colorwheel
-from adafruit_seesaw import seesaw, neopixel, rotaryio, digitalio
 
+from adafruit_seesaw import digitalio, neopixel, rotaryio, seesaw
 
 # For use with the STEMMA connector on QT Py RP2040
 # import busio
@@ -42,11 +43,9 @@ while True:
             color = (color + 256) % 256  # wrap around to 0-256
             pixel.fill(colorwheel(color))
 
-        else:  # If the button is pressed...
-            # ...change the brightness.
-            if position > last_position:  # Increase the brightness.
-                pixel.brightness = min(1.0, pixel.brightness + 0.1)
-            else:  # Decrease the brightness.
-                pixel.brightness = max(0, pixel.brightness - 0.1)
+        elif position > last_position:  # Increase the brightness.
+            pixel.brightness = min(1.0, pixel.brightness + 0.1)
+        else:  # Decrease the brightness.
+            pixel.brightness = max(0, pixel.brightness - 0.1)
 
     last_position = position

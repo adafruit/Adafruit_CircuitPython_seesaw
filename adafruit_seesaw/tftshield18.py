@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: MIT
 
-# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
 """
 `adafruit_seesaw.tftshield18` - Pin definitions for 1.8" TFT Shield V2
@@ -10,6 +9,7 @@
 """
 
 from collections import namedtuple
+
 import board
 
 try:
@@ -44,7 +44,7 @@ Buttons = namedtuple("Buttons", "right down left up select a b c")
 
 
 class TFTShield18(Seesaw):
-    _BACKLIGHT_ON = b"\xFF\xFF"
+    _BACKLIGHT_ON = b"\xff\xff"
     _BACKLIGHT_OFF = b"\x00\x00"
 
     try:

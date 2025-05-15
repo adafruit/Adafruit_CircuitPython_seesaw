@@ -6,9 +6,11 @@
 # on Attiny8x7, analog in can be pins 0, 1, 2, 3, 6, 7, 18, 19, 20
 
 import time
+
 import board
-from adafruit_seesaw.seesaw import Seesaw
+
 from adafruit_seesaw.analoginput import AnalogInput
+from adafruit_seesaw.seesaw import Seesaw
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller

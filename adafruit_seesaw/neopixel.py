@@ -2,13 +2,14 @@
 #
 # SPDX-License-Identifier: MIT
 
-# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
 """
 `adafruit_seesaw.neopixel`
 ====================================================
 """
+
 import struct
+
 from adafruit_pixelbuf import PixelBuf
 
 try:
@@ -64,15 +65,7 @@ class NeoPixel(PixelBuf):
         Use one of the order constants such as RGBW."""
 
     def __init__(
-        self,
-        seesaw,
-        pin,
-        n,
-        *,
-        bpp=None,
-        brightness=1.0,
-        auto_write=True,
-        pixel_order="GRB"
+        self, seesaw, pin, n, *, bpp=None, brightness=1.0, auto_write=True, pixel_order="GRB"
     ):
         self._seesaw = seesaw
         self._pin = pin

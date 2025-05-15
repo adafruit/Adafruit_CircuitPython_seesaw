@@ -8,6 +8,7 @@
 import time
 
 import board
+
 from adafruit_seesaw.seesaw import Seesaw
 
 i2c_bus = board.I2C()  # uses board.SCL and board.SDA
