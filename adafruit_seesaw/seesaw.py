@@ -174,7 +174,13 @@ class Seesaw:
 
             self.pin_mapping = MM1_Pinmap
         elif (pid in {_5690_PID, _5681_PID, _5743_PID}) or (
-            self.chip_id in {_ATTINY416_HW_ID_CODE, _ATTINY816_HW_ID_CODE, _ATTINY806_HW_ID_CODE, _ATTINY1616_HW_ID_CODE}
+            self.chip_id
+            in {
+                _ATTINY416_HW_ID_CODE,
+                _ATTINY816_HW_ID_CODE,
+                _ATTINY806_HW_ID_CODE,
+                _ATTINY1616_HW_ID_CODE,
+            }
         ):
             from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap  # noqa: PLC0415
 
