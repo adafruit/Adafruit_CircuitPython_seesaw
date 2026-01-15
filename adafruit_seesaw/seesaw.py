@@ -104,6 +104,7 @@ _NEOPIXEL_SHOW = const(0x05)
 _TOUCH_CHANNEL_OFFSET = const(0x10)
 
 _SAMD09_HW_ID_CODE = const(0x55)
+_ATTINY416_HW_ID_CODE = const(0x46)
 _ATTINY806_HW_ID_CODE = const(0x84)
 _ATTINY807_HW_ID_CODE = const(0x85)
 _ATTINY816_HW_ID_CODE = const(0x86)
@@ -149,6 +150,7 @@ class Seesaw:
 
         self.chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
         if self.chip_id not in {
+            _ATTINY416_HW_ID_CODE,
             _ATTINY806_HW_ID_CODE,
             _ATTINY807_HW_ID_CODE,
             _ATTINY816_HW_ID_CODE,
@@ -172,7 +174,13 @@ class Seesaw:
 
             self.pin_mapping = MM1_Pinmap
         elif (pid in {_5690_PID, _5681_PID, _5743_PID}) or (
-            self.chip_id in {_ATTINY816_HW_ID_CODE, _ATTINY806_HW_ID_CODE, _ATTINY1616_HW_ID_CODE}
+            self.chip_id
+            in {
+                _ATTINY416_HW_ID_CODE,
+                _ATTINY816_HW_ID_CODE,
+                _ATTINY806_HW_ID_CODE,
+                _ATTINY1616_HW_ID_CODE,
+            }
         ):
             from adafruit_seesaw.attinyx16 import ATtinyx16_Pinmap  # noqa: PLC0415
 
@@ -442,6 +450,7 @@ class Seesaw:
         """Return the EEPROM address used to store I2C address."""
         chip_id = self.chip_id
         if chip_id in {
+            _ATTINY416_HW_ID_CODE,
             _ATTINY806_HW_ID_CODE,
             _ATTINY807_HW_ID_CODE,
             _ATTINY816_HW_ID_CODE,
