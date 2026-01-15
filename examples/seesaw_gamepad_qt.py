@@ -4,8 +4,10 @@
 # SPDX-License-Identifier: MIT
 
 import time
+
 import board
 from micropython import const
+
 from adafruit_seesaw.seesaw import Seesaw
 
 BUTTON_X = const(6)

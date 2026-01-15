@@ -8,8 +8,11 @@
 # Required
 version: 2
 
+sphinx:
+  configuration: docs/conf.py
+
 build:
-  os: ubuntu-20.04
+  os: ubuntu-lts-latest
   tools:
     python: "3"
 

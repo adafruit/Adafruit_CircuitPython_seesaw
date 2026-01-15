@@ -4,7 +4,8 @@
 """I2C rotary encoder simple test example."""
 
 import board
-from adafruit_seesaw import seesaw, rotaryio, digitalio
+
+from adafruit_seesaw import digitalio, rotaryio, seesaw
 
 # For use with the STEMMA connector on QT Py RP2040
 # import busio
@@ -16,7 +17,7 @@ i2c = board.I2C()  # uses board.SCL and board.SDA
 seesaw = seesaw.Seesaw(i2c, addr=0x36)
 
 seesaw_product = (seesaw.get_version() >> 16) & 0xFFFF
-print("Found product {}".format(seesaw_product))
+print(f"Found product {seesaw_product}")
 if seesaw_product != 4991:
     print("Wrong firmware loaded?  Expected 4991")
 
@@ -36,7 +37,7 @@ while True:
 
     if position != last_position:
         last_position = position
-        print("Position: {}".format(position))
+        print(f"Position: {position}")
 
     if not button.value and not button_held:
         button_held = True

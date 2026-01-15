@@ -6,7 +6,9 @@
 # THE LAST BYTE IS USED FOR I2C ADDRESS CHANGE!
 
 import time
+
 import board
+
 from adafruit_seesaw import seesaw
 
 i2c_bus = board.I2C()  # uses board.SCL and board.SDA

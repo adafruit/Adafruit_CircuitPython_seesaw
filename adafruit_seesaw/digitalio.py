@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: MIT
 
-# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
 """
 `adafruit_seesaw.digitalio`

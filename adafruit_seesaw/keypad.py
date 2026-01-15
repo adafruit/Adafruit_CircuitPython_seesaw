@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: MIT
 
-# pylint: disable=missing-docstring,invalid-name,too-many-public-methods
 
 """
 `adafruit_seesaw.keypad`
@@ -32,7 +31,6 @@ _KEYPAD_COUNT = const(0x04)
 _KEYPAD_FIFO = const(0x10)
 
 
-# pylint: disable=too-few-public-methods
 class KeyEvent:
     """Holds information about a key event in its properties
 
@@ -75,7 +73,7 @@ class Keypad(Seesaw):
 
     @interrupt_enabled.setter
     def interrupt_enabled(self, value):
-        if value not in (True, False):
+        if value not in {True, False}:
             raise ValueError("interrupt_enabled must be True or False")
 
         self._interrupt_enabled = value
@@ -85,16 +83,13 @@ class Keypad(Seesaw):
             self.write8(_KEYPAD_BASE, _KEYPAD_INTENCLR, 1)
 
     @property
-    def count(self):
+    def count(self):  # noqa: PLR6301
         """Retrieve or set the number of keys"""
         return self.read8(_KEYPAD_BASE, _KEYPAD_COUNT)
 
-    # pylint: disable=unused-argument, no-self-use
     @count.setter
-    def count(self, value):
+    def count(self, value):  # noqa: PLR6301
         raise AttributeError("count is read only")
-
-    # pylint: enable=unused-argument, no-self-use
 
     def set_event(self, key, edge, enable):
         """Control which kinds of events are set
@@ -103,7 +98,7 @@ class Keypad(Seesaw):
         :param int edge: The type of event
         :param bool enable: True to enable the event, False to disable it"""
 
-        if enable not in (True, False):
+        if enable not in {True, False}:
             raise ValueError("event enable must be True or False")
         if edge > 3 or edge < 0:
             raise ValueError("invalid edge")
