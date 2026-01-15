@@ -358,7 +358,7 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_BULK_CLR, cmd)
 
-    def analog_write(self, pin, value):
+    def analog_write(self, pin, value, delay=0.001):
         """Set the value of an analog output by number"""
         if pin not in self.pin_mapping.pwm_pins:
             raise ValueError("Invalid PWM pin")
@@ -374,7 +374,7 @@ class Seesaw:
             cmd = bytearray([offset, value])
 
         self.write(_TIMER_BASE, _TIMER_PWM, cmd)
-        time.sleep(0.001)
+        time.sleep(delay)
 
     def get_temp(self):
         """Read the temperature"""
