@@ -16,13 +16,13 @@ i2c_bus = board.I2C()  # uses board.SCL and board.SDA
 ss = seesaw.Seesaw(i2c_bus)
 
 value = ss.eeprom_read8(0x02)  # Read from address 2
-print("Read 0x%02x from EEPROM address 0x02" % value)
+print(f"Read 0x{value:02x} from EEPROM address 0x02")
 
 print("Incrementing value")
 ss.eeprom_write8(0x02, (value + 1) % 0xFF)
 
 value = ss.eeprom_read8(0x02)  # Read from address 2
-print("Second read 0x%02x from EEPROM address 0x02" % value)
+print(f"Second read 0x{value:02x} from EEPROM address 0x02")
 
 while True:
     # Do not write EEPROM in a loop, it has 100k cycle life

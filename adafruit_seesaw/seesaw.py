@@ -244,7 +244,7 @@ class Seesaw:
         try:
             ret = struct.unpack(">I", buf)[0]
         except OverflowError:
-            buf[0] = buf[0] & 0x3F
+            buf[0] &= 0x3F
             ret = struct.unpack(">I", buf)[0]
         return ret & pins
 
@@ -388,7 +388,7 @@ class Seesaw:
         """Read the temperature"""
         buf = bytearray(4)
         self.read(_STATUS_BASE, _STATUS_TEMP, buf, 0.005)
-        buf[0] = buf[0] & 0x3F
+        buf[0] &= 0x3F
         ret = struct.unpack(">I", buf)[0]
         return 0.00001525878 * ret
 
