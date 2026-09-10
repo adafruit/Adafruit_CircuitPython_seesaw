@@ -20,6 +20,21 @@ Introduction
 
 CircuitPython module for use with the Adafruit ATSAMD09 seesaw.
 
+Experimental STM32C011 support
+-----------------------------
+
+The provisional hardware ID 0x90 selects the STM32C011 pin map. Pins 0..8 are
+PA0..PA8, 9 is PA11, 10 is PA12, and 15 is PC14. Enabled firmware features
+reserve their pins. Native ``analog_read()`` values are 12-bit;
+``AnalogInput.value`` scales these into its 16-bit domain. Existing chips keep
+their previous behavior. The EEPROM I2C-address byte is 0xFF.
+
+``adafruit_seesaw.spi.SPIBridge`` provides chunked transfers with held CS for
+the experimental SPI-enabled C011 firmware. See ``examples/seesaw_spi_bridge.py``.
+It is not a drop-in ``busio.SPI`` replacement or an integrated e-paper driver.
+Development testing runs this Python driver on CPython through physical Metro
+I2C; native CircuitPython runtime testing remains outstanding.
+
 Dependencies
 =============
 This driver depends on:

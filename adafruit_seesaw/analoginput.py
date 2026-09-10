@@ -31,7 +31,12 @@ class AnalogInput:
     @property
     def value(self):
         """The current analog value on the pin, as an integer from 0..65535 (inclusive)"""
-        return self._seesaw.analog_read(self._pin, self._delay)
+        value = self._seesaw.analog_read(self._pin, self._delay)
+        if getattr(self._seesaw.pin_mapping, "adc_width", None) == 12:
+            # Keep C011's additional resolution in the analogio-style API.
+            # Leave legacy device behavior unchanged in this compatibility update.
+            return value << 4
+        return value
 
     @property
     def reference_voltage(self):
