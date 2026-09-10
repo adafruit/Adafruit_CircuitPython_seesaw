@@ -111,6 +111,7 @@ _ATTINY816_HW_ID_CODE = const(0x86)
 _ATTINY817_HW_ID_CODE = const(0x87)
 _ATTINY1616_HW_ID_CODE = const(0x88)
 _ATTINY1617_HW_ID_CODE = const(0x89)
+_STM32C011_HW_ID_CODE = const(0x90)  # Provisional, paired with C011 peripheral firmware.
 
 _ENCODER_STATUS = const(0x00)
 _ENCODER_INTENSET = const(0x10)
@@ -158,6 +159,7 @@ class Seesaw:
             _ATTINY1616_HW_ID_CODE,
             _ATTINY1617_HW_ID_CODE,
             _SAMD09_HW_ID_CODE,
+            _STM32C011_HW_ID_CODE,
         }:
             raise RuntimeError(
                 f"Seesaw hardware ID returned 0x{self.chip_id:x} is not "
@@ -165,7 +167,11 @@ class Seesaw:
             )
 
         pid = self.get_version() >> 16
-        if pid == _CRICKIT_PID:
+        if self.chip_id == _STM32C011_HW_ID_CODE:
+            from adafruit_seesaw.stm32c011 import STM32C011_Pinmap  # noqa: PLC0415
+
+            self.pin_mapping = STM32C011_Pinmap
+        elif pid == _CRICKIT_PID:
             from adafruit_seesaw.crickit import Crickit_Pinmap  # noqa: PLC0415
 
             self.pin_mapping = Crickit_Pinmap
@@ -270,7 +276,7 @@ class Seesaw:
         return struct.unpack(">I", buf)[0]
 
     def analog_read(self, pin, delay=0.008):
-        """Read the value of an analog pin by number"""
+        """Read native ADC counts: 0..4095 on C011, normally 0..1023 otherwise."""
         buf = bytearray(2)
         if pin not in self.pin_mapping.analog_pins:
             raise ValueError("Invalid ADC pin")
@@ -460,6 +466,7 @@ class Seesaw:
         if chip_id in {
             _ATTINY1616_HW_ID_CODE,
             _ATTINY1617_HW_ID_CODE,
+            _STM32C011_HW_ID_CODE,
         }:
             return 0xFF
         if chip_id in {_SAMD09_HW_ID_CODE}:
